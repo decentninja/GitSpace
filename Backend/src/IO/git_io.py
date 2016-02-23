@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+'''
+TODO-list:
+- I don't really like the passing around of owner+repo, but we will probably
+  need to handle several repos, so it's there for now.
+- Getting details on every commit takes a good while even for out little repo,
+  since it's an HTTP request each. We may have to deal with load times being
+  a bit slow. We should send the updates one by one in a later iteration.
+'''
 
 import datetime
 import requests
@@ -13,7 +21,8 @@ owner = 'decentninja'
 repo = 'GitSpace'
 sha = 'master'
 
-# Days to look back for realtime, set to 1 week or 3 weeks (But our repo isn't that old yet)
+# Number of days to look back for realtime, set to 1 week or 3 weeks
+# (But our repo isn't that old yet)
 lookback_days = 3
 
 def get_api_result(*args, **kwargs):
@@ -40,6 +49,10 @@ def get_commits_in_span(owner, repo, since, until):
     return get_api_result('https://api.github.com/repos/'+owner+'/' + repo +\
         '/commits', params=params)
 
+def get_full_commitinfo(owner, repo, commit):
+    return get_api_result('https://api.github.com/repos/'+owner+'/' + repo +\
+        '/commits/' + commit['sha'])
+
 def find_most_recent_sha(owner, repo, start_date):
     backoff = 1
     commits = []
@@ -60,11 +73,13 @@ def get_init_state(owner, repo):
 
 def get_init_commits(owner, repo):
     return get_commits_in_span(owner, repo,
-        datetime.datetime.now() - datetime.timedelta(days=lookback_days), datetime.datetime.now())
+        datetime.datetime.now() - datetime.timedelta(days=lookback_days),
+        datetime.datetime.now())
 
 def get_init(owner, repo):
     state = get_init_state(owner, repo)
-    updates = get_init_commits(owner, repo)
+    updates = [get_full_commitinfo(owner, repo, c) for c in
+        get_init_commits(owner, repo)]
     # TODO: Parse info to prettier JSON format
     # state, updates = parser.parse_tree_and_commits(state, updates)
     return state, updates
