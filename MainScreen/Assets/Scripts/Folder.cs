@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Star : MonoBehaviour {
+public class Folder : MonoBehaviour {
 
-	public Star parent;
+	public Folder parent;
 	public LineRenderer line;
 	public SpringJoint spring;
 	public Rigidbody rb;
@@ -23,7 +23,7 @@ public class Star : MonoBehaviour {
 		}
 	}
 
-	public void SetParent(Star other) {
+	public void SetParent(Folder other) {
 		line.enabled = true;
 		rb.constraints = RigidbodyConstraints.FreezeRotation;
 		parent = other;
