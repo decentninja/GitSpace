@@ -53,9 +53,9 @@ public class TCPClient : MonoBehaviour {
 	while(true) {
 	    if(stream.DataAvailable) {
 		int c = stream.ReadByte();
-		if(c == 1)
+		if(c == 2)
 		    continue;
-		if(c == 4) {
+		if(c == 3) {
 		    string done = json.ToString();
 		    Debug.Log(done);
 		    ParseJSON(done);
