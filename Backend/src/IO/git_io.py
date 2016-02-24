@@ -10,6 +10,7 @@ TODO-list:
 
 import datetime
 import requests
+import git_parsing
 
 # Should stay rather constant
 GIT_URL = 'https://api.github.com'
@@ -81,7 +82,8 @@ def get_init(owner, repo):
     updates = [get_full_commitinfo(owner, repo, c) for c in
         get_init_commits(owner, repo)]
     # TODO: Parse info to prettier JSON format
-    # state, updates = parser.parse_tree_and_commits(state, updates)
-    return state, updates
+    state_parsed = git_parsing.raw_to_state(state)
+    return state_parsed, updates
 
-print(get_init(owner, repo))
+if __name__ == '__main__':
+    get_init(owner, repo)
