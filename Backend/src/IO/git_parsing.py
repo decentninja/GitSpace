@@ -3,12 +3,17 @@ import os.path
 # Constants
 # Could be translated to properties
 __version = 1
-__supported_versions = [1]
+__supported_state_versions = [1]
+__supported_update_versions = [1]
 
-def raw_to_state(raw_state, API_version = None):
+#####################
+# STATE PARSER
+#################
+
+def parse_raw_state(raw_state, API_version = None):
 	if API_version == None:
 		API_version = __version
-	if API_version not in __supported_versions:
+	if API_version not in __supported_state_versions:
 		raise Exception('Unknown API version: ' + API_version)
 	if API_version == 1:
 		state = {}
@@ -17,13 +22,17 @@ def raw_to_state(raw_state, API_version = None):
 		state['repo'] = 'PLACEHOLDER' # TODO placeholder
 		state['timestamp'] = 52341414 # TODO placeholder
 		state['state'] = _extract_folders(raw_state['tree'],API_version)
-		with open("output.txt","w+") as f:
-			def print_tree(depth,tree):
-				for t in tree:
-					print("  "*depth+t['name'],t['size'],t['filetypes'],file=f)
-					print_tree(depth+1,t["subfolder"])
-			print_tree(0,state['state'])
+	#	with open("state_output.txt","w+") as f:
+	#		_write_readable_structure_to_file(f,state)
 		return state
+
+def _write_readable_structure_to_file(f,parsed_state):
+	'''for manual debug'''
+	def print_tree(depth,tree):
+		for t in tree:
+			print("  "*depth+t['name'],t['size'],t['filetypes'],file=f)
+			print_tree(depth+1,t["subfolder"])
+	print_tree(0,parsed_state['state'])
 
 def _extract_folders(tree, API_version):
 	'''
@@ -126,6 +135,34 @@ def _handle_blob_type(API_version,node,parent,folder_map):
 		# Add new size to ratio
 		match['part'] += node['size']
 
+#####################
+# UPDATE PARSER
+#################
+
+def parse_raw_updates(raw_updates, API_version = None):
+	if API_version == None:
+		API_version = __version
+	if API_version not in __supported_update_versions:
+		raise Exception('Unknown API version: ' + API_version)
+	if API_version == 1:
+		with open("output.txt","w+") as f:
+			for r in raw_updates:
+				print("",file=f)
+				print("",file=f)
+				print("",file=f)
+				print("",file=f)
+				print("",file=f)
+				print("",file=f)
+				for k,v in r.items():
+					print(k,v,file=f)
+
+
+
+#####################
+# Davids hemliga hörna
+#################
+
 if __name__ == '__main__':
 	from gitinput import myinput
-	raw_to_state(myinput)
+	with open("state_json","w+") as f:
+		print(parse_raw_state(myinput), file=f)

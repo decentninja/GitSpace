@@ -82,7 +82,8 @@ def get_init(owner, repo):
     updates = [get_full_commitinfo(owner, repo, c) for c in
         get_init_commits(owner, repo)]
     # TODO: Parse info to prettier JSON format
-    state_parsed = git_parsing.raw_to_state(state)
+    state_parsed = git_parsing.parse_raw_state(state)
+    update_parsed = git_parsing.parse_raw_updates(updates)
     return state_parsed, updates
 
 if __name__ == '__main__':
