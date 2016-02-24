@@ -11,6 +11,8 @@ __supported_update_versions = [1]
 #################
 
 def parse_raw_state(raw_state, API_version = None):
+	with open("raw_state.txt","w+") as f:
+		print(raw_state,file=f)
 	if API_version == None:
 		API_version = __version
 	if API_version not in __supported_state_versions:
@@ -145,16 +147,22 @@ def parse_raw_updates(raw_updates, API_version = None):
 	if API_version not in __supported_update_versions:
 		raise Exception('Unknown API version: ' + API_version)
 	if API_version == 1:
-		with open("output.txt","w+") as f:
-			for r in raw_updates:
-				print("",file=f)
-				print("",file=f)
-				print("",file=f)
-				print("",file=f)
-				print("",file=f)
-				print("",file=f)
-				for k,v in r.items():
-					print(k,v,file=f)
+		return raw_updates # TODO PLACEHOLDER FIX
+		return [_parse_raw_update(update,API_version) for update in raw_updates]
+
+def _parse_raw_update(raw_update, API_version):
+	meta_info = raw_update['commit']
+	date = meta_info['commiter']['date']
+	time = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ").timestamp() 
+	update = {}
+	update['type'] = 'update'
+	update['rep'] = 'PLACEHOLDER' # TODO placeholder
+	update['apiv'] = 1
+	update['timestamp'] = time
+	update['direction'] = 'forward'
+	update['forced'] = False # will not be lower case when written :S
+	update['user'] = meta_info['name']
+	
 
 
 
