@@ -3,7 +3,9 @@ using System.Text;
 using System.Collections;
 using System.Net.Sockets;
 using System.IO;
+using LitJson;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 
@@ -19,49 +21,40 @@ public class TCPClient : MonoBehaviour {
     Thread thread;
 
     void Start () {
-        StartCoroutine("TCPClientRoutine");
+        //StartCoroutine("TCPClientRoutine");
+        ParseJSON("{'api version': 1, 'type': 'state', 'repo': 'PLACEHOLDER', 'timestamp': 52341414, 'state': [{'name': 'Backend', 'filetypes': [], 'subfolder': [{'name': 'Test', 'filetypes': [{'part': 0, 'extension': 'py'}], 'subfolder': [], 'size': 0}, {'name': 'src', 'filetypes': [{'part': 0, 'extension': 'py'}], 'subfolder': [{'name': 'IO', 'filetypes': [{'part': 1.0, 'extension': 'py'}], 'subfolder': [], 'size': 2947}], 'size': 0}], 'size': 0}, {'name': 'ControlPanel', 'filetypes': [{'part': 0.054497001998667555, 'extension': ''}, {'part': 0.10046635576282478, 'extension': 'json'}, {'part': 0.6394403730846102, 'extension': 'xml'}, {'part': 0.1842771485676216, 'extension': 'js'}, {'part': 0.021319120586275817, 'extension': 'project'}], 'subfolder': [{'name': 'hooks', 'filetypes': [{'part': 1.0, 'extension': 'md'}], 'subfolder': [{'name': 'after_prepare', 'filetypes': [{'part': 1.0, 'extension': 'js'}], 'subfolder': [], 'size': 2735}], 'size': 3018}, {'name': 'resources', 'filetypes': [{'part': 1.0, 'extension': 'png'}], 'subfolder': [{'name': 'android', 'filetypes': [], 'subfolder': [{'name': 'icon', 'filetypes': [{'part': 1.0, 'extension': 'png'}], 'subfolder': [], 'size': 29725}, {'name': 'splash', 'filetypes': [{'part': 1.0, 'extension': 'png'}], 'subfolder': [], 'size': 412744}], 'size': 0}, {'name': 'ios', 'filetypes': [], 'subfolder': [{'name': 'icon', 'filetypes': [{'part': 1.0, 'extension': 'png'}], 'subfolder': [], 'size': 67848}, {'name': 'splash', 'filetypes': [{'part': 1.0, 'extension': 'png'}], 'subfolder': [], 'size': 435603}], 'size': 0}], 'size': 123067}, {'name': 'scss', 'filetypes': [{'part': 1.0, 'extension': 'scss'}], 'subfolder': [{'name': 'components', 'filetypes': [{'part': 1.0, 'extension': 'scss'}], 'subfolder': [], 'size': 15}], 'size': 854}, {'name': 'www', 'filetypes': [{'part': 1.0, 'extension': 'html'}], 'subfolder': [{'name': 'css', 'filetypes': [{'part': 1.0, 'extension': 'css'}], 'subfolder': [], 'size': 890888}, {'name': 'img', 'filetypes': [{'part': 1.0, 'extension': 'png'}], 'subfolder': [], 'size': 4757}, {'name': 'js', 'filetypes': [{'part': 1.0, 'extension': 'js'}], 'subfolder': [], 'size': 1527}, {'name': 'lib', 'filetypes': [], 'subfolder': [{'name': 'ionic', 'filetypes': [{'part': 1.0, 'extension': 'json'}], 'subfolder': [{'name': 'css', 'filetypes': [{'part': 1.0, 'extension': 'css'}], 'subfolder': [], 'size': 445874}, {'name': 'fonts', 'filetypes': [{'part': 0.1698018200486659, 'extension': 'eot'}, {'part': 0.4695472382800962, 'extension': 'svg'}, {'part': 0.2651419891134647, 'extension': 'ttf'}, {'part': 0.09550895255777318, 'extension': 'woff'}], 'subfolder': [], 'size': 710970}, {'name': 'js', 'filetypes': [{'part': 1.0, 'extension': 'js'}], 'subfolder': [{'name': 'angular-ui', 'filetypes': [{'part': 1.0, 'extension': 'js'}], 'subfolder': [], 'size': 185424}, {'name': 'angular', 'filetypes': [{'part': 1.0, 'extension': 'js'}], 'subfolder': [], 'size': 1405219}], 'size': 3971652}, {'name': 'scss', 'filetypes': [{'part': 1.0, 'extension': 'scss'}], 'subfolder': [{'name': 'ionicons', 'filetypes': [{'part': 1.0, 'extension': 'scss'}], 'subfolder': [], 'size': 120538}], 'size': 192793}], 'size': 89}], 'size': 0}, {'name': 'views', 'filetypes': [{'part': 1.0, 'extension': 'html'}], 'subfolder': [], 'size': 125}], 'size': 726}], 'size': 7505}, {'name': 'MainScreen', 'filetypes': [{'part': 1.0, 'extension': ''}], 'subfolder': [{'name': 'Assets', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'Editor', 'filetypes': [{'part': 0.8793548387096775, 'extension': 'cs'}, {'part': 0.12064516129032259, 'extension': 'meta'}], 'subfolder': [{'name': 'ImageEffects', 'filetypes': [{'part': 0.9594312362315108, 'extension': 'cs'}, {'part': 0.04056876376848911, 'extension': 'meta'}], 'subfolder': [], 'size': 69906}], 'size': 1550}, {'name': 'Materials', 'filetypes': [{'part': 0.0, 'extension': ''}, {'part': 0.9201110670368902, 'extension': 'mat'}, {'part': 0.057120190400634666, 'extension': 'meta'}, {'part': 0.022768742562475207, 'extension': 'physicMaterial'}], 'subfolder': [], 'size': 12605}, {'name': 'Prefabs', 'filetypes': [{'part': 0.9559650982630677, 'extension': 'prefab'}, {'part': 0.04403490173693223, 'extension': 'meta'}], 'subfolder': [], 'size': 12263}, {'name': 'Scenes', 'filetypes': [{'part': 0.0, 'extension': ''}, {'part': 0.9931616583955297, 'extension': 'unity'}, {'part': 0.006838341604470321, 'extension': 'meta'}], 'subfolder': [], 'size': 51182}, {'name': 'Scripts', 'filetypes': [{'part': 0.0, 'extension': ''}, {'part': 0.7315152399008312, 'extension': 'cs'}, {'part': 0.2684847600991687, 'extension': 'meta'}], 'subfolder': [], 'size': 6857}, {'name': 'Standard Assets', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'Effects', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'GlassRefraction', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'Materials', 'filetypes': [{'part': 0.9192415730337079, 'extension': 'mat'}, {'part': 0.08075842696629214, 'extension': 'meta'}], 'subfolder': [], 'size': 1424}, {'name': 'Shaders', 'filetypes': [{'part': 0.949942682460833, 'extension': 'shader'}, {'part': 0.050057317539166986, 'extension': 'meta'}], 'subfolder': [], 'size': 2617}, {'name': 'Textures', 'filetypes': [{'part': 0.9978446516175934, 'extension': 'tif'}, {'part': 0.002155348382406612, 'extension': 'meta'}], 'subfolder': [], 'size': 1016541}], 'size': 381}, {'name': 'ImageEffects', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'Scripts', 'filetypes': [{'part': 0.9378107654026924, 'extension': 'cs'}, {'part': 0.06218923459730759, 'extension': 'meta'}], 'subfolder': [], 'size': 235105}, {'name': 'Shaders', 'filetypes': [{'part': 0.8803645710034157, 'extension': 'shader'}, {'part': 0.03076701951367987, 'extension': 'meta'}, {'part': 0.08886840948290439, 'extension': 'cginc'}], 'subfolder': [{'name': 'Contrast Stretch', 'filetypes': [{'part': 0.9306042884990253, 'extension': 'shader'}, {'part': 0.06939571150097466, 'extension': 'meta'}], 'subfolder': [], 'size': 5130}, {'name': '_Antialiasing', 'filetypes': [{'part': 0.9934171597633136, 'extension': 'shader'}, {'part': 0.0065828402366863905, 'extension': 'meta'}], 'subfolder': [], 'size': 94640}, {'name': '_BloomAndFlares', 'filetypes': [{'part': 0.9689570980118591, 'extension': 'shader'}, {'part': 0.031042901988140914, 'extension': 'meta'}], 'subfolder': [], 'size': 34404}, {'name': '_DepthOfField', 'filetypes': [{'part': 0.9891323308795311, 'extension': 'shader'}, {'part': 0.010867669120468897, 'extension': 'meta'}], 'subfolder': [], 'size': 57326}], 'size': 118276}, {'name': 'Textures', 'filetypes': [{'part': 0.1643834565246492, 'extension': 'png'}, {'part': 0.007828879886974916, 'extension': 'meta'}, {'part': 0.8277876635883759, 'extension': 'psd'}], 'subfolder': [], 'size': 1172837}], 'size': 381}, {'name': 'LightCookies', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'Textures', 'filetypes': [{'part': 0.36259566228152157, 'extension': 'tif'}, {'part': 0.012748921559197643, 'extension': 'meta'}, {'part': 0.6246554161592808, 'extension': 'psd'}], 'subfolder': [], 'size': 551027}], 'size': 127}, {'name': 'LightFlares', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'Flares', 'filetypes': [{'part': 0.9449760765550239, 'extension': 'flare'}, {'part': 0.05502392344497608, 'extension': 'meta'}], 'subfolder': [], 'size': 6270}, {'name': 'Materials', 'filetypes': [{'part': 0.8604368932038835, 'extension': 'mat'}, {'part': 0.1395631067961165, 'extension': 'meta'}], 'subfolder': [], 'size': 824}, {'name': 'Textures', 'filetypes': [{'part': 0.9941897964578377, 'extension': 'psd'}, {'part': 0.005810203542162305, 'extension': 'meta'}], 'subfolder': [], 'size': 378300}], 'size': 381}, {'name': 'Projectors', 'filetypes': [{'part': 0.48163606010016696, 'extension': 'txt'}, {'part': 0.5183639398998331, 'extension': 'meta'}], 'subfolder': [{'name': 'Materials', 'filetypes': [{'part': 0.9691136974037601, 'extension': 'mat'}, {'part': 0.03088630259623993, 'extension': 'meta'}], 'subfolder': [], 'size': 11170}, {'name': 'Prefabs', 'filetypes': [{'part': 0.9395691014188124, 'extension': 'prefab'}, {'part': 0.0604308985811876, 'extension': 'meta'}], 'subfolder': [], 'size': 5709}, {'name': 'Shaders', 'filetypes': [{'part': 0.9069602272727273, 'extension': 'shader'}, {'part': 0.09303977272727272, 'extension': 'meta'}], 'subfolder': [], 'size': 2816}, {'name': 'Textures', 'filetypes': [{'part': 0.9862366713938475, 'extension': 'psd'}, {'part': 0.013763328606152463, 'extension': 'meta'}], 'subfolder': [], 'size': 318019}], 'size': 1198}, {'name': 'TessellationShaders', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'Materials', 'filetypes': [{'part': 0.9207443142660234, 'extension': 'mat'}, {'part': 0.07925568573397657, 'extension': 'meta'}], 'subfolder': [], 'size': 4353}, {'name': 'Models', 'filetypes': [{'part': 0.9215790234732733, 'extension': 'fbx'}, {'part': 0.07842097652672675, 'extension': 'meta'}], 'subfolder': [], 'size': 20747}, {'name': 'Scenes', 'filetypes': [{'part': 0.9950789603185255, 'extension': 'unity'}, {'part': 0.004921039681474522, 'extension': 'meta'}], 'subfolder': [], 'size': 22353}, {'name': 'Shaders', 'filetypes': [{'part': 0.9213449414590213, 'extension': 'shader'}, {'part': 0.07865505854097868, 'extension': 'meta'}], 'subfolder': [], 'size': 3331}, {'name': 'Textures', 'filetypes': [{'part': 0.9963966487735011, 'extension': 'png'}, {'part': 0.0036033512264989132, 'extension': 'meta'}], 'subfolder': [], 'size': 728211}], 'size': 635}, {'name': 'ToonShading', 'filetypes': [{'part': 1.0, 'extension': 'meta'}], 'subfolder': [{'name': 'Materials', 'filetypes': [{'part': 0.9350465970064954, 'extension': 'mat'}, {'part': 0.06495340299350466, 'extension': 'meta'}], 'subfolder': [], 'size': 7082}, {'name': 'Shaders', 'filetypes': [{'part': 0.8877944325481799, 'extension': 'shader'}, {'part': 0.11220556745182013, 'extension': 'meta'}], 'subfolder': [], 'size': 4670}, {'name': 'Textures', 'filetypes': [{'part': 0.9313447376715666, 'extension': 'psd'}, {'part': 0.0633542508381329, 'extension': 'meta'}, {'part': 0.005301011490300582, 'extension': 'png'}], 'subfolder': [], 'size': 34899}], 'size': 381}], 'size': 889}], 'size': 127}, {'name': 'UniMerge', 'filetypes': [{'part': 0.02515496612368459, 'extension': 'meta'}, {'part': 0.10227764163182933, 'extension': 'zip'}, {'part': 0.8725673922444861, 'extension': 'txt'}], 'subfolder': [{'name': 'Demo', 'filetypes': [{'part': 0.7559241706161137, 'extension': 'meta'}, {'part': 0.24407582938388625, 'extension': 'cs'}], 'subfolder': [{'name': 'Object Merge', 'filetypes': [{'part': 0.9897774113767519, 'extension': 'unity'}, {'part': 0.010222588623248145, 'extension': 'meta'}], 'subfolder': [], 'size': 6065}, {'name': 'Prefabs', 'filetypes': [{'part': 0.9922354414527239, 'extension': 'prefab'}, {'part': 0.007764558547276142, 'extension': 'meta'}], 'subfolder': [], 'size': 23955}, {'name': 'Scene Merge', 'filetypes': [{'part': 0.9926778860348391, 'extension': 'unity'}, {'part': 0.007322113965160909, 'extension': 'meta'}], 'subfolder': [], 'size': 16935}], 'size': 844}, {'name': 'Editor', 'filetypes': [{'part': 0.9982833232001717, 'extension': 'cs'}, {'part': 0.0017166767998283324, 'extension': 'meta'}], 'subfolder': [], 'size': 139805}, {'name': 'Skin', 'filetypes': [{'part': 0.2279802160088826, 'extension': 'png'}, {'part': 0.04166750782275159, 'extension': 'meta'}, {'part': 0.7303522761683658, 'extension': 'guiskin'}], 'subfolder': [], 'size': 99070}], 'size': 27748}], 'size': 1344}, {'name': 'ProjectSettings', 'filetypes': [{'part': 0.9981429897864438, 'extension': 'asset'}, {'part': 0.0018570102135561746, 'extension': 'txt'}], 'subfolder': [], 'size': 28002}], 'size': 370}]}");
     }
 
     private void ParseJSON(string json) {
-        Message.Message message = GitSpaceJSON.parse(json);
-        if(message == null) {
-            Debug.LogError("Unable to parse json " + json);
-            return;
+        try {
+	    JsonData parsed = JsonMapper.ToObject(json);
+	    repos.handle(parsed);
         }
-        switch(message.type) {
-            case "update":
-                repos.update((Message.Update) message);
-                break;
-            case "state":
-                repos.renew((Message.State) message);
-                break;
-            case "delete":
-                repos.delete((Message.Delete) message);
-                break;
+        catch (JsonException e) {
+            Debug.LogError("Invalid JSON " + json);
         }
     }
 
     IEnumerator TCPClientRoutine() {
         TcpClient connection = new TcpClient(ipaddress, port);
         NetworkStream stream = connection.GetStream();
-        StringBuilder json = new StringBuilder();
-        while(true) {
-            if(stream.DataAvailable) {
-                int c = stream.ReadByte();
-                if(c == 2)
-                    continue;
-                if(c == 3) {
-                    string done = json.ToString();
-                    Debug.Log(done);
-                    ParseJSON(done);
-                    json.Length = 0;
-                    yield return null;
-                } else {
-                    json.Append((char) c);
-                }
-            } else {
-                yield return null;
-            }
+	StringBuilder json = new StringBuilder();
+	while(true) {
+	    if(stream.DataAvailable) {
+		int c = stream.ReadByte();
+		if(c == 2)
+		    continue;
+		if(c == 3) {
+		    string done = json.ToString();
+		    ParseJSON(done);
+		    json.Length = 0;
+		    yield return null;
+		} else {
+		    json.Append((char) c);
+		}
+	    } else {
+		yield return null;
+	    }
         }
     }
 
