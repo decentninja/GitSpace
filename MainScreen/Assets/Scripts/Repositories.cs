@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using LitJson;
 using System.Collections.Generic;
 
 
@@ -7,11 +8,7 @@ public class Repositories : MonoBehaviour {
     private Dictionary<string, Repository> repoDictonary = new Dictionary<string, Repository>();
     public GameObject repoPrefab;
 
-	public void delete(Message.Delete data) {}
-
-	public void update(Message.Update data) {}
-
-	public void renew(Message.State data) {
+	public void handle(JsonData data) {
         if (repoDictonary.ContainsKey(data.repo)) {
             repoDictonary.Remove(data.repo);
         }
@@ -23,5 +20,4 @@ public class Repositories : MonoBehaviour {
             newRepo.CreateConstellation(newRepo.gameObject, folder);
         }
     }
-
 }
