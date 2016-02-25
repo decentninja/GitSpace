@@ -6,6 +6,7 @@ using LitJson;
 public class Repository : MonoBehaviour {
     public GameObject folderPrefab;
 	public SphereCollider collider;
+    public float folderScaling = 0.1f;
 	public Canvas hudunder;
 	//Queue<Message.Update> queue = new Queue<Message.Update>();
 
@@ -20,6 +21,12 @@ public class Repository : MonoBehaviour {
         float angle = Random.Range(0, 2 * Mathf.PI);
         Vector3 pos = new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) + parent.transform.position;
         GameObject thisStar = (GameObject) Instantiate(folderPrefab, pos, Quaternion.identity);
+
+        // Star Size mapped to folder size (logarithmic scale)
+        thisStar.transform.GetChild(0).transform.localScale = Vector3.one * Mathf.Log((int) folder["size"]) * folderScaling;
+        // Set the folder name as gameObject name.
+        thisStar.name = (string) folder["name"];
+
         thisStar.GetComponent<Folder>().parent = parent;
         thisStar.transform.parent = transform;
         int numSubFolders = folder["subfolder"].Count;
