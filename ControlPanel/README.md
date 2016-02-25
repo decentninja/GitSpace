@@ -10,11 +10,12 @@ You'll need:
 When node and npm is installed, start by running
 ```
 npm install -g ionic cordova
-bower install
 ```
 The application is now ready to be developed in the browser.
-Run
+In the root folder of the control panel, run
 ```
+npm install
+bower install
 ionic serve
 ```
 
