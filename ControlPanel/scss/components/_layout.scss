@@ -1,3 +1,151 @@
 /*
 *	Layout
 */
+
+.clearfix {
+	clear: both;
+}
+
+#lightning {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 10;
+	background: rgba(255,255,255,0);
+	pointer-events: none;
+}
+
+.lightning {
+	-webkit-animation: lightning 0.75s ease-out;
+	-webkit-animation-iteration-count: infinite; 
+}
+@-webkit-keyframes lightning {
+	0% { 
+		background: rgba(253,255,255,0);
+	}
+	50% { 
+		background: rgba(253,255,255,0.75);
+	}
+	56% { 
+		background: rgba(253,255,255,0);
+	}
+	70% { 
+		background: rgba(253,255,255,0.75);
+	}
+	100% { 
+		background: rgba(253,255,255,0);
+	}
+}
+
+.item-divider {
+	text-align: center;
+
+	.realtime {
+		color: red;
+	}
+}
+
+.flipH {
+	-moz-transform: scale(-1, 1);
+	-webkit-transform: scale(-1, 1);
+	-o-transform: scale(-1, 1);
+	transform: scale(-1, 1);
+	filter: FlipH;
+}
+
+.hide {
+	display: none;
+}
+
+.pulsate {
+	-webkit-animation: pulsate 2s ease-out;
+	-webkit-animation-iteration-count: infinite; 
+	opacity: 0.5;
+}
+@-webkit-keyframes pulsate {
+	0% { 
+		text-shadow: 0 0 10px rgba(255,0,0,0.9);
+	}
+	50% { 
+		text-shadow: 0 0 10px rgba(255,0,0,0.0);
+	}
+	100% { 
+		text-shadow: 0 0 10px rgba(255,0,0,0.9);
+	}
+}
+
+#choose-repository {
+	label {
+		text-transform: uppercase;
+		font-size: 0.65em;
+		font-weight: bold;
+	}
+	h2 {
+		font-size: 1.25em;
+		margin-top: 1.25rem;
+	}
+}
+
+.positive {
+	h1, .number {
+		color: $balanced;
+	}
+	.number {
+		&:before {
+			content: "+";
+		}
+	}
+}
+.neutral {
+	&, & * {
+	}
+}
+.negative {
+	h1, .number {
+		color: $assertive;
+	}
+}
+
+#repo-presentation {
+
+	h1, h5 {
+		margin-top: 0;
+	}
+
+	p.change {
+		margin-bottom: 0;
+	}
+}
+
+.structure {
+}
+
+/*
+*	Typography
+*/
+
+.t-gray {
+	color: #ccc;
+}
+
+.t-red {
+	color: $assertive;
+}
+
+a {
+	text-decoration: none;
+}
+
+.t-center {
+	text-align: center;
+}
+
+.t-left {
+	float: left;
+}
+
+.t-right {
+	float: right;
+}

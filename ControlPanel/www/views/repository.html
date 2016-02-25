@@ -1,0 +1,66 @@
+<ion-view title="{{ repository.name }}">
+<ion-content>
+<div id="lightning" ng-class="{ lightning: lightning }"></div>
+<div>
+	<div class="padding" id="repo-presentation">
+		<div class="row t-center">
+			<div class="col" ng-class="{ positive: repository.commits.change > 0, neutral: repository.commits.change == 0, negative: repository.commits.change < 0 }">
+				<h5>Commits</h5>
+				<h1>{{ repository.commits.number }}</h1>
+				<p class="change number">{{ repository.commits.change }} last week</p>
+			</div>
+			<div class="col" ng-class="{ positive: repository.momentum.change > 0, neutral: repository.momentum.change == 0, negative: repository.momentum.change < 0 }">
+				<h5>Momentum</h5>
+				<h1 class="{{ repository.momentum.trend }}">{{ repository.momentum.number }}</h1>
+				<p class="change number">{{ repository.momentum.change }} from a week ago</p>
+			</div>
+		</div>
+		<div class="t-center" id="issues" ng-show="repository.issues > 0">
+			<button class="button button-outline button-small button-assertive button-block">Show {{ repository.issues }} issues</button>
+		</div>
+		<!--<button class="button button-positive button-block" ng-click="triggerLightning()">Trigger last commit</button>-->
+	</div>
+	<div class="list">
+		<div class="item item-divider">
+			Show glow for {{ intensityDuration }} days ago
+		</div>
+		<div class="item range range-positive flipH">
+			<input type="range" min="1" max="28" step="1" ng-model="intensityDuration">
+		</div>
+		<div class="item item-divider">
+			Rewind:
+			<span ng-class="{ hide: rewindDays == 0 }">{{ rewindDays }} days ago</span>
+			<span ng-class="{ hide: rewindDays != 0 }" class="pulsate realtime">Real-time</span>
+		</div>
+		<div class="item">
+			<div class="range range-positive flipH">
+				<input type="range" min="0" max="100" ng-model="days" ng-change="rewindNumberOfDays(days)">
+			</div>
+			<!--<div class="row">
+				<div class="col"><button class="button button-positive button-block button-small" ng-click="rewindNumberOfDays(30)">1 month</button></div>
+				<div class="col"><button class="button button-positive button-block button-small" ng-click="rewindNumberOfDays(7)">1 week</button></div>
+				<div class="col"><button class="button button-positive button-block button-small" ng-click="rewindNumberOfDays(1)">1 day</button></div>
+				<div class="col"><button class="button button-assertive button-block button-small" ng-click="rewindNumberOfDays(null)">Realtime</button></div>
+			</div>-->
+		</div>
+		<div class="item item-divider">
+			{{ repository.members.length }} Members 
+		</div>
+		<div class="item item-avatar item-icon-right" ng-repeat="member in repository.members" ng-click="triggerLightning()">
+			<img src="{{ member.image }}">
+			<h3>{{ member.name }}</h3>
+			<p>Momentum: {{ member.momentum }}</p>
+			<a href="#"><i class="icon ion-ios-bolt"></i></a>
+		</div>
+		<div class="item item-divider">
+			Structure 
+		</div>
+		<div class="item row structure">
+			<div class="col t-center">{{ repository.size }}</div>
+			<div class="col t-center">{{ repository.directories }} directories</div>
+			<div class="col t-center">{{ repository.files }} files</div>
+		</div>
+	</div>
+</div>
+</ion-content>
+</ion-view>
