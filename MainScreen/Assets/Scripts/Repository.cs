@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using LitJson;
 
 
 public class Repository : MonoBehaviour {
     public GameObject folderPrefab;
 	public SphereCollider collider;
 	public Canvas hudunder;
-	Queue<Message.Update> queue = new Queue<Message.Update>();
+	//Queue<Message.Update> queue = new Queue<Message.Update>();
 
 	void Update() {
 		Bounds bounds = AndreasAwesomeHelperSuperLibrary.CalculateTotalBounds(transform);
@@ -15,13 +16,15 @@ public class Repository : MonoBehaviour {
 		collider.radius = bounds.extents.magnitude;
 	}
 
-    public void CreateConstellation(GameObject parent, Message.Folder folder) {
+    public void CreateConstellation(GameObject parent, JsonData folder) {
         float angle = Random.Range(0, 2 * Mathf.PI);
         Vector3 pos = new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) + parent.transform.position;
         GameObject thisStar = (GameObject) Instantiate(folderPrefab, pos, Quaternion.identity);
+        thisStar.GetComponent<Folder>().parent = parent;
         thisStar.transform.parent = transform;
-        foreach (Message.Folder subfolder in folder.subfolder)
+        for (int i = 0; folder["subfolders"][i] != null; i++)
         {
+            JsonData subfolder = folder["state"][i];
             CreateConstellation(thisStar, subfolder);
         }
     }
