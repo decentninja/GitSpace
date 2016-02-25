@@ -10,17 +10,12 @@ TODO-list:
 
 import datetime
 import requests
-import git_parsing
+import IO.git_parsing as git_parsing
 
 # Should stay rather constant
 GIT_URL = 'https://api.github.com'
 OAUTH_TOKEN = '4a85521efe17ec4ef6eb4c1c76a8a097396880e1'
 KEY = {'Authorization':'token '+OAUTH_TOKEN}
-
-# Just examples for now
-owner = 'decentninja'
-repo = 'GitSpace'
-sha = 'master'
 
 # Number of days to look back for realtime, set to 1 week or 3 weeks
 # (But our repo isn't that old yet)
@@ -81,7 +76,6 @@ def get_init(owner, repo):
     state = get_init_state(owner, repo)
     updates = [get_full_commitinfo(owner, repo, c) for c in
         get_init_commits(owner, repo)]
-    # TODO: Parse info to prettier JSON format
     state_parsed = git_parsing.parse_raw_state(state)
     update_parsed = git_parsing.parse_raw_updates(updates)
     return state_parsed, updates
