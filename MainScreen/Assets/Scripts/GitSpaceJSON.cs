@@ -27,7 +27,7 @@ namespace Message {
 	public class Folder {
 		public string name;
 		public int size;
-		public Folder[] subfolders;
+		public Folder[] subfolder;
 		public Filetype[] filetypes;
 	}
 
@@ -36,7 +36,7 @@ namespace Message {
 		public int size;
 		public string user;
 		public bool non_master_branch;
-		public Change[] subfolders;
+		public Change[] subfolder;
 		public Filetype[] filetypes;
 	}
 

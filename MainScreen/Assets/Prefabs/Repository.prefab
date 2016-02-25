@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 207d1425f7d024031b32b6538db363ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  folderPrefab: {fileID: 105334, guid: 8bc7afc40f43440549a18d52dc6b0055, type: 2}
   collider: {fileID: 13500030}
 --- !u!135 &13500030
 SphereCollider:
