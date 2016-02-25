@@ -22,9 +22,10 @@ public class Repository : MonoBehaviour {
         GameObject thisStar = (GameObject) Instantiate(folderPrefab, pos, Quaternion.identity);
         thisStar.GetComponent<Folder>().parent = parent;
         thisStar.transform.parent = transform;
-        for (int i = 0; folder["subfolders"][i] != null; i++)
+        int numSubFolders = folder["subfolder"].Count;
+        for (int i = 0; i < numSubFolders; i++)
         {
-            JsonData subfolder = folder["state"][i];
+            JsonData subfolder = folder["subfolder"][i];
             CreateConstellation(thisStar, subfolder);
         }
     }

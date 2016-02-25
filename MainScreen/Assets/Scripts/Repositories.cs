@@ -27,7 +27,8 @@ public class Repositories : MonoBehaviour {
                 Repository newRepo = Instantiate(repoPrefab).GetComponent<Repository>();
                 newRepo.transform.parent = transform;
                 repoDictonary.Add(repoName, newRepo);
-                for (int i = 0; data["state"][i] != null; i++) {
+                int numSubFolders = data["state"].Count;
+                for (int i = 0; i < numSubFolders; i++) {
                     JsonData folder = data["state"][i];
                     newRepo.CreateConstellation(newRepo.gameObject, folder);
                 }
