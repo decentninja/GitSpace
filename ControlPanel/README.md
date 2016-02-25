@@ -12,15 +12,14 @@ When node and npm is installed, start by running
 npm install -g ionic cordova
 bower install
 ```
-
 The application is now ready to be developed in the browser.
-To do this, run
+Run
 ```
 ionic serve
 ```
 
 ### Running on devices
-To do this, run create the icons and splashscreen once by running
+Create icons and splashscreen once by running
 ```
 ionic resources
 ```
@@ -35,4 +34,5 @@ ionic run ios
 
 ## Documentation
 Ionic: http://ionicframework.com/docs/
+
 AngularJs: https://docs.angularjs.org/guide
