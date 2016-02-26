@@ -22,7 +22,7 @@
 	</div>
 	<div class="list">
 		<div class="item item-divider">
-			Show glow for {{ intensityDuration }} days ago
+			Show activity for {{ intensityDuration }} days ago
 		</div>
 		<div class="item range range-positive flipH">
 			<input type="range" min="1" max="28" step="1" ng-model="intensityDuration">
@@ -32,10 +32,8 @@
 			<span ng-class="{ hide: rewindDays == 0 }">{{ rewindDays }} days ago</span>
 			<span ng-class="{ hide: rewindDays != 0 }" class="pulsate realtime">Real-time</span>
 		</div>
-		<div class="item">
-			<div class="range range-positive flipH">
-				<input type="range" min="0" max="100" ng-model="days" ng-change="rewindNumberOfDays(days)">
-			</div>
+		<div class="item range range-positive flipH">
+			<input type="range" min="0" max="100" ng-init="days = 0" ng-model="days" ng-change="rewindNumberOfDays(days)">
 			<!--<div class="row">
 				<div class="col"><button class="button button-positive button-block button-small" ng-click="rewindNumberOfDays(30)">1 month</button></div>
 				<div class="col"><button class="button button-positive button-block button-small" ng-click="rewindNumberOfDays(7)">1 week</button></div>
