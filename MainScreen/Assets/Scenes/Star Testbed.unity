@@ -261,6 +261,22 @@ Prefab:
       propertyPath: radius
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 11406184, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: bloomThreshold
+      value: -0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 11406184, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: bloomIntensity
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11406184, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: sepBlurSpread
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11406184, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: bloomBlurIterations
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
   m_IsPrefabParent: 0
