@@ -10,19 +10,19 @@ public class Repositories : MonoBehaviour {
 
     public GameObject repoPrefab;
 
-	public void handle(JsonData data) {
+    public void handle(JsonData data) {
         string type = (string) data["type"];
-	string repoName;
+	string repoName = "";
+	if(type != "command") {
+	    repoName = (string) data["repo"];
+	}
         switch (type) {
             case "command":
-
                 break;
             case "delete":
-                repoName = (string) data["repo"];
 		dierepo(repoName);
                 break;
             case "state":
-                repoName = (string) data["repo"];
 		dierepo(repoName);
                 Repository newRepo = Instantiate(repoPrefab).GetComponent<Repository>();
                 newRepo.transform.parent = transform;
@@ -30,7 +30,7 @@ public class Repositories : MonoBehaviour {
 		newRepo.CreateConstellation(data);
                 break;
             case "update":
-
+		repoDictonary[repoName].cueUpdate(data);
                 break;
             default:
                 return;

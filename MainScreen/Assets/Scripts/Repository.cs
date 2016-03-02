@@ -11,16 +11,39 @@ public class Repository : MonoBehaviour {
     public Canvas hudunder;
     public float folderStartSize = 0.5f;
     public float folderMaxSize = 2f;
-    //Queue<Message.Update> queue = new Queue<Message.Update>();
+
+    Queue<JsonData> queue = new Queue<JsonData>();
+    float update_cooldown = 0;
+    float update_time = 1;	// Time between updates in milliseconds
 
     void Update() {
 	Bounds bounds = AndreasAwesomeHelperSuperLibrary.CalculateTotalBounds(transform);
 	hudunder.transform.position = bounds.center + new Vector3(0, 0, bounds.extents.z);
 	collider.center = bounds.center;
 	collider.radius = bounds.extents.magnitude;
+
+	update_cooldown -= Time.deltaTime;
+	if(update_cooldown < 0 && queue.Count != 0) {
+	    update_cooldown = update_time;
+	    handleUpdate(queue.Dequeue());
+	}
+    }
+
+    void setTime(JsonData data) {
+	try {
+	    GameObject gh = GameObject.Find("HUD");
+	    if(gh != null) {
+		gh.GetComponent<HUD>().setTime((int) data["timestamp"]);
+	    }
+	} catch(KeyNotFoundException) {}
+    }
+
+    void handleUpdate(JsonData data) {
+	setTime(data);
     }
 
     public void CreateConstellation(JsonData data) {
+	setTime(data);
 	hudunder.transform.Find("Title").GetComponent<Text>().text = (string) data["repo"];
 	int numSubFolders = data["state"].Count;
 	for (int i = 0; i < numSubFolders; i++) {
@@ -87,6 +110,10 @@ public class Repository : MonoBehaviour {
 	    }
 	    currentSize += step;
 	}
+    }
+    
+    public void cueUpdate(JsonData update) {
+	queue.Enqueue(update);
     }
 
     private Color StringToColor(string s) {
