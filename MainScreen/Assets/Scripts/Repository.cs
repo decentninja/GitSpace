@@ -33,39 +33,35 @@ public class Repository : MonoBehaviour {
     public void recursiveCreate(GameObject parent, JsonData folder) {
         float angle = Random.Range(0, 2 * Mathf.PI);
         Vector3 pos = new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) + parent.transform.position;
-        GameObject thisStar = (GameObject) Instantiate(folderPrefab, pos, Quaternion.identity);
-        //if (!"js".Equals((string)folder["name"]))
-        //{
-            // Set color according to file extension
-            /*int numFileTypes = folder["filetypes"].Count;
-            string[] fileExtension = new string[numFileTypes];
-            float[] filePart = new float[numFileTypes];
-            float partMax = 0;
-            int index = -1;
-            for (int i = 0; i < numFileTypes; i++)
-            {
-                fileExtension[i] = (string)folder["filetypes"][i]["extension"];
-                filePart[i] = (float)folder["filetypes"][i]["part"];
-                if (filePart[i] > partMax) {
-                    partMax = filePart[i];
-                    index = i;
-                }
-            }*/
-            //if (index != -1) thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+	GameObject thisStar = (GameObject) Instantiate(folderPrefab, pos, Quaternion.identity);
 
+	int numFileTypes = folder["filetypes"].Count;
+	string[] fileExtension = new string[numFileTypes];
+	float[] filePart = new float[numFileTypes];
+	float partMax = 0;
+	int index = -1;
+	for (int i = 0; i < numFileTypes; i++)
+	{
+	    fileExtension[i] = (string) folder["filetypes"][i]["extension"];
+	    filePart[i] = float.Parse(folder["filetypes"][i]["part"].ToString());
+	    if (filePart[i] > partMax) {
+		partMax = filePart[i];
+		index = i;
+	    }
+	}
+	if (index != -1) thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
 
-            thisStar.name = (string) folder["name"];
-            Folder foldercomp = thisStar.GetComponent<Folder>();
-	    foldercomp.parent = parent;
-	    foldercomp.size = (int) folder["size"];
-            thisStar.transform.parent = transform;
-            int numSubFolders = folder["subfolder"].Count;
-            for (int i = 0; i < numSubFolders; i++)
-            {
-                JsonData subfolder = folder["subfolder"][i];
-                recursiveCreate(thisStar, subfolder);
-            }
-        //}
+	thisStar.name = (string) folder["name"];
+	Folder foldercomp = thisStar.GetComponent<Folder>();
+	foldercomp.parent = parent;
+	foldercomp.size = (int) folder["size"];
+	thisStar.transform.parent = transform;
+	int numSubFolders = folder["subfolder"].Count;
+	for (int i = 0; i < numSubFolders; i++)
+	{
+	    JsonData subfolder = folder["subfolder"][i];
+	    recursiveCreate(thisStar, subfolder);
+	}
     }
 
     private void resizeallfolders() {
