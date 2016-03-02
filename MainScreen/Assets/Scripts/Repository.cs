@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
@@ -19,8 +20,13 @@ public class Repository : MonoBehaviour {
 	collider.radius = bounds.extents.magnitude;
     }
 
-    public void CreateConstellation(GameObject parent, JsonData folder) {
-	recursiveCreate(parent, folder);
+    public void CreateConstellation(JsonData data) {
+	hudunder.transform.Find("Title").GetComponent<Text>().text = (string) data["repo"];
+	int numSubFolders = data["state"].Count;
+	for (int i = 0; i < numSubFolders; i++) {
+	    JsonData folder = data["state"][i];
+	    recursiveCreate(gameObject, folder);
+	}
 	resizeallfolders();
     }
 
