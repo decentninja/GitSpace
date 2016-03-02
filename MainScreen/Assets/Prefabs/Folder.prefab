@@ -133,6 +133,7 @@ MonoBehaviour:
   line: {fileID: 12081826}
   spring: {fileID: 14549602}
   rb: {fileID: 5489246}
+  size: 0
 --- !u!120 &12081826
 LineRenderer:
   m_ObjectHideFlags: 1
@@ -197,8 +198,8 @@ SpringJoint:
   serializedVersion: 2
   m_Spring: 10
   m_Damper: 0.2
-  m_MinDistance: 1
-  m_MaxDistance: 1.2
+  m_MinDistance: 0.5
+  m_MaxDistance: 0.5
   m_Tolerance: 0.025
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
