@@ -7,6 +7,7 @@ public class Folder : MonoBehaviour {
 	public LineRenderer line;
 	public SpringJoint spring;
 	public Rigidbody rb;
+	public int size;
 
 	void Start () {
 		spring.connectedBody = parent.GetComponent<Rigidbody>();

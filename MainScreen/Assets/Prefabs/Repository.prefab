@@ -203,8 +203,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   folderPrefab: {fileID: 105334, guid: 8bc7afc40f43440549a18d52dc6b0055, type: 2}
   collider: {fileID: 13500030}
-  folderScaling: 0.000001
   hudunder: {fileID: 22344478}
+  folderStartSize: 0.2
+  folderMaxSize: 1.5
 --- !u!114 &11468998
 MonoBehaviour:
   m_ObjectHideFlags: 1
