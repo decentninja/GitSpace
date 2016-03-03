@@ -1,8 +1,15 @@
 angular.module('starter.controllers', [])
 
-.controller("mainCtrl", ['$scope', 'Repositories', function($scope, Repositories) {
+.controller("mainCtrl", ['$scope', '$rootScope', 'Repositories', function($scope, $rootScope, Repositories) {
 
 	$scope.repositories = Repositories.all();
+
+	$rootScope.$on("dataAvailable", function(data) {
+		$scope.repositories = Repositories.all();
+		console.log("repositories loaded");
+		console.log($scope.repositories);
+		$scope.$apply();
+	});
 }])
 
 /*

@@ -19,22 +19,22 @@
 
 .lightning {
 	-webkit-animation: lightning 0.75s ease-out;
-	-webkit-animation-iteration-count: infinite; 
+	-webkit-animation-iteration-count: infinite;
 }
 @-webkit-keyframes lightning {
-	0% { 
+	0% {
 		background: rgba(253,255,255,0);
 	}
-	50% { 
+	50% {
 		background: rgba(253,255,255,0.75);
 	}
-	56% { 
+	56% {
 		background: rgba(253,255,255,0);
 	}
-	70% { 
+	70% {
 		background: rgba(253,255,255,0.75);
 	}
-	100% { 
+	100% {
 		background: rgba(253,255,255,0);
 	}
 }
@@ -61,17 +61,17 @@
 
 .pulsate {
 	-webkit-animation: pulsate 2s ease-out;
-	-webkit-animation-iteration-count: infinite; 
+	-webkit-animation-iteration-count: infinite;
 	opacity: 0.5;
 }
 @-webkit-keyframes pulsate {
-	0% { 
+	0% {
 		text-shadow: 0 0 10px rgba(255,0,0,0.9);
 	}
-	50% { 
+	50% {
 		text-shadow: 0 0 10px rgba(255,0,0,0.0);
 	}
-	100% { 
+	100% {
 		text-shadow: 0 0 10px rgba(255,0,0,0.9);
 	}
 }

@@ -1,31 +1,24 @@
 <ion-view title="GitSpace">
-<ion-nav-bar>
-<ion-nav-back-button class="button-clear">
-<i class="ion-arrow-left-c"></i> Back
-</ion-nav-back-button>
-</ion-nav-bar>
-<ion-content>
+	<ion-nav-bar>
+		<ion-nav-back-button class="button-clear">
+			<i class="ion-arrow-left-c"></i> Back
+		</ion-nav-back-button>
+	</ion-nav-bar>
+	<ion-content>
 
-<div>
-	<div class="list" id="choose-repository">
-		<div class="item item-divider">
-			Show details in the sky!
+		<div>
+			<div class="list" id="choose-repository">
+				<div class="item item-divider">
+					Show details in the sky!
+				</div>
+				<div class="item t-center" ng-show="repositories.length == 0">
+					<ion-spinner></ion-spinner>
+				</div>
+				<div ng-repeat="repository in repositories" class="item" ui-sref="app.repository({id: repository.id})">
+					<label><span class="t-left">Repository</span> <span class="t-gray t-right" ng-class="{ positive: repository.momentum.change > 0, neutral: repository.momentum.change == 0, negative: repository.momentum.change < 0 }">Momentum: <span class="number">{{ repository.momentum.number }}</span></label>
+					<h2 class="clearfix">{{ repository.name }}</span></h2>
+				</div>
+			</div>
 		</div>
-		<div ng-repeat="repository in repositories" class="item" ui-sref="app.repository({id: repository.id})">
-			<label><span class="t-left">Repository <span class="t-red" ng-show="repository.issues > 0">has issues!</span></span> <span class="t-gray t-right" ng-class="{ positive: repository.momentum.change > 0, neutral: repository.momentum.change == 0, negative: repository.momentum.change < 0 }">Momentum: <span class="number">{{ repository.momentum.number }}</span></label>
-			<h2 class="clearfix">{{ repository.name }}</span></h2>
-			<!--<p>Members: {{ repository.members.length }}, Commits: {{ repository.commits.number }}</p>-->
-		</div>
-		<div class="item item-divider">
-			Organisation activity
-		</div>
-		<div class="item item-avatar" ng-repeat="n in [1,2,3,4,5]">
-			<img src="https://avatars2.githubusercontent.com/u/4280152?v=3&s=460">
-						<label>To Android Application</label>
-			<p><a href="#">Victor</a> {{ n }} hours ago <a href="#">6354c26</a></p>
-			<h3>Attempt to fix color and changed to linear scaling</h3>
-		</div>
-	</div>
-</div>
-</ion-content>
+	</ion-content>
 </ion-view>
