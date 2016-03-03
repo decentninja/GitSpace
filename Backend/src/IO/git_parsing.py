@@ -1,5 +1,5 @@
 import os.path
-
+import datetime
 # Constants
 # Could be translated to properties
 __version = 1
@@ -147,12 +147,11 @@ def parse_raw_updates(raw_updates, API_version = None):
 	if API_version not in __supported_update_versions:
 		raise Exception('Unknown API version: ' + API_version)
 	if API_version == 1:
-		return raw_updates # TODO PLACEHOLDER FIX
 		return [_parse_raw_update(update,API_version) for update in raw_updates]
 
 def _parse_raw_update(raw_update, API_version):
 	meta_info = raw_update['commit']
-	date = meta_info['commiter']['date']
+	date = meta_info['committer']['date']
 	time = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ").timestamp()
 
 	changes = []
@@ -166,7 +165,7 @@ def _parse_raw_update(raw_update, API_version):
 	update['direction'] = 'forward'
 	update['forced'] = False # will not be lower case when written :S
 	update['changes'] = changes
-	for change in raw_updates['files']:
+	for change in raw_update['files']:
 		_parse_change(change,change_map,meta_info)
 	return update
 
@@ -210,7 +209,7 @@ def _create_empty_change_subfolder(name,meta_info):
 	change = {}
 	change['name'] = name
 	change['size'] = 0
-	change['user'] = meta_info['name']
+	change['user'] = meta_info['committer']['name']
 	change['action'] = "none"
 	change['non_master_branch'] = False
 	change['subfolder'] = []
@@ -226,15 +225,14 @@ def _create_empty_change_subfolder(name,meta_info):
 #################
 
 if __name__ == '__main__':
-	meta_info={'name': "placeholder"}
-	files = ["a/b/c.txt","a/b/c/d/e/1.txt","a/b/c/d/E/2.txt","a/b/c/d/E/4.txt","a/B.txt","a/C.txt","a/C/7.txt","a/C/7/3.txt","a/C/7/4.txt"]
-	changes = []
-	change_map = {'': changes}
-	for change in files:
-		print("CURR:",change)
-		_parse_change({'filename':change,'status':'modified'},change_map,meta_info)
-	def print_tree(depth,tree):
+	from raw_update import update
+	changes = parse_raw_updates(update)
+	def print_tree(depth,tree, fil):
 		for t in tree:
-			print("  "*depth+t['name']+" "+t['action'])
-			print_tree(depth+1,t["subfolder"])
-	print_tree(0,changes)
+			print("  "*depth,t['name'],"(",t['action'],",",t['user'],")",file=fil)
+			print_tree(depth+1,t["subfolder"],fil)
+	with open("changes2.txt","w+") as f: 
+		for change in changes:
+			print("\n\n-----------------------------------\n\n",file=f)
+			print('timestamp: ',datetime.datetime.fromtimestamp(int(change['timestamp'])).strftime('%Y-%m-%d %H:%M:%S'),file=f)
+			print_tree(0,change['changes'],f)

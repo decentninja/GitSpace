@@ -10,7 +10,7 @@ TODO-list:
 
 import datetime
 import requests
-import IO.git_parsing as git_parsing
+import git_parsing
 
 # Should stay rather constant
 GIT_URL = 'https://api.github.com'
@@ -19,7 +19,7 @@ KEY = {'Authorization':'token '+OAUTH_TOKEN}
 
 # Number of days to look back for realtime, set to 1 week or 3 weeks
 # (But our repo isn't that old yet)
-lookback_days = 3
+lookback_days = 13
 
 def get_api_result(*args, **kwargs):
     response = requests.get(*args, headers=KEY, **kwargs)
@@ -81,4 +81,6 @@ def get_init(owner, repo):
     return state_parsed, updates
 
 if __name__ == '__main__':
+    owner = 'decentninja'
+    repo = 'GitSpace'
     get_init(owner, repo)
