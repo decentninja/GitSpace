@@ -202,13 +202,7 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 902973120866bdc449ee2f47961db001, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &950155004 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11493586, guid: 3e575b90fcb924d6eb59c64d6953fee9,
-    type: 2}
-  m_PrefabInternal: {fileID: 1916981250}
-  m_Script: {fileID: 11500000, guid: 09349aab665b34095b916ee805e5d02e, type: 3}
---- !u!1001 &1557249852
+--- !u!1001 &473013700
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -247,17 +241,31 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11483378, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: repositories
-      value: 
-      objectReference: {fileID: 25361673}
     - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
       propertyPath: repositories
       value: 
       objectReference: {fileID: 25361672}
+    - target: {fileID: 11483378, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: repositories
+      value: 
+      objectReference: {fileID: 25361673}
+    - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11407890, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &950155004 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11493586, guid: 3e575b90fcb924d6eb59c64d6953fee9,
+    type: 2}
+  m_PrefabInternal: {fileID: 1916981250}
+  m_Script: {fileID: 11500000, guid: 09349aab665b34095b916ee805e5d02e, type: 3}
 --- !u!1001 &1848983587
 Prefab:
   m_ObjectHideFlags: 0

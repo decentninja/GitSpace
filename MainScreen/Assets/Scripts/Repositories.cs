@@ -46,4 +46,10 @@ public class Repositories : MonoBehaviour {
 	}
     }
 
+    void displayLabels(bool yes) {
+	foreach(Folder folder in Object.FindObjectsOfType<Folder>()) {
+	    folder.showtext(yes);
+	}
+    }
+
 }
