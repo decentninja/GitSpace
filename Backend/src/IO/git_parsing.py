@@ -153,16 +153,71 @@ def parse_raw_updates(raw_updates, API_version = None):
 def _parse_raw_update(raw_update, API_version):
 	meta_info = raw_update['commit']
 	date = meta_info['commiter']['date']
-	time = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ").timestamp() 
+	time = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ").timestamp()
+
+	changes = []
+	change_map = {'': changes}
+
 	update = {}
 	update['type'] = 'update'
-	update['rep'] = 'PLACEHOLDER' # TODO placeholder
+	update['rep'] = 'GitSpace' # TODO placeholder
 	update['apiv'] = 1
 	update['timestamp'] = time
 	update['direction'] = 'forward'
 	update['forced'] = False # will not be lower case when written :S
-	update['user'] = meta_info['name']
-	
+	update['changes'] = changes
+	for change in raw_updates['files']:
+		_parse_change(change,change_map,meta_info)
+	return update
+
+def _parse_change(change,change_map,meta_info):
+
+	full = change['filename']
+	path = os.path.dirname(full)
+	name = os.path.basename(full)
+
+	#Check if the parent subfolders exists
+	if path not in change_map:
+		parents = path.split('/')
+		_create_subs('',parents,change_map,meta_info)
+	diff = change_map[path]
+	diff['action'] = change['status']
+
+
+def _create_subs(parent,subs,change_map,meta_info):
+	if len(subs) == 0: # Check end of recursion
+		return
+	#print("parent: ",parent," subs: ",subs)
+	if parent not in change_map: # Check logic error
+		raise Exception("Child before parent")
+
+	# The current folder
+	new_sub = "%s/%s"%(parent,subs[0]) if len(parent) > 0 else subs[0]
+	if new_sub not in change_map: # If folder not seen before
+		# Create folder
+		current = _create_empty_change_subfolder(subs[0],meta_info)
+		change_map[new_sub] = current # Add to list of folders
+		if parent == '': # Also make sure to add to root
+			if current not in change_map[parent]:
+				change_map[parent].append(current)
+		else: # Add to parents subfolder
+			change_map[parent]['subfolder'].append(current)
+			
+	# Create child folders of current folder
+	child = _create_subs(new_sub,subs[1:],change_map,meta_info)
+
+def _create_empty_change_subfolder(name,meta_info):
+	change = {}
+	change['name'] = name
+	change['size'] = 0
+	change['user'] = meta_info['name']
+	change['action'] = "none"
+	change['non_master_branch'] = False
+	change['subfolder'] = []
+	change['filetypes'] = []
+	return change
+
+
 
 
 
@@ -171,6 +226,15 @@ def _parse_raw_update(raw_update, API_version):
 #################
 
 if __name__ == '__main__':
-	from gitinput import myinput
-	with open("state_json","w+") as f:
-		print(parse_raw_state(myinput), file=f)
+	meta_info={'name': "placeholder"}
+	files = ["a/b/c.txt","a/b/c/d/e/1.txt","a/b/c/d/E/2.txt","a/b/c/d/E/4.txt","a/B.txt","a/C.txt","a/C/7.txt","a/C/7/3.txt","a/C/7/4.txt"]
+	changes = []
+	change_map = {'': changes}
+	for change in files:
+		print("CURR:",change)
+		_parse_change({'filename':change,'status':'modified'},change_map,meta_info)
+	def print_tree(depth,tree):
+		for t in tree:
+			print("  "*depth+t['name']+" "+t['action'])
+			print_tree(depth+1,t["subfolder"])
+	print_tree(0,changes)
