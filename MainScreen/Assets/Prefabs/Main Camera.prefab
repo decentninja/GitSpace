@@ -258,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e50e925fb93c78246bf995d9dc3a2330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 6
+  type: 5
   adaptiveTextureSize: 512
   remapCurve:
     serializedVersion: 2
@@ -277,9 +277,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   exposureAdjustment: 1.5
-  middleGrey: 0.26
-  white: 2
-  adaptionSpeed: 0.54
+  middleGrey: 0.31
+  white: 1.96
+  adaptionSpeed: 0.64
   tonemapper: {fileID: 4800000, guid: 003377fc2620a44939dadde6fe3f8190, type: 3}
   validRenderTextureFormat: 1
 --- !u!114 &11483108
