@@ -78,9 +78,13 @@ def get_init(owner, repo):
         get_init_commits(owner, repo)]
     state_parsed = git_parsing.parse_raw_state(state)
     update_parsed = git_parsing.parse_raw_updates(updates)
-    return state_parsed, updates
+    return state_parsed, update_parsed
 
 if __name__ == '__main__':
     owner = 'decentninja'
     repo = 'GitSpace'
-    get_init(owner, repo)
+    state,updates = get_init(owner, repo)
+    with open("state.json","w+") as f:
+        print(state,file=f)
+    with open("updates.json","w+") as f:
+        print(updates,file=f)

@@ -5,6 +5,8 @@ import datetime
 __version = 1
 __supported_state_versions = [1]
 __supported_update_versions = [1]
+__default_depth = 4
+__force_depth = True
 
 #####################
 # STATE PARSER
@@ -26,6 +28,8 @@ def parse_raw_state(raw_state, API_version = None):
 		state['state'] = _extract_folders(raw_state['tree'],API_version)
 	#	with open("state_output.txt","w+") as f:
 	#		_write_readable_structure_to_file(f,state)
+		if __force_depth:
+			_apply_depth(state['state'])
 		return state
 
 def _write_readable_structure_to_file(f,parsed_state):
@@ -72,6 +76,17 @@ def _fix_file_ratios(tree,API_version):
 					# zero sized files have no impact
 					ext['part']/=folder['size']
 			_fix_file_ratios(folder['subfolder'],API_version)
+
+def _apply_depth(folders,depth= __default_depth):
+	for f in folders:
+		if depth <= 1:
+			f['subfolder'] = []
+			if 'action' in f:
+				if f['action'] == 'none':
+					f['action'] = 'modified'
+		else:
+			_apply_depth(f['subfolder'],depth-1)
+
 
 def _handle_tree_type(API_version,node,parent,name,folder_map):
 	'''Creates a folder
@@ -142,12 +157,16 @@ def _handle_blob_type(API_version,node,parent,folder_map):
 #################
 
 def parse_raw_updates(raw_updates, API_version = None):
+	with open("raw_updates.py","w+") as f:
+		print("updates = " +str(raw_updates),file=f)
 	if API_version == None:
 		API_version = __version
 	if API_version not in __supported_update_versions:
 		raise Exception('Unknown API version: ' + API_version)
 	if API_version == 1:
-		return [_parse_raw_update(update,API_version) for update in raw_updates]
+		parsed = [_parse_raw_update(update,API_version) for update in raw_updates]
+		#write_updates_readable(parsed)
+		return parsed
 
 def _parse_raw_update(raw_update, API_version):
 	meta_info = raw_update['commit']
@@ -167,6 +186,8 @@ def _parse_raw_update(raw_update, API_version):
 	update['changes'] = changes
 	for change in raw_update['files']:
 		_parse_change(change,change_map,meta_info)
+	if __force_depth:
+			_apply_depth(update['changes'])
 	return update
 
 def _parse_change(change,change_map,meta_info):
@@ -217,6 +238,16 @@ def _create_empty_change_subfolder(name,meta_info):
 	return change
 
 
+def write_updates_readable(changes):
+	def print_tree(depth,tree, fil):
+		for t in tree:
+			print("  "*depth,t['name'],"(",t['action'],",",t['user'],")",file=fil)
+			print_tree(depth+1,t["subfolder"],fil)
+	with open("changes.txt","w+") as f:
+		for change in changes:
+			print("\n\n-----------------------------------",file=f)
+			print('timestamp: ',datetime.datetime.fromtimestamp(int(change['timestamp'])).strftime('%Y-%m-%d %H:%M:%S'),file=f)
+			print_tree(0,change['changes'],f)
 
 
 
@@ -225,14 +256,6 @@ def _create_empty_change_subfolder(name,meta_info):
 #################
 
 if __name__ == '__main__':
-	from raw_update import update
+	from raw_updates import update
 	changes = parse_raw_updates(update)
-	def print_tree(depth,tree, fil):
-		for t in tree:
-			print("  "*depth,t['name'],"(",t['action'],",",t['user'],")",file=fil)
-			print_tree(depth+1,t["subfolder"],fil)
-	with open("changes2.txt","w+") as f: 
-		for change in changes:
-			print("\n\n-----------------------------------\n\n",file=f)
-			print('timestamp: ',datetime.datetime.fromtimestamp(int(change['timestamp'])).strftime('%Y-%m-%d %H:%M:%S'),file=f)
-			print_tree(0,change['changes'],f)
+	write_updates_readable(changes)
