@@ -23,7 +23,7 @@ def parse_raw_state(raw_state, API_version = None):
 		state = {}
 		state['api version'] = 1
 		state['type'] = 'state'
-		state['repo'] = 'PLACEHOLDER' # TODO placeholder
+		state['repo'] = 'GitSpace' # TODO placeholder
 		state['timestamp'] = 52341414 # TODO placeholder
 		state['state'] = _extract_folders(raw_state['tree'],API_version)
 	#	with open("state_output.txt","w+") as f:
@@ -157,8 +157,6 @@ def _handle_blob_type(API_version,node,parent,folder_map):
 #################
 
 def parse_raw_updates(raw_updates, API_version = None):
-	with open("raw_updates.py","w+") as f:
-		print("updates = " +str(raw_updates),file=f)
 	if API_version == None:
 		API_version = __version
 	if API_version not in __supported_update_versions:
@@ -200,8 +198,9 @@ def _parse_change(change,change_map,meta_info):
 	if path not in change_map:
 		parents = path.split('/')
 		_create_subs('',parents,change_map,meta_info)
-	diff = change_map[path]
-	diff['action'] = change['status']
+	if path != '':
+		diff = change_map[path]
+		diff['action'] = change['status']
 
 
 def _create_subs(parent,subs,change_map,meta_info):
