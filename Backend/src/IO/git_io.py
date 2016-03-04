@@ -10,7 +10,7 @@ TODO-list:
 
 import datetime
 import requests
-import git_parsing
+import IO.git_parsing as git_parsing
 
 # Should stay rather constant
 GIT_URL = 'https://api.github.com'

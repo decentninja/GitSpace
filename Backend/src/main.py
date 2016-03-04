@@ -1,35 +1,77 @@
-#!/usr/bin/env python
-
-import IO.json_sockets as js
+import json
+import select
+import socket
+import sys
+import time
 import IO.git_io as git
 
-TCP_IP_FRONTEND = '127.0.0.1'
-TCP_PORT_FRONTEND = 5522
+TCP_IP = '127.0.0.1'
+TCP_PORT = 5522
+BUFFER_SIZE = 1024
+DEBUG = False
 
-owner = 'decentninja'
-repo = 'GitSpace'
+id_mappings = {'gitspace' : {'owner' : 'decentninja', 'repo' : 'GitSpace'}}
+
+clients = {}
+
+mock_json = {'hello' : 'hi'}
 
 class Main():
     def __init__(self):
-        self.frontend_client = js.Client(TCP_IP_FRONTEND, TCP_PORT_FRONTEND)
+        self.clients = {}
+        self.states = {}
+        self.init_states()
+        self.init_frontend()
 
-    def send_state_and_updates_frontend(self, state, updates):
-        self.frontend_client.send_JSON(state)
-        [self.frontend_client.send_JSON(update) for update in updates]
+    def init_states(self):
+        for key in id_mappings:
+            self.states[key], _ = git.get_init(id_mappings[key]['owner'],
+                                               id_mappings[key]['repo'])
 
-    def on_close(self):
-        self.frontend_client.close()
+    def init_frontend(self):
+        self.frontend_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.frontend_server.bind((TCP_IP, TCP_PORT))
+        self.frontend_server.listen(5)
 
-    def main_loop(self):
-        self.state, self.updates = git.get_init(owner, repo)
-        self.send_state_and_updates_frontend(self.state, self.updates)
+    def send(self, conn, json_obj):
+      json_string = '\x02' + json.dumps(json_obj) + '\x03'
+      try:
+        conn.sendall(json_string.encode('utf-8'))
+        return True
+      except socket.error as msg:
+        conn.close()
+        return False
 
-        # Listen to controller and do fun things
+    def send_all(self, client_id, json_obj):
+        self.clients[client_id] = [c for c in self.clients[client_id] if self.send(c, json_obj)]
 
-        # Until we decide to exit
+    def find_clients(self):
+        readable, writable, errored = select.select([self.frontend_server], [], [], 1)
+        for s in readable:
+            new_client, address = s.accept()
+            # client_id = new_client.recv() We could receive an id att conn.
+            self.init_client(new_client, 'gitspace')
 
-        self.on_close()
+    def send_webhook_updates(self):
+        # For now sends cute mock JSONs in Debug mode.
+        if len (self.clients) > 0 and len(self.clients['gitspace']) > 0 and DEBUG:
+            self.send_all('gitspace', mock_json)
+            print('sending mock')
+
+    def init_client(self, new_client, client_id):
+        if client_id not in self.clients:
+            self.clients[client_id] = []
+        self.clients[client_id].append(new_client)
+        print(self.states[client_id], file=sys.stderr)
+        self.send(new_client, self.states[client_id])
+
+    def main(self):
+        print('Server is up and running!', file=sys.stderr)
+        while 1:
+            self.find_clients()
+            self.send_webhook_updates()
+            time.sleep(1)
 
 if __name__ == '__main__':
     main = Main()
-    main.main_loop()
+    main.main()
