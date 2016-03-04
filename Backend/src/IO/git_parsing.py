@@ -13,8 +13,6 @@ __force_depth = True
 #################
 
 def parse_raw_state(raw_state, API_version = None):
-	with open("raw_state.txt","w+") as f:
-		print(raw_state,file=f)
 	if API_version == None:
 		API_version = __version
 	if API_version not in __supported_state_versions:
