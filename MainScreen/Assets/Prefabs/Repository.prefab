@@ -206,6 +206,7 @@ MonoBehaviour:
   hudunder: {fileID: 22344478}
   folderStartSize: 0.1
   folderMaxSize: 0.5
+  rootStar: {fileID: 100496, guid: f6f0f41d366fdb0499fc48e07425fc6c, type: 2}
 --- !u!114 &11468998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -336,7 +337,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: rootStar
+      value: 
+      objectReference: {fileID: 100496, guid: f6f0f41d366fdb0499fc48e07425fc6c, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170336}
