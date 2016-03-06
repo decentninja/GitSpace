@@ -126,10 +126,25 @@ public class Repository : MonoBehaviour {
     }
 
     private Color StringToColor(string s) {
-        int hash = s.GetHashCode();
-        byte r = (byte)((hash >> 16) & 0xff);
-        byte g = (byte)((hash >> 8) & 0xff);
-        byte b = (byte)((hash) & 0xff);
-        return new Color(r, g, b);
+        int mod = 255;
+        float hash = Mathf.Abs((float)s.GetHashCode()) % (mod * 2);
+        Color color;
+
+        if (hash <= mod) //Gradient from red to white
+        {
+            color = Color.Lerp(Color.red, Color.white, hash / mod);
+            return new Color(color.r * 255, color.g * 255, color.b * 255); //RGB values have to be in the interval 0 to 255 (rather than 0 to 1) for the glow to work
+        }
+        else if (hash <= mod * 2) //Gradient from white to blue
+        {
+            hash -= mod;
+            color = Color.Lerp(Color.white, Color.blue, hash / mod);
+            return new Color(color.r * 255, color.g * 255, color.b * 255);
+        }
+        else
+        {
+            Debug.Log("Color Error");
+            return new Color(0, 0, 0);
+        }
     }
 }
