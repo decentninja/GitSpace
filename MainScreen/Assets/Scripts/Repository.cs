@@ -11,6 +11,7 @@ public class Repository : MonoBehaviour {
     public Canvas hudunder;
     public float folderStartSize = 0.5f;
     public float folderMaxSize = 2f;
+    public GameObject rootStar;
 
     Queue<JsonData> queue = new Queue<JsonData>();
     float update_cooldown = 0;
