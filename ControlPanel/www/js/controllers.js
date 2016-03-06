@@ -1,39 +1,65 @@
-angular.module('starter.controllers', [])
+angular.module('gitSpace.controllers', [])
 
 .controller("mainCtrl", ['$scope', '$rootScope', 'Repositories', function($scope, $rootScope, Repositories) {
 
 	$scope.repositories = Repositories.all();
 
-	$rootScope.$on("dataAvailable", function(data) {
+	$rootScope.$on("dataAvailable", function() {
 		$scope.repositories = Repositories.all();
-		console.log("repositories loaded");
-		console.log($scope.repositories);
+		console.log("Repositories loaded!");
 		$scope.$apply();
 	});
+
+	$scope.zoomRepository = function(repository) {
+		Repositories.emit('repo focus', {
+			command: 'repo focus',
+			repo: repository.name
+		});
+	};
+
 }])
 
 /*
 *	Repository controller
 */
-.controller("repositoryCtrl", ['$scope', '$stateParams', 'Repositories', '$timeout', function($scope, $stateParams, Repositories, $timeout) {
+.controller("repositoryCtrl", ['$scope', '$stateParams', '$rootScope', 'Repositories', '$timeout', function($scope, $stateParams, $rootScope, Repositories, $timeout) {
 
-	$scope.repository = Repositories.byId($stateParams.id);
-	$scope.totalDuration = 100; // In days
+	$scope.repository = Repositories.byName($stateParams.name);
+	$scope.initialized = ($scope.repository !== null) ? true : false;
 	$scope.rewindDays = 0;
-	$scope.intensityDuration = 7;
-	$scope.lightning = false;
+	$scope.activityThreshold = 12;
+	$scope.visuals = {
+		labels: false
+	};
 
-	$scope.rewindNumberOfDays = function(days) {
-		$scope.rewindDays = days;
-		console.log($scope.rewindDays);
-	}
+	$rootScope.$on("dataAvailable", function() {
+		console.log("Repositories loaded!");
+		$scope.repository = Repositories.byName($stateParams.name);
+		$scope.initialized = true;
+		$scope.$apply();
+	});
 
-	$scope.triggerLightning = function() {
-		console.log("THUNDER!");
-		$scope.lightning = true;
-		$timeout(function() {
-			$scope.lightning = false;
-		}, 750);
-	}
+	$scope.setActivityThreshold = function(newActivityThreshold) {
+		var minutes = newActivityThreshold * 60; // We recieve hours
+		Repositories.emit("activity threshold", {
+			command: 'activity threshold',
+			threshold: minutes
+		});
+	};
+
+	$scope.setLabels = function(bool) {
+		Repositories.emit("labels", {
+			command: 'labels',
+			show: bool
+		});
+	};
+
+	$scope.setUserActivity = function(userData) {
+		Repositories.emit('user activity', {
+			command: 'user activity',
+			name: userData.name,
+			mail: userData.mail
+		});
+	};
 
 }]);

@@ -9,13 +9,14 @@
 		<div>
 			<div class="list" id="choose-repository">
 				<div class="item item-divider">
-					Show details in the sky!
+					Show details for repository
 				</div>
 				<div class="item t-center" ng-show="repositories.length == 0">
 					<ion-spinner></ion-spinner>
+					<p>Connecting...</p>
 				</div>
-				<div ng-repeat="repository in repositories" class="item" ui-sref="app.repository({id: repository.id})">
-					<label><span class="t-left">Repository</span> <span class="t-gray t-right" ng-class="{ positive: repository.momentum.change > 0, neutral: repository.momentum.change == 0, negative: repository.momentum.change < 0 }">Momentum: <span class="number">{{ repository.momentum.number }}</span></label>
+				<div ng-repeat="repository in repositories" class="item" ui-sref="app.repository({name: repository.name})" ng-click="zoomRepository(repository)">
+					<label><span class="t-left">Repository</span> <span class="t-gray t-right">{{ repository.users.length }} members</label>
 					<h2 class="clearfix">{{ repository.name }}</span></h2>
 				</div>
 			</div>
