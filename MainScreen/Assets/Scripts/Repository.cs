@@ -45,6 +45,14 @@ public class Repository : MonoBehaviour {
     public void CreateConstellation(JsonData data) {
 	setTime(data);
 	hudunder.transform.Find("Title").GetComponent<Text>().text = (string) data["repo"];
+
+	// rootstar code
+    GameObject root = GameObject.Find("Root");
+    GameObject rootObject = (GameObject)Instantiate(rootStar);
+    rootObject.transform.parent = gameObject.transform;
+    rootObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(220, 220, 255);
+    rootObject.transform.GetChild(0).transform.localScale = new Vector3(1.5f,1.5f,1.5f);
+
 	int numSubFolders = data["state"].Count;
 	for (int i = 0; i < numSubFolders; i++) {
 	    JsonData folder = data["state"][i];
