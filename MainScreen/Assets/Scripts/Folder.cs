@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Folder : MonoBehaviour {
 
 	public GameObject parent;
-	public SpringJoint spring;
+    public Dictionary<string, GameObject> children = new Dictionary<string, GameObject>();
+    public SpringJoint spring;
 	public Rigidbody rb;
 	public int size;
 	public Text text;

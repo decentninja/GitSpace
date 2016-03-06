@@ -8,6 +8,7 @@ using LitJson;
 public class Repository : MonoBehaviour {
     public GameObject folderPrefab;
     public SphereCollider collider;
+    public Dictionary<string, GameObject> children = new Dictionary<string, GameObject>();
     public Canvas hudunder;
     public float folderStartSize = 0.5f;
     public float folderMaxSize = 2f;
@@ -39,61 +40,132 @@ public class Repository : MonoBehaviour {
 	} catch(KeyNotFoundException) {}
     }
 
-    void handleUpdate(JsonData data) {
-	setTime(data);
+    void handleUpdate(JsonData data)
+    {
+        setTime(data);
+        int numChanges = data["changes"].Count;
+        for (int i = 0; i < numChanges; i++)
+        {
+            JsonData change = data["changes"][i];
+            Folder changedFolder = children[(string)change["name"]].GetComponent<Folder>();
+            recursiveUpdate(changedFolder, change);
+        }
     }
 
-    public void CreateConstellation(JsonData data) {
-	setTime(data);
-	hudunder.transform.Find("Title").GetComponent<Text>().text = (string) data["repo"];
+    public void recursiveUpdate(Folder folder, JsonData data)
+    {
+        if ("update".Equals((string)data["action"]))
+        {
+            //folder.change(); //nån funktion som updaterar glow och sånt
 
-	// rootstar code
-    GameObject root = GameObject.Find("Root");
-    GameObject rootObject = (GameObject)Instantiate(rootStar);
-    rootObject.transform.parent = gameObject.transform;
-    rootObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(220, 220, 255);
-    rootObject.transform.GetChild(0).transform.localScale = new Vector3(1.5f,1.5f,1.5f);
+            int numChanges = data["subfolder"].Count;
+            for (int i = 0; i < numChanges; i++)
+            {
+                JsonData change = data["subfolder"][i];
+                Folder changedFolder = children[(string)change["name"]].GetComponent<Folder>();
+                recursiveUpdate(changedFolder, change);
+            }
+        }
+        else if ("create".Equals((string)data["action"]))
+        {
+            createStar(folder.gameObject, data);
 
-	int numSubFolders = data["state"].Count;
-	for (int i = 0; i < numSubFolders; i++) {
-	    JsonData folder = data["state"][i];
-	    recursiveCreate(gameObject, folder);
-	}
-	resizeallfolders();
+            int numChanges = data["subfolder"].Count;
+            for (int i = 0; i < numChanges; i++)
+            {
+                JsonData change = data["subfolder"][i];
+                Folder changedFolder = children[(string)change["name"]].GetComponent<Folder>();
+                recursiveUpdate(changedFolder, change);
+            }
+        }
+        else if ("delete".Equals((string)data["action"]))
+        {
+            //TODO
+        }
     }
 
-    public void recursiveCreate(GameObject parent, JsonData folder) {
+    public List<GameObject> getSubFolders(Folder folder, JsonData data)
+    {
+        int numChanges = data["subfolder"].Count;
+        for (int i = 0; i < numChanges; i++)
+        {
+            JsonData change = data["subfolder"][i];
+            Folder changedFolder = children[(string)change["name"]].GetComponent<Folder>();
+            recursiveUpdate(changedFolder, change);
+        }
+        return null;
+    }
+
+    public void CreateConstellation(JsonData data)
+    {
+        setTime(data);
+        hudunder.transform.Find("Title").GetComponent<Text>().text = (string)data["repo"];
+
+        // rootstar code
+        GameObject root = GameObject.Find("Root");
+        GameObject rootObject = (GameObject)Instantiate(rootStar);
+        rootObject.transform.parent = gameObject.transform;
+        rootObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(220, 220, 255);
+        rootObject.transform.GetChild(0).transform.localScale = new Vector3(1.5f,1.5f,1.5f);
+
+        int numSubFolders = data["state"].Count;
+        for (int i = 0; i < numSubFolders; i++)
+        {
+            JsonData folder = data["state"][i];
+            GameObject child = recursiveCreate(gameObject, folder);
+            children.Add(child.name, child);
+        }
+        resizeallfolders();
+    }
+
+    public GameObject recursiveCreate(GameObject parent, JsonData folder)
+    {
+        // Add star.
+        GameObject thisStar = createStar(parent, folder);
+        Folder foldercomp = thisStar.GetComponent<Folder>();
+        foldercomp.size = (int)folder["size"];
+
+        // Calculate color using file extension.
+        int numFileTypes = folder["filetypes"].Count;
+        string[] fileExtension = new string[numFileTypes];
+        float[] filePart = new float[numFileTypes];
+        float partMax = 0;
+        int index = -1;
+        for (int i = 0; i < numFileTypes; i++)
+        {
+            fileExtension[i] = (string)folder["filetypes"][i]["extension"];
+            filePart[i] = float.Parse(folder["filetypes"][i]["part"].ToString());
+            if (filePart[i] > partMax)
+            {
+                partMax = filePart[i];
+                index = i;
+            }
+        }
+        if (index != -1) thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+
+        // Recursively go down the file tree.
+        int numSubFolders = folder["subfolder"].Count;
+        for (int i = 0; i < numSubFolders; i++)
+        {
+            JsonData subfolder = folder["subfolder"][i];
+            GameObject child = recursiveCreate(thisStar, subfolder);
+            foldercomp.children.Add(child.name, child);
+        }
+        return thisStar;
+    }
+
+    private GameObject createStar(GameObject parent, JsonData data)
+    {
         float angle = Random.Range(0, 2 * Mathf.PI);
         Vector3 pos = new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) + parent.transform.position;
-	GameObject thisStar = (GameObject) Instantiate(folderPrefab, pos, Quaternion.identity);
+        GameObject star = (GameObject)Instantiate(folderPrefab, pos, Quaternion.identity);
 
-	int numFileTypes = folder["filetypes"].Count;
-	string[] fileExtension = new string[numFileTypes];
-	float[] filePart = new float[numFileTypes];
-	float partMax = 0;
-	int index = -1;
-	for (int i = 0; i < numFileTypes; i++)
-	{
-	    fileExtension[i] = (string) folder["filetypes"][i]["extension"];
-	    filePart[i] = float.Parse(folder["filetypes"][i]["part"].ToString());
-	    if (filePart[i] > partMax) {
-		partMax = filePart[i];
-		index = i;
-	    }
-	}
-	if (index != -1) thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+        star.name = (string)data["name"];
+        Folder foldercomp = star.GetComponent<Folder>();
+        foldercomp.parent = parent;
+        star.transform.parent = transform;
 
-	thisStar.name = (string) folder["name"];
-	Folder foldercomp = thisStar.GetComponent<Folder>();
-	foldercomp.parent = parent;
-	foldercomp.size = (int) folder["size"];
-	thisStar.transform.parent = transform;
-	int numSubFolders = folder["subfolder"].Count;
-	for (int i = 0; i < numSubFolders; i++)
-	{
-	    JsonData subfolder = folder["subfolder"][i];
-	    recursiveCreate(thisStar, subfolder);
-	}
+        return star;
     }
 
     private void resizeallfolders() {
