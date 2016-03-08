@@ -13,6 +13,7 @@ public class Repositories : MonoBehaviour {
 
     void Start() {
 	resetCamera();
+	focusCamera("GitSpace");
     }
 
     public void handle(JsonData data) {
@@ -53,9 +54,9 @@ public class Repositories : MonoBehaviour {
     }
 
     private void focusCamera(string repoName) {
+	secamera.target = repoDictionary[repoName].transform;
 	foreach(string name in repoDictionary.Keys) {
 	    if(repoName == name) {
-		secamera.target = repoDictionary[name].transform;
 		repoDictionary[name].Hidden = false;
 	    } else {
 		repoDictionary[name].Hidden = true;

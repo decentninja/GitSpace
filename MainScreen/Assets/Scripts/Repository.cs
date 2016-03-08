@@ -14,11 +14,12 @@ public class Repository : MonoBehaviour {
     public float folderStartSize = 0.5f;
     public float folderMaxSize = 2f;
     public GameObject rootStar;
-    bool hidden = false;
 
+    bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
     float update_cooldown = 0;
     float update_time = 1;	// Time between updates in milliseconds
+    Coroutine hiddenanimation;
 
     void Update() {
 	Bounds bounds = AndreasAwesomeHelperSuperLibrary.CalculateTotalBounds(transform);
@@ -202,13 +203,22 @@ public class Repository : MonoBehaviour {
     public bool Hidden {
 	get { return hidden; }
 	set { 
-	    // TODO Would be nice with animation
 	    hidden = value;
-	    foreach(MeshRenderer thing in GetComponentsInChildren<MeshRenderer>()) {
-		thing.enabled = !value;
+	    if(hiddenanimation != null) {
+		StopCoroutine(hiddenanimation);
 	    }
-	    foreach(Canvas thing in GetComponentsInChildren<Canvas>()) {
-		thing.enabled = !value;
+	    hiddenanimation = StartCoroutine(animatehidden(!value));
+	}
+    }
+
+    IEnumerator animatehidden(bool to) {
+	foreach(Canvas thing in GetComponentsInChildren<Canvas>()) {
+	    thing.enabled = to;
+	}
+	foreach(MeshRenderer thing in GetComponentsInChildren<MeshRenderer>()) {
+	    if(thing.enabled != to) {
+		thing.enabled = to;
+		yield return new WaitForSeconds(3f);
 	    }
 	}
     }
