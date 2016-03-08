@@ -6,6 +6,7 @@ using LitJson;
 
 
 public class Repository : MonoBehaviour {
+
     public GameObject folderPrefab;
     public SphereCollider collider;
     public Dictionary<string, GameObject> children = new Dictionary<string, GameObject>();
@@ -13,6 +14,7 @@ public class Repository : MonoBehaviour {
     public float folderStartSize = 0.5f;
     public float folderMaxSize = 2f;
     public GameObject rootStar;
+    bool hidden = false;
 
     Queue<JsonData> queue = new Queue<JsonData>();
     float update_cooldown = 0;
@@ -195,6 +197,20 @@ public class Repository : MonoBehaviour {
     
     public void cueUpdate(JsonData update) {
 	queue.Enqueue(update);
+    }
+
+    public bool Hidden {
+	get { return hidden; }
+	set { 
+	    // TODO Would be nice with animation
+	    hidden = value;
+	    foreach(MeshRenderer thing in GetComponentsInChildren<MeshRenderer>()) {
+		thing.enabled = !value;
+	    }
+	    foreach(Canvas thing in GetComponentsInChildren<Canvas>()) {
+		thing.enabled = !value;
+	    }
+	}
     }
 
     private Color StringToColor(string s) {

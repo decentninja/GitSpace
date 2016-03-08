@@ -199,6 +199,10 @@ Prefab:
       propertyPath: hud
       value: 
       objectReference: {fileID: 950155004}
+    - target: {fileID: 11417300, guid: 902973120866bdc449ee2f47961db001, type: 2}
+      propertyPath: secamera
+      value: 
+      objectReference: {fileID: 1610180684}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 902973120866bdc449ee2f47961db001, type: 2}
   m_IsPrefabParent: 0
@@ -263,11 +267,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
       propertyPath: middleGrey
-      value: 0.31
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
       propertyPath: white
-      value: 1.96
+      value: 2.71
       objectReference: {fileID: 0}
     - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
       propertyPath: adaptionSpeed
@@ -282,6 +286,12 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1916981250}
   m_Script: {fileID: 11500000, guid: 09349aab665b34095b916ee805e5d02e, type: 3}
+--- !u!114 &1610180684 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11483378, guid: bc200ea4d867f4ab19a54e0990f405df,
+    type: 2}
+  m_PrefabInternal: {fileID: 473013700}
+  m_Script: {fileID: 11500000, guid: 620cd681b32b24f73940f8d0bf72c9f2, type: 3}
 --- !u!1001 &1848983587
 Prefab:
   m_ObjectHideFlags: 0
