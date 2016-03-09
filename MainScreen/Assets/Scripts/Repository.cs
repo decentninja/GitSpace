@@ -50,53 +50,73 @@ public class Repository : MonoBehaviour {
         for (int i = 0; i < numChanges; i++)
         {
             JsonData change = data["changes"][i];
-            Folder changedFolder = children[(string)change["name"]].GetComponent<Folder>();
-            recursiveUpdate(changedFolder, change);
+            recursiveUpdate(null, (string)change["name"], change);
         }
     }
 
-    public void recursiveUpdate(Folder folder, JsonData data)
+    public void recursiveUpdate(Folder parent, string foldername, JsonData data)
     {
+        Dictionary<string, GameObject> currentChildren;
+        GameObject parentGameObject;
+        if (parent == null)
+        {
+            currentChildren = children;
+            parentGameObject = gameObject;
+        }
+        else
+        {
+            currentChildren = parent.children;
+            parentGameObject = parent.gameObject;
+        }
         if ("update".Equals((string)data["action"]))
         {
-            //folder.change(); //nån funktion som updaterar glow och sånt
+            //parent.children[foldername].change(); //nån funktion som updaterar glow och sånt
 
             int numChanges = data["subfolder"].Count;
             for (int i = 0; i < numChanges; i++)
             {
                 JsonData change = data["subfolder"][i];
-                Folder changedFolder = children[(string)change["name"]].GetComponent<Folder>();
-                recursiveUpdate(changedFolder, change);
+                Folder newparent = currentChildren[foldername].GetComponent<Folder>();
+                recursiveUpdate(newparent, (string)change["name"], change);
             }
         }
         else if ("create".Equals((string)data["action"]))
         {
-            createStar(folder.gameObject, data);
+            GameObject star = createStar(parentGameObject, data);
+            currentChildren.Add(star.name, star);
 
             int numChanges = data["subfolder"].Count;
             for (int i = 0; i < numChanges; i++)
             {
                 JsonData change = data["subfolder"][i];
-                Folder changedFolder = children[(string)change["name"]].GetComponent<Folder>();
-                recursiveUpdate(changedFolder, change);
+                Folder newparent = currentChildren[star.name].GetComponent<Folder>();
+                recursiveUpdate(newparent, star.name, change);
             }
         }
         else if ("delete".Equals((string)data["action"]))
         {
-            //TODO
+            Folder f = currentChildren[foldername].GetComponent<Folder>();
+            List<GameObject> rmList = getSubFolders(f, null);
+            foreach (GameObject g in rmList)
+            {
+                Destroy(g);
+            }
+            Destroy(currentChildren[foldername]);
+            currentChildren.Remove(foldername);
         }
+        return;
     }
 
-    public List<GameObject> getSubFolders(Folder folder, JsonData data)
+    public List<GameObject> getSubFolders(Folder folder, List<GameObject> list)
     {
-        int numChanges = data["subfolder"].Count;
-        for (int i = 0; i < numChanges; i++)
+        if (list == null) list = new List<GameObject>();
+        
+        foreach (GameObject g in folder.children.Values)
         {
-            JsonData change = data["subfolder"][i];
-            Folder changedFolder = children[(string)change["name"]].GetComponent<Folder>();
-            recursiveUpdate(changedFolder, change);
+            list.Add(g);
+            list = getSubFolders(g.GetComponent<Folder>(), list);
         }
-        return null;
+        return list;
     }
 
     public void CreateConstellation(JsonData data)
