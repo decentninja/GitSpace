@@ -10,7 +10,7 @@ TODO-list:
 
 import datetime
 import requests
-import IO.git_parsing as git_parsing
+import git_parsing as git_parsing
 
 # Should stay rather constant
 GIT_URL = 'https://api.github.com'
@@ -19,7 +19,7 @@ KEY = {'Authorization':'token '+OAUTH_TOKEN}
 
 # Number of days to look back for realtime, set to 1 week or 3 weeks
 # (But our repo isn't that old yet)
-lookback_days = 13
+lookback_days = 20
 
 def get_api_result(*args, **kwargs):
     response = requests.get(*args, headers=KEY, **kwargs)
@@ -52,12 +52,13 @@ def get_full_commitinfo(owner, repo, commit):
 def find_most_recent_sha(owner, repo, start_date):
     backoff = 1
     commits = []
-    since = start_date - datetime.timedelta(days=1)
+    since = start_date - datetime.timedelta(days=backoff)
     commits = get_commits_in_span(owner, repo, since, start_date)
     while (not commits):
         since -= datetime.timedelta(days=backoff)
         backoff *= 2
         commits = get_commits_in_span(owner, repo, since, start_date)
+    print(len(commits))
     return commits[0]['sha']
 
 def get_init_state(owner, repo):
@@ -68,16 +69,18 @@ def get_init_state(owner, repo):
     return get_tree(owner, repo, sha)
 
 def get_init_commits(owner, repo):
-    return get_commits_in_span(owner, repo,
+    commits = get_commits_in_span(owner, repo,
         datetime.datetime.now() - datetime.timedelta(days=lookback_days),
         datetime.datetime.now())
+    return commits
 
 def get_init(owner, repo):
     state = get_init_state(owner, repo)
     updates = [get_full_commitinfo(owner, repo, c) for c in
         get_init_commits(owner, repo)]
     state_parsed = git_parsing.parse_raw_state(state)
-    update_parsed = git_parsing.parse_raw_updates(updates)
+    #updates arrive in reversed order
+    update_parsed = git_parsing.parse_raw_updates(updates[::-1])
     return state_parsed, update_parsed
 
 if __name__ == '__main__':
