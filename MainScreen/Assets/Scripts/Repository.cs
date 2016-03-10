@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
-
 
 public class Repository : MonoBehaviour {
 
@@ -14,6 +14,12 @@ public class Repository : MonoBehaviour {
     public float folderStartSize = 0.5f;
     public float folderMaxSize = 2f;
     public GameObject rootStar;
+
+    // timespan given from the controlpanel to show glow, in days
+    public float timeInterval = 14;
+    // minimum amd max glow star will have, if not updated within the interval
+    public float minPower = 0.2f;
+    public float maxPower = 1;
 
     bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
@@ -125,6 +131,7 @@ public class Repository : MonoBehaviour {
         hudunder.transform.Find("Title").GetComponent<Text>().text = (string)data["repo"];
 
         // rootstar code
+        // may only find one root when multiple projects are shown
         GameObject root = GameObject.Find("Root");
         GameObject rootObject = (GameObject)Instantiate(rootStar);
         rootObject.transform.parent = gameObject.transform;
@@ -179,7 +186,8 @@ public class Repository : MonoBehaviour {
 
     private GameObject createStar(GameObject parent, JsonData data)
     {
-        float angle = Random.Range(0, 2 * Mathf.PI);
+        //random can be both unityenginge and system.random
+        float angle = UnityEngine.Random.Range(0, 2 * Mathf.PI);
         Vector3 pos = new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(angle)) + parent.transform.position;
         GameObject star = (GameObject)Instantiate(folderPrefab, pos, Quaternion.identity);
 
@@ -264,5 +272,26 @@ public class Repository : MonoBehaviour {
             Debug.Log("Color Error");
             return new Color(0, 0, 0);
         }
+    }
+
+    private float DateToGlow(string date){
+        float strength = 0;
+
+        //calculate time without updates
+        DateTime dateNow = DateTime.Now;
+        String datestring = date.Substring(0, 9); //om date är i formatet dd/mm/yyyy hh:mm
+        DateTime updateTime = Convert.ToDateTime(datestring);
+        TimeSpan untouchedTime = dateNow - updateTime;
+        float days = untouchedTime.Days;
+
+        if(days < timeInterval)
+        {
+            strength = minPower;
+        } else
+        {
+            float powerFraction = days / timeInterval;
+            strength = powerFraction * (maxPower - minPower);
+        }
+        return strength;
     }
 }
