@@ -10,7 +10,7 @@ TODO-list:
 
 import datetime
 import requests
-import git_parsing as git_parsing
+import IO.git_parsing as git_parsing
 
 # Should stay rather constant
 GIT_URL = 'https://api.github.com'
@@ -33,6 +33,8 @@ def get_api_result(*args, **kwargs):
         pass # out is already set for this state
     else:
         result = jsondata
+        if int(response.headers.get('X-RateLimit-Remaining')) < 3000:
+            print('WARNING Rate Limit:',response.headers.get('X-RateLimit-Remaining'))
     return result
 
 def get_tree(owner, repo, sha):
@@ -43,7 +45,7 @@ def get_commits_in_span(owner, repo, since, until):
     params = {'since': since.isoformat(),
               'until': until.isoformat()}
     return get_api_result('https://api.github.com/repos/'+owner+'/' + repo +\
-        '/commits', params=params)
+        '/commits')
 
 def get_full_commitinfo(owner, repo, commit):
     return get_api_result('https://api.github.com/repos/'+owner+'/' + repo +\
@@ -58,7 +60,6 @@ def find_most_recent_sha(owner, repo, start_date):
         since -= datetime.timedelta(days=backoff)
         backoff *= 2
         commits = get_commits_in_span(owner, repo, since, start_date)
-    print(len(commits))
     return commits[0]['sha']
 
 def get_init_state(owner, repo):
@@ -81,13 +82,9 @@ def get_init(owner, repo):
     state_parsed = git_parsing.parse_raw_state(state)
     #updates arrive in reversed order
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
-    return state_parsed, update_parsed
+    return git_parsing.update_state(state_parsed,update_parsed), update_parsed
 
 if __name__ == '__main__':
     owner = 'decentninja'
     repo = 'GitSpace'
     state,updates = get_init(owner, repo)
-    with open("state.json","w+") as f:
-        print(state,file=f)
-    with open("updates.json","w+") as f:
-        print(updates,file=f)
