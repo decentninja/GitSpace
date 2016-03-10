@@ -17,6 +17,11 @@
 	pointer-events: none;
 }
 
+.users {
+	margin-bottom: -1px !important;
+	border-bottom: solid 10px #eee;
+}
+
 .lightning {
 	-webkit-animation: lightning 0.75s ease-out;
 	-webkit-animation-iteration-count: infinite;
@@ -76,6 +81,10 @@
 	}
 }
 
+.item.repository {
+	padding: 0;
+}
+
 #choose-repository {
 	label {
 		text-transform: uppercase;
@@ -85,6 +94,11 @@
 	h2 {
 		font-size: 1.25em;
 		margin-top: 1.25rem;
+		margin-bottom: 0;
+	}
+
+	.padding {
+		padding: 16px;
 	}
 }
 
