@@ -13,7 +13,6 @@ public class Repositories : MonoBehaviour {
 
     void Start() {
 	resetCamera();
-	focusCamera("GitSpace");
     }
 
     public void handle(JsonData data) {
