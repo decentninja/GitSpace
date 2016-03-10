@@ -23,7 +23,7 @@ class Main():
     def __init__(self):
         self.clients = {}
         self.states = {}
-        #self.init_states()
+        self.init_states()
         self.init_frontend()
         self.init_app()
 
