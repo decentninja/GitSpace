@@ -1,3 +1,4 @@
+# TODO: Split this class up (I guess p4)
 import json
 import queue
 import select
@@ -13,11 +14,15 @@ TCP_PORT = 5522
 BUFFER_SIZE = 1024
 DEBUG = False
 
-id_mappings = {'gitspace' : {'owner' : 'decentninja', 'repo' : 'GitSpace'}}
-
-clients = {}
+id_mappings = {'gitspace' : {'GitSpace' : 'decentninja'}}
 
 mock_json = {'hello' : 'hi'}
+
+def command_json():
+    command = {}
+    command['api version'] = 1
+    command['type'] = 'command'
+    return command
 
 class Main():
     def __init__(self):
@@ -27,10 +32,16 @@ class Main():
         self.init_frontend()
         self.init_app()
 
+    def init_state(self, client, repo, owner):
+        if client not in self.states:
+            self.states[client] = {}
+        self.states[client][repo], _ = \
+                git.get_init(owner, repo)
+
     def init_states(self):
-        for key in id_mappings:
-            self.states[key], _ = git.get_init(id_mappings[key]['owner'],
-                                               id_mappings[key]['repo'])
+        for client in id_mappings:
+            for repo in id_mappings[client]:
+                self.init_state(client, repo, id_mappings[client][repo])
 
     def init_frontend(self):
         self.frontend_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -52,7 +63,9 @@ class Main():
         return False
 
     def send_all(self, client_id, json_obj):
-        self.clients[client_id] = [c for c in self.clients[client_id] if self.send(c, json_obj)]
+        if client_id in self.clients:
+            self.clients[client_id] = \
+                    [c for c in self.clients[client_id] if self.send(c, json_obj)]
 
     def find_clients(self):
         readable, writable, errored = select.select([self.frontend_server], [], [], 1)
@@ -71,23 +84,60 @@ class Main():
         while 1:
             try:
                 message, client = self.app_queue.get_nowait()
-                message = json.loads(message)
-                print(message)
             except queue.Empty:
                 return
+            try:
+                message = json.loads(message)
+            except ValueError:
+                raise Exception('Received malformed JSON from app.')
+            self.execute_app_command(message, client)
+
+    def execute_app_command(self, message, client):
+        if message['command'] in ['labels', 'repo focus','reset camera',
+                                  'activity threshold']:
+            json = command_json()
+            json['command'] = message['command']
+            if message['command'] == 'repo focus':
+                if repo not in self.states[client]:
+                    raise Exception("Repo does not exist: %s"%repo)
+                json['repo'] = message['repo']
+            elif message['command'] == 'labels':
+                json['labels'] = True
+            elif message['command'] == 'activity threshold':
+                json['threshold'] = message['threshold']
+            self.send_all(client, json)
+        elif message['command'] == 'repo delete':
+            self.delete_repo(message['repo'], client)
+        elif message['command'] == 'repo add':
+            self.add_repo(message['repo'], message['owner'], client)
+
+    def add_repo(self, repo, owner, client):
+        # This requires valid repo name.
+        self.init_state(client, repo, owner)
+        self.send_all(client, self.states[client][repo])
+
+    def delete_repo(self, repo, client):
+        if repo not in self.states[client]:
+            raise Exception("Repo does not exist: %s"%repo)
+        del self.states[client][repo]
+        command = {}
+        command['api version'] = 1
+        command['type'] = 'delete'
+        command['repo'] = repo
+        self.send_all(client, command)
 
     def init_client(self, new_client, client_id):
         if client_id not in self.clients:
             self.clients[client_id] = []
         self.clients[client_id].append(new_client)
         print(self.states[client_id], file=sys.stderr)
-        self.send(new_client, self.states[client_id])
+        [self.send(new_client, self.states[client_id][repo])
+                for repo in self.states[client_id]]
 
     def close(self):
         self.app_server.join()
 
     def main(self):
-        print('Server is up and running!', file=sys.stderr)
         try:
             while 1:
                 self.find_clients()
@@ -98,5 +148,7 @@ class Main():
             self.close()
 
 if __name__ == '__main__':
+    print('Starting server...', file=sys.stderr)
     main = Main()
+    print('Server is up and running!', file=sys.stderr)
     main.main()

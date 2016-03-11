@@ -28,11 +28,11 @@ CLOSE_CONN  = 0x8
 class API():
 	def run_forever(self):
 		try:
-			print("Listening on port %d for clients.." % self.port)
+			#print("Listening on port %d for clients.." % self.port)
 			self.serve_forever()
 		except KeyboardInterrupt:
 			self.server_close()
-			print("Server terminated.")
+			#print("Server terminated.")
 		except Exception as e:
 			print("ERROR: WebSocketsServer: "+str(e))
 			exit(1)
@@ -151,15 +151,15 @@ class WebSocketHandler(StreamRequestHandler):
 		payload_length = b2 & PAYLOAD_LEN
 
 		if not b1:
-			print("Client closed connection.")
+			#print("Client closed connection.")
 			self.keep_alive = 0
 			return
 		if opcode == CLOSE_CONN:
-			print("Client asked to close connection.")
+			#print("Client asked to close connection.")
 			self.keep_alive = 0
 			return
 		if not masked:
-			print("Client must always be masked.")
+			#print("Client must always be masked.")
 			self.keep_alive = 0
 			return
 
