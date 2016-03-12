@@ -2,6 +2,7 @@
 import json
 import queue
 import select
+import signal
 import socket
 import sys
 import time
@@ -18,6 +19,10 @@ id_mappings = {'gitspace' : {'GitSpace' : 'decentninja'}}
 
 mock_json = {'hello' : 'hi'}
 
+mock_repos = {"GitSpace" : {"repo": "GitSpace"},
+              "MySpace" : {"repo": "MySpace"}}
+
+
 def command_json():
     command = {}
     command['api version'] = 1
@@ -25,7 +30,10 @@ def command_json():
     return command
 
 class Main():
-    def __init__(self):
+    def __init__(self, testing = False):
+        signal.signal(signal.SIGINT, self.close)
+        signal.signal(signal.SIGTERM, self.close)
+        self.testing = testing
         self.clients = {}
         self.states = {}
         self.init_states()
@@ -35,8 +43,11 @@ class Main():
     def init_state(self, client, repo, owner):
         if client not in self.states:
             self.states[client] = {}
-        self.states[client][repo], _ = \
-                git.get_init(owner, repo)
+        if self.testing:
+            self.states[client][repo] = mock_repos[repo]
+        else:
+            self.states[client][repo], _ = \
+                    git.get_init(owner, repo)
 
     def init_states(self):
         for client in id_mappings:
@@ -98,7 +109,7 @@ class Main():
             json = command_json()
             json['command'] = message['command']
             if message['command'] == 'repo focus':
-                if repo not in self.states[client]:
+                if message['repo'] not in self.states[client]:
                     raise Exception("Repo does not exist: %s"%repo)
                 json['repo'] = message['repo']
             elif message['command'] == 'labels':
@@ -135,6 +146,7 @@ class Main():
                 for repo in self.states[client_id]]
 
     def close(self):
+        self.app_server.terminate()
         self.app_server.join()
 
     def main(self):
