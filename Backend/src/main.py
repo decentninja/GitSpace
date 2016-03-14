@@ -22,7 +22,6 @@ mock_json = {'hello' : 'hi'}
 mock_repos = {"GitSpace" : {"repo": "GitSpace"},
               "MySpace" : {"repo": "MySpace"}}
 
-
 def command_json():
     command = {}
     command['api version'] = 1
@@ -99,28 +98,33 @@ class Main():
                 return
             try:
                 message = json.loads(message)
+                message = message['message']
             except ValueError:
                 raise Exception('Received malformed JSON from app.')
             self.execute_app_command(message, client)
 
     def execute_app_command(self, message, client):
-        if message['command'] in ['labels', 'repo focus','reset camera',
-                                  'activity threshold']:
-            json = command_json()
-            json['command'] = message['command']
-            if message['command'] == 'repo focus':
-                if message['repo'] not in self.states[client]:
-                    raise Exception("Repo does not exist: %s"%repo)
-                json['repo'] = message['repo']
-            elif message['command'] == 'labels':
-                json['labels'] = True
-            elif message['command'] == 'activity threshold':
-                json['threshold'] = message['threshold']
-            self.send_all(client, json)
-        elif message['command'] == 'repo delete':
-            self.delete_repo(message['repo'], client)
-        elif message['command'] == 'repo add':
-            self.add_repo(message['repo'], message['owner'], client)
+        print(message)
+        try:
+            if message['command'] in ['labels', 'repo focus','reset camera',
+                                      'activity threshold']:
+                json = command_json()
+                json['command'] = message['command']
+                if message['command'] == 'repo focus':
+                    if message['repo'] not in self.states[client]:
+                        raise Exception("Repo does not exist: %s"%repo)
+                    json['repo'] = message['repo']
+                elif message['command'] == 'labels':
+                    json['labels'] = True
+                elif message['command'] == 'activity threshold':
+                    json['threshold'] = message['threshold']
+                self.send_all(client, json)
+            elif message['command'] == 'repo delete':
+                self.delete_repo(message['repo'], client)
+            elif message['command'] == 'repo add':
+                self.add_repo(message['repo'], message['owner'], client)
+        except KeyError:
+            raise Exception('Received malformed JSON from app.')
 
     def add_repo(self, repo, owner, client):
         # This requires valid repo name.
