@@ -14,6 +14,7 @@ public class Repository : MonoBehaviour {
     public float folderStartSize = 0.5f;
     public float folderMaxSize = 2f;
     public GameObject rootStar;
+    public Gradient starcolor;
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
@@ -276,39 +277,8 @@ public class Repository : MonoBehaviour {
     }
 
     private Color StringToColor(string s) {
-        int mod = 255;
-        float hash = Mathf.Abs((float)s.GetHashCode()) % (mod * 2);
-        Color color;
-
-        if (hash <= mod) //Gradient from red to white
-        {
-            color = Color.Lerp(Color.red, Color.white, hash / mod);
-            return new Color(color.r * 255, color.g * 255, color.b * 255); //RGB values have to be in the interval 0 to 255 (rather than 0 to 1) for the glow to work
-        }
-        else if (hash <= mod * 2) //Gradient from white to blue
-        {
-            hash -= mod;
-            color = Color.Lerp(Color.white, Color.blue, hash / mod);
-            return new Color(color.r * 255, color.g * 255, color.b * 255);
-        }
-        else
-        {
-            Debug.Log("Color Error");
-            return new Color(0, 0, 0);
-        }
-    }
-
-    private Color EmailToColor(string mail)
-    {
-        int mod = 100;
-        float h = Mathf.Abs((float)mail.GetHashCode()) % 100;
-        h = h / 100;
-        float s = Mathf.Abs((float)mail.GetHashCode()) % 50;
-        s = (s / 100) + 0.5f;
-        float v = s;
-
-        Color color = Color.HSVToRGB(h, s, v);
-        return new Color(color.r* 255, color.g* 255, color.b* 255);
+	Color c = starcolor.Evaluate((1 + (float) (s + s + s + s + s).GetHashCode() / int.MaxValue) / 2);
+	return new Color(c.r * 255, c.g * 255, c.b * 255);
     }
 
     public int setFolderSize(JsonData folder)

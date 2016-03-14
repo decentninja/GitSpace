@@ -170,9 +170,52 @@ MonoBehaviour:
   size: 0
   text: {fileID: 11445736}
   extraglow: 0
-  glowdiminish: 0.01
-  minimumglow: 0.04
-  maxglow: 500
+  glowdiminish: 0.005
+  minimumglow: 0.1
+  maxglow: 100
+  edgecolor:
+    key0:
+      serializedVersion: 2
+      rgba: 4285399013
+    key1:
+      serializedVersion: 2
+      rgba: 4294935678
+    key2:
+      serializedVersion: 2
+      rgba: 16736495
+    key3:
+      serializedVersion: 2
+      rgba: 16720653
+    key4:
+      serializedVersion: 2
+      rgba: 16711910
+    key5:
+      serializedVersion: 2
+      rgba: 0
+    key6:
+      serializedVersion: 2
+      rgba: 0
+    key7:
+      serializedVersion: 2
+      rgba: 0
+    ctime0: 0
+    ctime1: 32575
+    ctime2: 64764
+    ctime3: 7132
+    ctime4: 64764
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
 --- !u!114 &11445736
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -268,8 +311,8 @@ SpringJoint:
   serializedVersion: 2
   m_Spring: 10
   m_Damper: 0.2
-  m_MinDistance: 0.5
-  m_MaxDistance: 0.5
+  m_MinDistance: 8
+  m_MaxDistance: 8
   m_Tolerance: 0.025
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
@@ -347,7 +390,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: glowdiminish
-      value: 0.01
+      value: 0.005
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: mat
@@ -355,11 +398,67 @@ Prefab:
       objectReference: {fileID: 2100000, guid: 03b5aa9f23b144f0e8ba8709f5536fbe, type: 2}
     - target: {fileID: 0}
       propertyPath: minimumglow
-      value: 0.04
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: maxglow
-      value: 500
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_MinDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_MaxDistance
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.key0.rgba
+      value: 4285399013
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.ctime1
+      value: 32575
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.ctime0
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.key2.rgba
+      value: 16736495
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.ctime2
+      value: 64764
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.m_NumColorKeys
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.atime1
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.key3.rgba
+      value: 16720653
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.ctime3
+      value: 7132
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.key1.rgba
+      value: 4294935678
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.key4.rgba
+      value: 16711910
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: edgecolor.ctime4
+      value: 64764
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

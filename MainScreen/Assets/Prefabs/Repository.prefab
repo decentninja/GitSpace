@@ -205,8 +205,51 @@ MonoBehaviour:
   collider: {fileID: 13500030}
   hudunder: {fileID: 22344478}
   folderStartSize: 0.15
-  folderMaxSize: 0.5
+  folderMaxSize: 0.7
   rootStar: {fileID: 100496, guid: f6f0f41d366fdb0499fc48e07425fc6c, type: 2}
+  starcolor:
+    key0:
+      serializedVersion: 2
+      rgba: 4294933615
+    key1:
+      serializedVersion: 2
+      rgba: 4294638847
+    key2:
+      serializedVersion: 2
+      rgba: 5085951
+    key3:
+      serializedVersion: 2
+      rgba: 5085951
+    key4:
+      serializedVersion: 2
+      rgba: 5085951
+    key5:
+      serializedVersion: 2
+      rgba: 0
+    key6:
+      serializedVersion: 2
+      rgba: 0
+    key7:
+      serializedVersion: 2
+      rgba: 0
+    ctime0: 6361
+    ctime1: 32768
+    ctime2: 59174
+    ctime3: 65535
+    ctime4: 65535
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
   timeInterval: 0
   minPower: 1
   maxPower: 7
@@ -359,7 +402,51 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: folderMaxSize
-      value: 0.5
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.key0.rgba
+      value: 4294933615
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.ctime1
+      value: 32768
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.key2.rgba
+      value: 5085951
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.ctime2
+      value: 59174
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.m_NumColorKeys
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.key3.rgba
+      value: 5085951
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.ctime3
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.key1.rgba
+      value: 4294638847
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.key4.rgba
+      value: 5085951
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.ctime4
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.ctime0
+      value: 6361
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

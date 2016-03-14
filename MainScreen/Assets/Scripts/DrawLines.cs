@@ -5,6 +5,7 @@ public class DrawLines : MonoBehaviour {
 
 	public Repositories repositories;
 	public Material mat;
+	public float lowest = 0.1f;
 
 	void OnPostRender() {
 		GL.PushMatrix();
@@ -15,6 +16,9 @@ public class DrawLines : MonoBehaviour {
 					if(folder != null) {
 						mat.SetPass(0);
 						mat.SetColor("_EmissionColor", folder.EmailToColor());
+						Color c = mat.color;
+						c.a = lowest + folder.extraglow;
+						mat.color = c;
 						GL.Begin(GL.LINES);
 						GL.Vertex(folder.transform.position);
 						GL.Vertex(folder.parent.transform.position);
