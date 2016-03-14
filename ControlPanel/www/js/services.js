@@ -5,6 +5,7 @@ angular.module('gitSpace.services', ['ngSocket'])
     var ws = null;
 
     function init(url) {
+        console.log($rootScope.rootScope);
         $rootScope.rootScope.error = null;
         if(ws !== null) {
             ws.close();

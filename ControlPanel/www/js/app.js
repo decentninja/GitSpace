@@ -5,6 +5,14 @@
 // the 2nd parameter is an array of 'requires'
 var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controllers', 'gitSpace.services', 'gitSpace.filters', 'gitSpace.config'])
 .run(function($ionicPlatform, $rootScope, settings) {
+
+    $rootScope.rootScope = {
+        error: null,
+        settings: settings
+    };
+    console.log($rootScope.rootScope);
+
+
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -19,11 +27,6 @@ var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controller
     if(window.StatusBar) {
       StatusBar.styleLightContent();
     }
-
-    $rootScope.rootScope = {
-        error: null,
-        settings: settings
-    };
   });
 });
 
