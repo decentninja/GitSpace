@@ -16,6 +16,7 @@ __cache_state = False
 #################
 
 def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
+    time = 0 # Override time argument to avoid lightning 
     if __cache_state:
         with codecs.open("raw_state.py", "w+",'utf-8') as f:
             print("state=%s"%raw_state,file=f)
@@ -197,7 +198,7 @@ def _parse_raw_update(raw_update, API_version):
 
     update = {}
     update['type'] = 'update'
-    update['rep'] = 'GitSpace' # TODO placeholder
+    update['repo'] = 'GitSpace' # TODO placeholder
     update['apiv'] = 1
     update['message'] = meta_info['message']
     update['direction'] = 'forward'
@@ -262,9 +263,9 @@ def _create_empty_change_subfolder(name,meta_info):
     change = {}
     change['name'] = name
     change['size'] = 0
-    change['user'] = meta_info['committer']['email']
+    change['last modified by'] = meta_info['committer']['name']
     change['action'] = "none"
-    change['timestamp'] = meta_info['committer']['date']
+    change['last modified date'] = meta_info['committer']['date']
     change['non_master_branch'] = False
     change['subfolder'] = []
     change['filetypes'] = []
@@ -272,20 +273,6 @@ def _create_empty_change_subfolder(name,meta_info):
 
 def parse_git_time_format(date):
     return int(datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ").timestamp())
-
-
-def write_updates_readable(changes):
-    def print_tree(depth,tree, fil):
-        for t in tree:
-            print("  "*depth,t['name'],"(",t['action'],",",t['user'],")",file=fil)
-            print_tree(depth+1,t["subfolder"],fil)
-    with open("changes.txt","w+") as f:
-        for change in changes:
-            print("\n\n-----------------------------------",file=f)
-            print('timestamp: ',datetime.datetime.fromtimestamp(int(change['timestamp'])).strftime('%Y-%m-%d %H:%M:%S'),file=f)
-            print_tree(0,change['changes'],f)
-
-
 
 def create_user_states(state,users):
     return {user:_deep_state_clone(state,{}) for user in users}
@@ -324,7 +311,7 @@ def _update_children(user_states,change):
         # Only use the timestamp for None or correct user
         children = {}   
         for user,user_sub in user_states.items():
-            correct_user = sub['user'] == user or user is None
+            correct_user = sub['last modified by'] == user or user is None
             state_sub = None #Failsafe
             if not is_old_folder:            
                 new_folder = _create_empty_state_folder(sub['name'])
@@ -336,8 +323,8 @@ def _update_children(user_states,change):
             children[user] = state_sub
             if sub['action'] == 'update':
                 if correct_user:
-                    state_sub['last modified date'] = sub['timestamp']
-                    state_sub['last modified by'] = sub['user']
+                    state_sub['last modified date'] = sub['last modified date']
+                    state_sub['last modified by'] = sub['last modified by']
             elif sub['action'] == 'delete':
                 user_sub['subfolder'].remove(state_sub)
             elif sub['action'] == 'none':
@@ -351,12 +338,52 @@ def print_tree_structure(alist):
     '''for manual debug'''
     def print_tree(depth,tree):
         for t in tree:
-            if 'action' in t:
-                print("  "*depth+t['name'],t['action'])
+            if 'action' in tree:
+                print("  "*depth+t['name'],t['last modified date'],t['last modified by'],t['action'])
             else:
                 print("  "*depth+t['name'],t['last modified date'],t['last modified by'])
             print_tree(depth+1,t["subfolder"])
     print_tree(0,alist)
+
+
+
+
+##################
+# STATE TO UPDATE
+##################
+
+def state_to_update(state):
+    update = {}
+    update['type'] = "update"
+    update['repo'] = state['repo']
+    update['apiv'] = 1
+    update['direction'] = "forward"
+    update['forced'] = False
+    update["changes"] = []
+    recursive_state_to_update(update['changes'], state['state'])
+    return update
+
+def recursive_state_to_update(parent,state):
+    for sub in state:
+        new_sub = {}
+        new_sub['last modified by'] = sub['last modified by']
+        new_sub['last modified date'] = sub['last modified date']
+        new_sub['name'] = sub['name']
+        new_sub['action'] = 'update'
+        new_sub['subfolder'] = []
+        new_sub['filetypes'] = []
+
+        parent.append(new_sub)
+        recursive_state_to_update(new_sub['subfolder'],sub['subfolder'])
+
+
+
+
+
+
+
+
+
 
 #####################
 # Davids hemliga hörna
@@ -367,11 +394,16 @@ if __name__ == '__main__':
     from raw_updates import updates as rawupdates
     state = parse_raw_state(rawstate,time = "2016-02-23T19:30:35Z")
     updates = parse_raw_updates(rawupdates)
-    print("BEFORE")
+    update_state(state,updates)
     print_tree_structure(state['state'])
+<<<<<<< HEAD
     for u in updates:
         print(u['message'])
         print_tree_structure(u['changes'])
         update_state(state,[u])
         print("AFTER")
         print_tree_structure(state['state'])
+=======
+    print("-----------------------")
+    print_tree_structure(state_to_update(state)['changes'])
+>>>>>>> added repo class
