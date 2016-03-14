@@ -170,7 +170,9 @@ MonoBehaviour:
   size: 0
   text: {fileID: 11445736}
   extraglow: 0
-  glowdiminish: 0.05
+  glowdiminish: 0.01
+  minimumglow: 0.04
+  maxglow: 500
 --- !u!114 &11445736
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -345,7 +347,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: glowdiminish
-      value: 0.05
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: mat
+      value: 
+      objectReference: {fileID: 2100000, guid: 03b5aa9f23b144f0e8ba8709f5536fbe, type: 2}
+    - target: {fileID: 0}
+      propertyPath: minimumglow
+      value: 0.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: maxglow
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

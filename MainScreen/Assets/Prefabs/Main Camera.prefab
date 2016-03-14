@@ -277,8 +277,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   exposureAdjustment: 1.5
-  middleGrey: 0.31
-  white: 1.96
+  middleGrey: 0.18
+  white: 2.71
   adaptionSpeed: 0.64
   tonemapper: {fileID: 4800000, guid: 003377fc2620a44939dadde6fe3f8190, type: 3}
   validRenderTextureFormat: 1
@@ -293,8 +293,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d61e6ca0f32fe4be4b22ab5661c1fe69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 2100000, guid: 03b5aa9f23b144f0e8ba8709f5536fbe, type: 2}
   repositories: {fileID: 0}
+  mat: {fileID: 2100000, guid: 03b5aa9f23b144f0e8ba8709f5536fbe, type: 2}
 --- !u!114 &11483378
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -306,8 +306,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 620cd681b32b24f73940f8d0bf72c9f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  repositories: {fileID: 0}
+  target: {fileID: 0}
   margin: 0.8
+  cameraspeed: 0.05
 --- !u!124 &12400684
 Behaviour:
   m_ObjectHideFlags: 1

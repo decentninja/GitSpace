@@ -150,7 +150,9 @@ public class Repository : MonoBehaviour {
                 GameObject child = recursiveCreate(gameObject, folder);
                 children.Add(child.name, child);
             }
-            catch (ArgumentException) { }
+            catch (ArgumentException e) {
+		Debug.LogError(e);
+	    }
         }
         resizeallfolders();
     }

@@ -91,10 +91,6 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 309004206}
   m_Script: {fileID: 11500000, guid: a60fc67502d61442b9d1c464dcaa99a7, type: 3}
---- !u!4 &25361673 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 479998, guid: 902973120866bdc449ee2f47961db001, type: 2}
-  m_PrefabInternal: {fileID: 309004206}
 --- !u!1 &32903526
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,58 +245,6 @@ Prefab:
       propertyPath: repositories
       value: 
       objectReference: {fileID: 25361672}
-    - target: {fileID: 11483378, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: repositories
-      value: 
-      objectReference: {fileID: 25361673}
-    - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11407890, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: type
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: middleGrey
-      value: 0.18
-      objectReference: {fileID: 0}
-    - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: white
-      value: 2.71
-      objectReference: {fileID: 0}
-    - target: {fileID: 11481994, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: adaptionSpeed
-      value: 0.64
-      objectReference: {fileID: 0}
-    - target: {fileID: 11483378, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11483378, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: cameraspeed
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: glow_target.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: glow_target.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: glow_target.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
-      propertyPath: glow_target.a
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
   m_IsPrefabParent: 0
