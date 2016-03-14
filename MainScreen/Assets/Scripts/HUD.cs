@@ -7,9 +7,10 @@ public class HUD : MonoBehaviour {
 
 	public Text time;
 
-	public void setTime(int unixtime) {
-		DateTime datetime = new DateTime(1970, 1, 1);
-		datetime = datetime.AddSeconds(unixtime);
+	public void setTime(int unixtime) { }
+
+	void Update() {
+		DateTime datetime = DateTime.Now;
 		time.text = datetime.ToString("yyyy.MM.dd HH:mm");
 	}
 }

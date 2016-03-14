@@ -51,7 +51,6 @@ public class Repository : MonoBehaviour {
 
     void handleUpdate(JsonData data)
     {
-        setTime(data);
         int numChanges = data["changes"].Count;
         for (int i = 0; i < numChanges; i++)
         {
@@ -132,7 +131,6 @@ public class Repository : MonoBehaviour {
 
     public void CreateConstellation(JsonData data)
     {
-        setTime(data);
         hudunder.transform.Find("Title").GetComponent<Text>().text = (string)data["repo"];
 
         // rootstar code
