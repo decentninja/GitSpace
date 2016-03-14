@@ -23,7 +23,12 @@ angular.module('gitSpace.services', ['ngSocket'])
         ws.onMessage(function (data) {
             // Emitting connected client
             console.log("On message", data);
-            var json = JSON.parse(data.data);
+            var json;
+            try {
+                json = JSON.parse(data.data);
+            } catch (e) {
+                $rootScope.rootScope.error = "Invalid JSON from server.";
+            }
             repositories = json.data;
             console.log("Repositories from server", repositories);
             $rootScope.$broadcast("dataAvailable");
