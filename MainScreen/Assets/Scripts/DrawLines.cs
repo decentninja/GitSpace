@@ -5,13 +5,6 @@ public class DrawLines : MonoBehaviour {
 
 	public Material mat;
 	public Repositories repositories;
-	public Color glow_target;
-
-	Color originalmat;
-
-	void Awake() {
-		originalmat = mat.color;
-	}
 
 	void OnPostRender() {
 		GL.PushMatrix();
@@ -21,7 +14,7 @@ public class DrawLines : MonoBehaviour {
 				foreach(Transform grandchild in child.transform) {
 					Folder folder = grandchild.GetComponent<Folder>();
 					if(folder != null) {
-						mat.color = Color.Lerp(originalmat, glow_target, folder.extraglow);
+						mat.color = folder.EmailToColor();
 						mat.SetPass(0);
 						GL.Begin(GL.LINES);
 						GL.Vertex(folder.transform.position);
@@ -33,5 +26,4 @@ public class DrawLines : MonoBehaviour {
 		}
 		GL.PopMatrix();
 	}
-
 }
