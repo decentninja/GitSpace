@@ -4,8 +4,17 @@ angular.module('gitSpace.services', ['ngSocket'])
     var repositories = [];
     var ws = null;
 
+    var url = "ws://127.0.0.1:8080";
+    var ls = false; // LocalStorage
+    if(typeof(Storage) !== "undefined") {
+        ls = true;
+        var tempUrl = localStorage.getItem("gitSpaceWsUrl");
+        if(tempUrl !== null) {
+            url = tempUrl;
+        }
+    }
+
     function init(url) {
-        console.log($rootScope.rootScope);
         $rootScope.rootScope.error = null;
         if(ws !== null) {
             ws.close();
@@ -38,9 +47,13 @@ angular.module('gitSpace.services', ['ngSocket'])
         });
     }
 
-    init(settings.webSocketUrl);
+    console.log(url);
+    init(url);
 
     return {
+        getUrl: function() {
+            return url;
+        },
         emit: function(data) {
             return ws.send(data);
         },
@@ -55,7 +68,14 @@ angular.module('gitSpace.services', ['ngSocket'])
             }
             return null;
         },
-        setUrl: function(url) {
+        setUrl: function(newUrl) {
+            url = newUrl;
+            if(ls) {
+                localStorage.setItem("gitSpaceWsUrl", url);
+            }
+            init(url);
+        },
+        reloadWs: function() {
             init(url);
         }
     };

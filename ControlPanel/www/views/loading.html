@@ -1,8 +1,8 @@
-<div class="t-center" ng-show="repositories.length == 0 && rootScope.error == null">
+<div class="t-center padding" ng-show="repositories.length == 0 && rootScope.error == null">
     <ion-spinner></ion-spinner>
     <p>Connecting...</p>
 </div>
-<div class="t-center" ng-show="rootScope.error !== null">
+<div class="t-center padding" ng-show="rootScope.error !== null">
     <p>{{ rootScope.error }}</p>
     <button class="button button-positive" ng-click="reloadWebsockets()"><i class="ion-icon ion-refresh"></i> Reload</button>
 </div>

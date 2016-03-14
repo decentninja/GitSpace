@@ -100,6 +100,12 @@ button {
 	}
 }
 
+.item-input-wrapper {
+	input {
+		width: 100%;
+	}
+}
+
 #choose-repository {
 	label {
 		text-transform: uppercase;
