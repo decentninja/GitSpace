@@ -141,7 +141,6 @@ class Main():
         if client_id not in self.clients:
             self.clients[client_id] = []
         self.clients[client_id].append(new_client)
-        print(self.states[client_id], file=sys.stderr)
         [self.send(new_client, self.states[client_id][repo])
                 for repo in self.states[client_id]]
 
