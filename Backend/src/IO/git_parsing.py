@@ -296,7 +296,6 @@ def update_state(state,updates):
 def update_user_states(user_states,updates):
     for update in updates:
         _apply_update(user_states,update)
-    return state
 
 def _apply_update(user_states,update):
     fake_states = {user: {'subfolder':tree['state']} for user,tree in user_states.items()}
@@ -396,14 +395,5 @@ if __name__ == '__main__':
     updates = parse_raw_updates(rawupdates)
     update_state(state,updates)
     print_tree_structure(state['state'])
-<<<<<<< HEAD
-    for u in updates:
-        print(u['message'])
-        print_tree_structure(u['changes'])
-        update_state(state,[u])
-        print("AFTER")
-        print_tree_structure(state['state'])
-=======
     print("-----------------------")
     print_tree_structure(state_to_update(state)['changes'])
->>>>>>> added repo class
