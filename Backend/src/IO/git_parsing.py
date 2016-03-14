@@ -262,7 +262,7 @@ def _create_empty_change_subfolder(name,meta_info):
 	change = {}
 	change['name'] = name
 	change['size'] = 0
-	change['user'] = meta_info['committer']['name']
+	change['user'] = meta_info['committer']['email']
 	change['action'] = "none"
 	change['timestamp'] = meta_info['committer']['date']
 	change['non_master_branch'] = False
