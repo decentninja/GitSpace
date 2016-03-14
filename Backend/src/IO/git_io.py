@@ -89,7 +89,6 @@ def get_init_state(owner, repo, time_now):
     sha,time = find_most_recent_sha(owner, repo,
         time_now - datetime.timedelta(days=lookback_days))
     # Get the associated tree
-    print(time)
     return get_tree(owner, repo, sha),time
 
 def get_init_commits(owner, repo, time_now):
@@ -103,7 +102,6 @@ def get_init(owner, repo):
     state,time = get_init_state(owner, repo,time_now)
     updates = [get_full_commitinfo(owner, repo, c) for c in
         get_init_commits(owner, repo, time_now)]
-    print(time)
     state_parsed = git_parsing.parse_raw_state(state,time = time)
     #updates arrive in reversed order
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
