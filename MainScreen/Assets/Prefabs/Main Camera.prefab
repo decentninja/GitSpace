@@ -268,7 +268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   repositories: {fileID: 0}
   mat: {fileID: 2100000, guid: 03b5aa9f23b144f0e8ba8709f5536fbe, type: 2}
-  lowest: 0.125
+  lowest: 0.07
 --- !u!114 &11483378
 MonoBehaviour:
   m_ObjectHideFlags: 1

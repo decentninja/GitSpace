@@ -18,9 +18,7 @@ public class Repository : MonoBehaviour {
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
-    // minimum amd max glow star will have, if not updated within the interval
-    public int minPower = 1;
-    public int maxPower = 4;
+    int minPower = 0;
 
     bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
@@ -79,9 +77,13 @@ public class Repository : MonoBehaviour {
         {
             if (currentChildren.ContainsKey((string)data["name"]))
             {
-                parent.children[foldername].GetComponent<Folder>().Changed((string) data["user"]);
-                //set sizes of stars based on update date
-                parent.children[foldername].GetComponent<Folder>().size = setFolderSize(data);
+                Folder star = parent.children[foldername].GetComponent<Folder>();
+                star.lastModifiedDate = (int) data["last modified date"];
+                if (star.lastModifiedDate != 0) { 
+                    star.Changed((string) data["last modified by"]);
+                    //set sizes of stars based on update date
+                    parent.children[foldername].GetComponent<Folder>().size = setFolderSize(data);
+                }
 
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
@@ -281,6 +283,7 @@ public class Repository : MonoBehaviour {
 	return new Color(c.r * 255, c.g * 255, c.b * 255);
     }
 
+    /* Ändra så att det blir olika nivårer av returns, färre antal nivåer ger större skillnad i localscale när resizeallfolders kallad då man splittar sizerangen på antal nivåer*/
     public int setFolderSize(JsonData folder)
     {
         Repositories sn = FindObjectOfType<Repositories>();

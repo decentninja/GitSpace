@@ -41,6 +41,21 @@ def get_tree(repo, sha):
     return get_api_result('https://api.github.com/repos/'+ repo +\
         '/git/trees/'+ sha +'?recursive=1')
 
+def get_collaborators(repo):
+    raw = get_api_result('https://api.github.com/repos/'+ repo +'/collaborators')
+    collabs = []
+    for user in raw:
+        new_user = {}
+        new_user['username'] = user['login']
+        new_user['image'] = user['avatar_url']
+        new_user['name'] = get_user_name(new_user['username'])
+        collabs.append(new_user)
+    return collabs
+
+def get_user_name(username):
+    name = get_api_result('https://api.github.com/users/' + username)['name']
+    return username if name == None else name
+
 def get_commits_in_span(repo, since, until):
     commits = []
     last_sha = 'none'
@@ -108,3 +123,4 @@ def get_init(repo):
 if __name__ == '__main__':
     repo = 'decentninja/GitSpace'
     state,updates = get_init(repo)
+    print(get_collaborators(repo))

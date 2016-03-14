@@ -125,7 +125,7 @@ angular.module('gitSpace.controllers', [])
 	};
 
 	$scope.reloadWebsockets = function() {
-		Repositories.setUrl(settings.webSocketUrl);
+		Repositories.reloadWs();
 	};
 }])
 
@@ -133,7 +133,7 @@ angular.module('gitSpace.controllers', [])
 *	Repository controller
 */
 .controller("settingsCtrl", ['$scope', '$rootScope', 'Repositories', 'settings', function($scope, $rootScope, Repositories, settings) {
-	$scope.webSocketUrl = settings.webSocketUrl;
+	$scope.webSocketUrl = Repositories.getUrl();
 
 	$scope.setWebsocketUrl = function(url) {
 		console.log("In controller. Settings websockets URL", url);

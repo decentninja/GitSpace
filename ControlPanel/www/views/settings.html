@@ -4,11 +4,18 @@
 		</ion-nav-back-button>
 	</ion-nav-bar>
 	<ion-content>
-		<div class="list padding">
-			<label class="item item-input">
-				<input type="text" placeholder="Websocket URL" ng-model="webSocketUrl">
-			</label>
-			<button class="button button-full button-positive" ng-click="setWebsocketUrl(webSocketUrl)">Update websocket url</button>
+		<div class="list">
+			<div class="item item-input-inset">
+				<label class="item-input-wrapper">
+					<input type="text" placeholder="Websocket URL" ng-model="webSocketUrl">
+				</label>
+				<button class="button button-small button-positive" ng-click="setWebsocketUrl(webSocketUrl)">
+					Update
+				</button>
+			</div>
+		</div>
+		<div class="t-center t-gray t-small">
+			<p>Created by GitSpace. Version 1.0</p>
 		</div>
 	</ion-content>
 </ion-view>
