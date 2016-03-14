@@ -15,7 +15,7 @@ __cache_state = False
 # STATE PARSER
 #################
 
-def parse_raw_state(raw_state, time = 0, API_version = None):
+def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
     if __cache_state:
         with codecs.open("raw_state.py", "w+",'utf-8') as f:
             print("state=%s"%raw_state,file=f)
@@ -29,7 +29,7 @@ def parse_raw_state(raw_state, time = 0, API_version = None):
         state = {}
         state['api version'] = 1
         state['type'] = 'state'
-        state['repo'] = 'GitSpace' # TODO placeholder
+        state['repo'] = name
         state['state'] = _extract_folders(raw_state['tree'],API_version,time)
     #   with open("state_output.txt","w+") as f:
     #       _write_readable_structure_to_file(f,state)
@@ -60,7 +60,7 @@ def _extract_folders(tree, API_version,time):
             name = os.path.basename(node['path'])
             parent = folder_map[path] if len(path) > 0 else None
             if node['type'] == 'tree':
-                _handle_tree_type(API_version,node,parent,name,folder_map,time)         
+                _handle_tree_type(API_version,node,parent,name,folder_map,time)
             elif node['type'] == 'blob':
                 # Files have type blob
                 # A second pass is used to calculate file type ratio
@@ -115,7 +115,7 @@ def _handle_tree_type(API_version,node,parent,name,folder_map,time = 0):
             folder_map[parent].append(folder)
         else:
             #.append current folder to parent.
-            # No needs for parent_exists checks 
+            # No needs for parent_exists checks
             # since inputed list is sorted hierarchical
             parent['subfolder'].append(folder)
 
@@ -235,7 +235,7 @@ def _create_subs(parent,subs,change_map,meta_info,change):
         # Create folder
         current = _create_empty_change_subfolder(subs[0],meta_info)
         change_map[new_sub] = current # Add to list of folders
-        
+
         action = change['status']
         if action in ['added','modified']:
             current['action'] = 'update'
@@ -254,7 +254,7 @@ def _create_subs(parent,subs,change_map,meta_info,change):
                 change_map[parent].append(current)
         else: # Add to parents subfolder
             change_map[parent]['subfolder'].append(current)
-            
+
     # Create child folders of current folder
     _create_subs(new_sub,subs[1:],change_map,meta_info,change)
 

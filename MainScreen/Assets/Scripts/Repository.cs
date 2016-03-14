@@ -79,6 +79,8 @@ public class Repository : MonoBehaviour {
             if (currentChildren.ContainsKey((string)data["name"]))
             {
                 parent.children[foldername].GetComponent<Folder>().Changed((string) data["user"]);
+                //set sizes of stars based on update date
+                parent.children[foldername].GetComponent<Folder>().size = setFolderSize(data);
 
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
@@ -93,6 +95,8 @@ public class Repository : MonoBehaviour {
                 GameObject star = createStar(parentGameObject, data);
                 currentChildren.Add(star.name, star);
                 star.GetComponent<Folder>().Changed((string) data["user"]);
+                //set sizes of stars based on update date
+                star.GetComponent<Folder>().size = setFolderSize(data);
 
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
@@ -165,6 +169,7 @@ public class Repository : MonoBehaviour {
         foldercomp.Changed((string) folder["last modified by"]);
         //foldercomp.size = ((int) folder["last modified date"]) / Datetime.Now().Second;
         //Debug.Log(foldercomp.size);
+        //set sizes of stars based on update date
         foldercomp.size = setFolderSize(folder);
 
 
@@ -184,7 +189,13 @@ public class Repository : MonoBehaviour {
                 index = i;
             }
         }
-        if (index != -1) thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+        if (index != -1)
+        {
+            thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+        } else
+        {
+            thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+        }
 
         // Recursively go down the file tree.
         int numSubFolders = folder["subfolder"].Count;
@@ -307,15 +318,15 @@ public class Repository : MonoBehaviour {
         timeInterval = 60 * sn.getThreshold();
         JsonData moddate = folder["last modified date"];
         int lastmoddate = int.Parse(moddate.ToString());
-        if (lastmoddate == 0)
+        if (lastmoddate == 0 || (ConvertToUnixTimestamp(DateTime.Now) - lastmoddate) > timeInterval)
         {
             return minPower;
         }
         else
         {
             double passedtime = ConvertToUnixTimestamp(DateTime.Now) - lastmoddate;
-            double rounded = passedtime / timeInterval;
-            return (int)rounded;
+            double rounded = 1 - (passedtime / timeInterval);
+            return (int)(rounded*10);
         }
     }
     public int ConvertToUnixTimestamp(DateTime date)
