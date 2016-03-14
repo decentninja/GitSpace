@@ -79,7 +79,7 @@ public class Repository : MonoBehaviour {
         {
             if (currentChildren.ContainsKey((string)data["name"]))
             {
-                parent.children[foldername].GetComponent<Folder>().Changed((string) data["last modified by"]);
+                parent.children[foldername].GetComponent<Folder>().Changed((string) data["user"]);
 
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
@@ -93,7 +93,7 @@ public class Repository : MonoBehaviour {
             {
                 GameObject star = createStar(parentGameObject, data);
                 currentChildren.Add(star.name, star);
-                star.GetComponent<Folder>().Changed((string) data["last modified by"]);
+                star.GetComponent<Folder>().Changed((string) data["user"]);
 
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
@@ -162,7 +162,7 @@ public class Repository : MonoBehaviour {
         // Add star.
         GameObject thisStar = createStar(parent, folder);
         Folder foldercomp = thisStar.GetComponent<Folder>();
-        foldercomp.Changed((string) folder["user"]);
+        foldercomp.Changed((string) folder["last modified by"]);
         //foldercomp.size = ((int) folder["last modified date"]) / Datetime.Now().Second;
 	//Debug.Log(foldercomp.size);
 
