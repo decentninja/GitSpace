@@ -37,20 +37,17 @@ public class Repositories : MonoBehaviour {
                         resetCamera();
                         break;
                     case "labels":
-                        string labels = (string)data["labels"];
-                        if(labels.Equals("true"))
+                        bool labels = (bool)data["labels"];
+                        if(labels)
                         {
                             displayLabels(true);
-                        } else if (labels.Equals("false"))
+                        } else
                         {
                             displayLabels(false);
-                        } else {
-                            Debug.Log("Error, label neither true nor false.");
                         }
                         break;
                     case "activity threshold":
                         this.threshold = (int)data["threshold"]; //TODO det här kanske inte funkar (int alltså)
-                        Debug.Log("Not implemented. Set activity threshold to: " + threshold);
                         break;
                 }
                 break;
