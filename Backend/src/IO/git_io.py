@@ -10,7 +10,7 @@ TODO-list:
 
 import datetime
 import requests
-import IO.git_parsing as git_parsing
+import git_parsing as git_parsing
 
 # Should stay rather constant
 GIT_URL = 'https://api.github.com'
@@ -42,10 +42,32 @@ def get_tree(owner, repo, sha):
         '/git/trees/'+ sha +'?recursive=1')
 
 def get_commits_in_span(owner, repo, since, until):
-    params = {'since': since.isoformat(),
-              'until': until.isoformat()}
-    return get_api_result('https://api.github.com/repos/'+owner+'/' + repo +\
-        '/commits')
+    commits = []
+    last_sha = 'none'
+    while True:
+        params = {'since': since.isoformat(),
+                  'until': until.isoformat()}
+        new_commits = (get_api_result('https://api.github.com/repos/'+owner+'/' + repo +\
+                '/commits',params=params))
+        if len(new_commits) == 0:
+            break
+        earliest = new_commits[-1]
+        sha = new_commits[-1]['sha']
+        if sha == last_sha:
+            break
+        last_sha = sha
+        time = git_parsing.parse_git_time_format(earliest['commit']['committer']['date'])
+        date = datetime.datetime.fromtimestamp(time)
+        if len(commits) > 0:
+            if new_commits[0]['sha'] ==\
+                  commits[-1]['sha']:
+                new_commits=new_commits[1:]
+        commits+=new_commits
+        until = date
+    if len(commits) == 0:
+        return None
+    return commits
+
 
 def get_full_commitinfo(owner, repo, commit):
     return get_api_result('https://api.github.com/repos/'+owner+'/' + repo +\
@@ -60,26 +82,29 @@ def find_most_recent_sha(owner, repo, start_date):
         since -= datetime.timedelta(days=backoff)
         backoff *= 2
         commits = get_commits_in_span(owner, repo, since, start_date)
-    return commits[0]['sha']
+    return (commits[0]['sha'],commits[0]['commit']['committer']['date'])
 
-def get_init_state(owner, repo):
+def get_init_state(owner, repo, time_now):
     # Get sha for a state 1 week+ ago
-    sha = find_most_recent_sha(owner, repo,
-        datetime.datetime.now() - datetime.timedelta(days=lookback_days))
+    sha,time = find_most_recent_sha(owner, repo,
+        time_now - datetime.timedelta(days=lookback_days))
     # Get the associated tree
-    return get_tree(owner, repo, sha)
+    print(time)
+    return get_tree(owner, repo, sha),time
 
-def get_init_commits(owner, repo):
+def get_init_commits(owner, repo, time_now):
     commits = get_commits_in_span(owner, repo,
-        datetime.datetime.now() - datetime.timedelta(days=lookback_days),
-        datetime.datetime.now())
+        time_now - datetime.timedelta(days=lookback_days),
+        time_now)
     return commits
 
 def get_init(owner, repo):
-    state = get_init_state(owner, repo)
+    time_now = datetime.datetime.now()
+    state,time = get_init_state(owner, repo,time_now)
     updates = [get_full_commitinfo(owner, repo, c) for c in
-        get_init_commits(owner, repo)]
-    state_parsed = git_parsing.parse_raw_state(state)
+        get_init_commits(owner, repo, time_now)]
+    print(time)
+    state_parsed = git_parsing.parse_raw_state(state,time = time)
     #updates arrive in reversed order
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
     return git_parsing.update_state(state_parsed,update_parsed), update_parsed
