@@ -311,6 +311,7 @@ public class Repository : MonoBehaviour {
         return new Color(color.r* 255, color.g* 255, color.b* 255);
     }
 
+    /* Ändra så att det blir olika nivårer av returns, färre antal nivåer ger större skillnad i localscale när resizeallfolders kallad då man splittar sizerangen på antal nivåer*/
     public int setFolderSize(JsonData folder)
     {
         Repositories sn = FindObjectOfType<Repositories>();
@@ -326,7 +327,7 @@ public class Repository : MonoBehaviour {
         {
             double passedtime = ConvertToUnixTimestamp(DateTime.Now) - lastmoddate;
             double rounded = 1 - (passedtime / timeInterval);
-            return (int)(rounded*10);
+            return (int)(rounded*10) + minPower;
         }
     }
     public int ConvertToUnixTimestamp(DateTime date)
