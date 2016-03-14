@@ -17,9 +17,7 @@ public class Repository : MonoBehaviour {
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
-    // minimum amd max glow star will have, if not updated within the interval
-    public int minPower = 1;
-    public int maxPower = 4;
+    int minPower = 0;
 
     bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
@@ -327,7 +325,7 @@ public class Repository : MonoBehaviour {
         {
             double passedtime = ConvertToUnixTimestamp(DateTime.Now) - lastmoddate;
             double rounded = 1 - (passedtime / timeInterval);
-            return (int)(rounded*10) + minPower;
+            return (int)(rounded*10);
         }
     }
     public int ConvertToUnixTimestamp(DateTime date)
