@@ -285,18 +285,6 @@ public class Repository : MonoBehaviour {
         }
     }
 
-    private Color EmailToColor(string mail)
-    {
-        int mod = 100;
-        float h = Mathf.Abs((float)mail.GetHashCode()) % 100;
-        h = h / 100;
-        float s = Mathf.Abs((float)mail.GetHashCode()) % 50;
-        s = s / 100;
-        float v = s;
-
-        Color color = Color.HSVToRGB(h, s, v);
-        return new Color(color.r * 255, color.g * 255, color.b * 255);
-    }
 
     private float DateToGlow(string date){
         float strength = 0;
