@@ -21,6 +21,7 @@ var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controller
     }
 
     $rootScope.rootScope = {
+        error: null,
         settings: settings
     };
   });
@@ -28,5 +29,5 @@ var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controller
 
 angular.module("gitSpace.config", [])
 .value("settings", {
-    webSocketUrl: 'ws://127.0.0.1:8080'
+    webSocketUrl: 'ws://130.229.133.161:8080'
 });
