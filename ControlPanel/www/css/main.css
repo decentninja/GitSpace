@@ -9747,6 +9747,10 @@ a.button {
   background: rgba(255, 255, 255, 0);
   pointer-events: none; }
 
+.users {
+  margin-bottom: -1px !important;
+  border-bottom: solid 10px #eee; }
+
 .lightning {
   -webkit-animation: lightning 0.75s ease-out;
   -webkit-animation-iteration-count: infinite; }
@@ -9791,6 +9795,9 @@ a.button {
   100% {
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.9); } }
 
+.item.repository {
+  padding: 0; }
+
 #choose-repository label {
   text-transform: uppercase;
   font-size: 0.65em;
@@ -9798,7 +9805,11 @@ a.button {
 
 #choose-repository h2 {
   font-size: 1.25em;
-  margin-top: 1.25rem; }
+  margin-top: 1.25rem;
+  margin-bottom: 0; }
+
+#choose-repository .padding {
+  padding: 16px; }
 
 .positive h1, .positive .number {
   color: #33cd5f; }

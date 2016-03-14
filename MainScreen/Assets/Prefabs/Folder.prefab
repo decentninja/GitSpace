@@ -169,6 +169,8 @@ MonoBehaviour:
   rb: {fileID: 5489246}
   size: 0
   text: {fileID: 11445736}
+  extraglow: 0
+  glowdiminish: 0.05
 --- !u!114 &11445736
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -340,6 +342,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Radius
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: glowdiminish
+      value: 0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

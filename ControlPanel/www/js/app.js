@@ -3,8 +3,8 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controllers', 'gitSpace.services', 'gitSpace.filters'])
-.run(function($ionicPlatform, $rootScope, $websocket) {
+var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controllers', 'gitSpace.services', 'gitSpace.filters', 'gitSpace.config'])
+.run(function($ionicPlatform, $rootScope, settings) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -20,5 +20,13 @@ var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controller
       StatusBar.styleLightContent();
     }
 
+    $rootScope.rootScope = {
+        settings: settings
+    };
   });
+});
+
+angular.module("gitSpace.config", [])
+.value("settings", {
+    webSocketUrl: 'ws://127.0.0.1:8080'
 });

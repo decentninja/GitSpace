@@ -13,7 +13,6 @@ public class Repositories : MonoBehaviour {
 
     void Start() {
 	resetCamera();
-	focusCamera("GitSpace");
     }
 
     public void handle(JsonData data) {
@@ -27,6 +26,32 @@ public class Repositories : MonoBehaviour {
 		// TODO Handle display label commands using displayLabels(bool)
 		// TODO handle focus camera commands using focusCamera(reponame)
 		// TODO handle see everything using resetCamera(void)
+        string command = (string)data["command"];
+                switch (command) {
+                    case "repo focus":
+                        repoName = (string)data["repo"];
+                        focusCamera(repoName);
+                        break;
+                    case "reset camera":
+                        resetCamera();
+                        break;
+                    case "labels":
+                        string labels = (string)data["labels"];
+                        if(labels.Equals("true"))
+                        {
+                            displayLabels(true);
+                        } else if (labels.Equals("false"))
+                        {
+                            displayLabels(false);
+                        } else {
+                            Debug.Log("Error, label neither true nor false.");
+                        }
+                        break;
+                    case "activity threshold":
+                        int threshold = (int)data["threshold"]; //TODO det här kanske inte funkar (int alltså)
+                        Debug.Log("Not implemented. Set activity threshold to: " + threshold);
+                        break;
+                }
                 break;
             case "delete":
 		dierepo(repoName);

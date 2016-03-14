@@ -39,9 +39,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4650c12454565e4aa9cf95e885fc11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateChanged: 0
   ipaddress: 127.0.0.1
-  port: 21
+  port: 5522
+  repos: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

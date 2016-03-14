@@ -58,6 +58,7 @@ public class Repository : MonoBehaviour {
             JsonData change = data["changes"][i];
             recursiveUpdate(null, (string)change["name"], change);
         }
+        resizeallfolders();
     }
 
     public void recursiveUpdate(Folder parent, string foldername, JsonData data)
@@ -76,27 +77,31 @@ public class Repository : MonoBehaviour {
         }
         if ("update".Equals((string)data["action"]))
         {
-            //parent.children[foldername].change(); //nån funktion som updaterar glow och sånt
-
-            int numChanges = data["subfolder"].Count;
-            for (int i = 0; i < numChanges; i++)
+            if (currentChildren.ContainsKey((string)data["name"]))
             {
-                JsonData change = data["subfolder"][i];
-                Folder newparent = currentChildren[foldername].GetComponent<Folder>();
-                recursiveUpdate(newparent, (string)change["name"], change);
+                parent.children[foldername].GetComponent<Folder>().Changed(); //nån funktion som updaterar glow och sånt
+
+                int numChanges = data["subfolder"].Count;
+                for (int i = 0; i < numChanges; i++)
+                {
+                    JsonData change = data["subfolder"][i];
+                    Folder newparent = currentChildren[foldername].GetComponent<Folder>();
+                    recursiveUpdate(newparent, (string)change["name"], change);
+                }
             }
-        }
-        else if ("create".Equals((string)data["action"]))
-        {
-            GameObject star = createStar(parentGameObject, data);
-            currentChildren.Add(star.name, star);
-
-            int numChanges = data["subfolder"].Count;
-            for (int i = 0; i < numChanges; i++)
+            else
             {
-                JsonData change = data["subfolder"][i];
-                Folder newparent = currentChildren[star.name].GetComponent<Folder>();
-                recursiveUpdate(newparent, star.name, change);
+                GameObject star = createStar(parentGameObject, data);
+                currentChildren.Add(star.name, star);
+                star.GetComponent<Folder>().Changed();
+
+                int numChanges = data["subfolder"].Count;
+                for (int i = 0; i < numChanges; i++)
+                {
+                    JsonData change = data["subfolder"][i];
+                    Folder newparent = currentChildren[star.name].GetComponent<Folder>();
+                    recursiveUpdate(newparent, star.name, change);
+                }
             }
         }
         else if ("delete".Equals((string)data["action"]))
@@ -142,8 +147,12 @@ public class Repository : MonoBehaviour {
         for (int i = 0; i < numSubFolders; i++)
         {
             JsonData folder = data["state"][i];
-            GameObject child = recursiveCreate(gameObject, folder);
-            children.Add(child.name, child);
+            try
+            {
+                GameObject child = recursiveCreate(gameObject, folder);
+                children.Add(child.name, child);
+            }
+            catch (ArgumentException) { }
         }
         resizeallfolders();
     }
@@ -153,7 +162,9 @@ public class Repository : MonoBehaviour {
         // Add star.
         GameObject thisStar = createStar(parent, folder);
         Folder foldercomp = thisStar.GetComponent<Folder>();
-        foldercomp.size = (int)folder["size"];
+        foldercomp.Changed();
+        //foldercomp.size = ((int) folder["last modified date"]) / Datetime.Now().Second;
+	//Debug.Log(foldercomp.size);
 
         // Calculate color using file extension.
         int numFileTypes = folder["filetypes"].Count;
@@ -272,6 +283,19 @@ public class Repository : MonoBehaviour {
             Debug.Log("Color Error");
             return new Color(0, 0, 0);
         }
+    }
+
+    private Color EmailToColor(string mail)
+    {
+        int mod = 100;
+        float h = Mathf.Abs((float)mail.GetHashCode()) % 100;
+        h = h / 100;
+        float s = Mathf.Abs((float)mail.GetHashCode()) % 50;
+        s = s / 100;
+        float v = s;
+
+        Color color = Color.HSVToRGB(h, s, v);
+        return new Color(color.r * 255, color.g * 255, color.b * 255);
     }
 
     private float DateToGlow(string date){
