@@ -312,8 +312,6 @@ public class Repository : MonoBehaviour {
         else
         {
             double passedtime = ConvertToUnixTimestamp(DateTime.Now) - lastmoddate;
-            print(passedtime + "passedtime");
-            print(ConvertToUnixTimestamp(DateTime.Now));
             double rounded = passedtime / timeInterval;
             return (int)rounded;
         }
