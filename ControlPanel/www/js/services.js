@@ -55,6 +55,7 @@ angular.module('gitSpace.services', ['ngSocket'])
             return url;
         },
         emit: function(data) {
+            console.log("Emitting:", data);
             return ws.send(data);
         },
         all: function() {

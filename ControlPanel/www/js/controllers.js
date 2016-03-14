@@ -44,24 +44,21 @@ angular.module('gitSpace.controllers', [])
 			repository.show = true;
 		} else {
 			// We are closing a repo
+			Repositories.emit({
+				command: 'reset camera',
+				repo: repository.name
+			});
 			repository.show = false;
 		}
 	};
 
 	$scope.zoomRepository = function(repository) {
 		console.log(repository);
-		if(!repository.show) {
-			// We are focusing on a repo!
-			Repositories.emit({
-				command: 'repo focus',
-				repo: repository.name
-			});
-		} else {
-			// We are closing a repo
-			Repositories.emit({
-				command: 'reset camera'
-			});
-		}
+		// We are focusing on a repo!
+		Repositories.emit({
+			command: 'repo focus',
+			repo: repository.name
+		});
 	};
 
 	$scope.setActivityThreshold = function(newActivityThreshold) {
@@ -105,7 +102,6 @@ angular.module('gitSpace.controllers', [])
 	});
 
 	$scope.addRepository = function(repository) {
-		var sendRepo = repository.owner + "/" + repository.repo;
 		Repositories.emit({
 			command: 'repo add',
 			repo: repository.owner + "/" + repository.repo
@@ -120,7 +116,10 @@ angular.module('gitSpace.controllers', [])
 	$scope.removeRepository = function(repository) {
 		var confirmDialog = confirm("Are you sure?");
 		if(confirmDialog) {
-			console.log("Remove", repository);
+			Repositories.emit({
+				command: 'repo delete',
+				repo: repository.name
+			});
 		}
 	};
 
