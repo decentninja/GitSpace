@@ -58,6 +58,7 @@ public class Repository : MonoBehaviour {
             JsonData change = data["changes"][i];
             recursiveUpdate(null, (string)change["name"], change);
         }
+        resizeallfolders();
     }
 
     public void recursiveUpdate(Folder parent, string foldername, JsonData data)
@@ -142,8 +143,12 @@ public class Repository : MonoBehaviour {
         for (int i = 0; i < numSubFolders; i++)
         {
             JsonData folder = data["state"][i];
-            GameObject child = recursiveCreate(gameObject, folder);
-            children.Add(child.name, child);
+            try
+            {
+                GameObject child = recursiveCreate(gameObject, folder);
+                children.Add(child.name, child);
+            }
+            catch (ArgumentException) { }
         }
         resizeallfolders();
     }
