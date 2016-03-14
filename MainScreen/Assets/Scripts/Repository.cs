@@ -77,7 +77,7 @@ public class Repository : MonoBehaviour {
         }
         if ("update".Equals((string)data["action"]))
         {
-            //parent.children[foldername].change(); //nån funktion som updaterar glow och sånt
+            parent.children[foldername].GetComponent<Folder>().Changed(); //nån funktion som updaterar glow och sånt
 
             int numChanges = data["subfolder"].Count;
             for (int i = 0; i < numChanges; i++)
@@ -91,6 +91,7 @@ public class Repository : MonoBehaviour {
         {
             GameObject star = createStar(parentGameObject, data);
             currentChildren.Add(star.name, star);
+            star.GetComponent<Folder>().Changed();
 
             int numChanges = data["subfolder"].Count;
             for (int i = 0; i < numChanges; i++)
