@@ -5,7 +5,7 @@ PORT = 8080
 
 mock_setup_json_short = "{'name': 'GitSpace', 'users': 'powie'}"
 
-mock_setup_json = '{"data":[{"name":"GitSpace","users":[{"name":"Dean Martin","mail":"dean@martin.com","image":"https://sc-cdn.scaleengine.net/i/541c25f2434b87947374e4de5ea467461.png"},{"name":"Frank Sinatra","mail":"frank@sinatra.com","image":"https://sc-cdn.scaleengine.net/i/541c25f2434b87947374e4de5ea467461.png"},{"name":"Robbie Williams","mail":"robbie@williams.com","image":"https://sc-cdn.scaleengine.net/i/541c25f2434b87947374e4de5ea467461.png"}]}]}'
+mock_setup_json = '{"data":[{"name":"GitSpace","users":[{"username": "decentninja", "image": "https://avatars.githubusercontent.com/u/900740?v=3", "name": "Andreas Linn"}, {"username": "viclarsson", "image": "https://avatars.githubusercontent.com/u/4243380?v=3", "name": "Victor Larsson"}, {"username": "Zercha", "image": "https://avatars.githubusercontent.com/u/4265058?v=3", "name": "Zercha"}, {"username": "matlon", "image": "https://avatars.githubusercontent.com/u/4280152?v=3", "name": "matlon"}, {"username": "powion", "image": "https://avatars.githubusercontent.com/u/4322541?v=3", "name": "Paulina"}, {"username": "alan93", "image": "https://avatars.githubusercontent.com/u/6649125?v=3", "name": "alan93"}, {"username": "Jogol", "image": "https://avatars.githubusercontent.com/u/6697929?v=3", "name": "Jonathan Golan"}, {"username": "adhag", "image": "https://avatars.githubusercontent.com/u/6747487?v=3", "name": "Adrian Häggvik"}]}]}'
 
 def new_client(client, server):
     # TODO: Get init state to send to client.
