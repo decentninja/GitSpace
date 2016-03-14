@@ -22,6 +22,7 @@ public class DrawLines : MonoBehaviour {
 					Folder folder = grandchild.GetComponent<Folder>();
 					if(folder != null) {
 						mat.color = Color.Lerp(originalmat, glow_target, folder.extraglow);
+						mat.SetPass(0);
 						GL.Begin(GL.LINES);
 						GL.Vertex(folder.transform.position);
 						GL.Vertex(folder.parent.transform.position);
