@@ -77,28 +77,31 @@ public class Repository : MonoBehaviour {
         }
         if ("update".Equals((string)data["action"]))
         {
-            parent.children[foldername].GetComponent<Folder>().Changed(); //nån funktion som updaterar glow och sånt
-
-            int numChanges = data["subfolder"].Count;
-            for (int i = 0; i < numChanges; i++)
+            if (currentChildren.ContainsKey((string)data["name"]))
             {
-                JsonData change = data["subfolder"][i];
-                Folder newparent = currentChildren[foldername].GetComponent<Folder>();
-                recursiveUpdate(newparent, (string)change["name"], change);
+                parent.children[foldername].GetComponent<Folder>().Changed(); //nån funktion som updaterar glow och sånt
+
+                int numChanges = data["subfolder"].Count;
+                for (int i = 0; i < numChanges; i++)
+                {
+                    JsonData change = data["subfolder"][i];
+                    Folder newparent = currentChildren[foldername].GetComponent<Folder>();
+                    recursiveUpdate(newparent, (string)change["name"], change);
+                }
             }
-        }
-        else if ("create".Equals((string)data["action"]))
-        {
-            GameObject star = createStar(parentGameObject, data);
-            currentChildren.Add(star.name, star);
-            star.GetComponent<Folder>().Changed();
-
-            int numChanges = data["subfolder"].Count;
-            for (int i = 0; i < numChanges; i++)
+            else
             {
-                JsonData change = data["subfolder"][i];
-                Folder newparent = currentChildren[star.name].GetComponent<Folder>();
-                recursiveUpdate(newparent, star.name, change);
+                GameObject star = createStar(parentGameObject, data);
+                currentChildren.Add(star.name, star);
+                star.GetComponent<Folder>().Changed();
+
+                int numChanges = data["subfolder"].Count;
+                for (int i = 0; i < numChanges; i++)
+                {
+                    JsonData change = data["subfolder"][i];
+                    Folder newparent = currentChildren[star.name].GetComponent<Folder>();
+                    recursiveUpdate(newparent, star.name, change);
+                }
             }
         }
         else if ("delete".Equals((string)data["action"]))
