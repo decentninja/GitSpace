@@ -10,6 +10,7 @@ public class Folder : MonoBehaviour {
     public SpringJoint spring;
     public Rigidbody rb;
     public int size;
+    public int lastModifiedDate;
     public Text text;
     public float extraglow = 0;
     public float glowdiminish = 0.5f;

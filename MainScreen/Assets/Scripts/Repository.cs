@@ -76,9 +76,13 @@ public class Repository : MonoBehaviour {
         {
             if (currentChildren.ContainsKey((string)data["name"]))
             {
-                parent.children[foldername].GetComponent<Folder>().Changed((string) data["user"]);
-                //set sizes of stars based on update date
-                parent.children[foldername].GetComponent<Folder>().size = setFolderSize(data);
+                Folder star = parent.children[foldername].GetComponent<Folder>();
+                star.lastModifiedDate = (int) data["last modified date"];
+                if (star.lastModifiedDate != 0) { 
+                    star.Changed((string) data["last modified by"]);
+                    //set sizes of stars based on update date
+                    parent.children[foldername].GetComponent<Folder>().size = setFolderSize(data);
+                }
 
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
