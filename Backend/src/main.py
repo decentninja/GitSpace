@@ -8,6 +8,7 @@ import sys
 import time
 import IO.git_io as git
 import IO.app_io as app
+from repository import Repository
 from multiprocessing import Process, Queue
 
 TCP_IP = '0.0.0.0'
@@ -43,9 +44,9 @@ class Main():
         if client not in self.states:
             self.states[client] = {}
         if self.testing:
-            self.states[client][repo] = mock_repos[repo]
+            self.states[client][repo] = Repository(repo, lookback=1)
         else:
-            self.states[client][repo] = git.get_init(repo)
+            self.states[client][repo] = Repository(repo)
 
     def init_states(self):
         for client in id_mappings:
@@ -98,7 +99,7 @@ class Main():
             try:
                 message = json.loads(message)
                 message = message['message']
-            except ValueError:
+            except (KeyError, ValueError):
                 print('Received malformed JSON from app.', file=sys.stderr)
                 return
             self.execute_app_command(message, client)
@@ -123,13 +124,17 @@ class Main():
                 self.delete_repo(message['repo'], client)
             elif message['command'] == 'repo add':
                 self.add_repo(message['repo'], client)
+            elif message['command'] == 'user activity':
+                self.send_all(client, self.states[client][message['repo']].\
+                        get_user_update(message['username']))
         except KeyError:
             print('Received malformed JSON from app.',file=sys.stderr)
 
     def add_repo(self, repo, client):
         # This requires valid repo name.
         self.init_state(client, repo)
-        self.send_all(client, self.states[client][repo])
+        self.send_all(client, self.states[client][repo].get_latest_state())
+        self.app_queue.put(self.states[client][repo].comm_format())
 
     def delete_repo(self, repo, client):
         if repo not in self.states[client]:
@@ -145,7 +150,7 @@ class Main():
         if client_id not in self.clients:
             self.clients[client_id] = []
         self.clients[client_id].append(new_client)
-        [self.send(new_client, self.states[client_id][repo])
+        [self.send(new_client, self.states[client_id][repo].get_latest_state())
                 for repo in self.states[client_id]]
 
     def close(self):
