@@ -285,6 +285,22 @@ Prefab:
       propertyPath: cameraspeed
       value: 0.05
       objectReference: {fileID: 0}
+    - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: glow_target.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: glow_target.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: glow_target.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11483108, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
+      propertyPath: glow_target.a
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc200ea4d867f4ab19a54e0990f405df, type: 2}
   m_IsPrefabParent: 0
