@@ -159,6 +159,7 @@ public class Repository : MonoBehaviour {
         // Add star.
         GameObject thisStar = createStar(parent, folder);
         Folder foldercomp = thisStar.GetComponent<Folder>();
+        foldercomp.Changed();
         //foldercomp.size = ((int) folder["last modified date"]) / Datetime.Now().Second;
 	//Debug.Log(foldercomp.size);
 
