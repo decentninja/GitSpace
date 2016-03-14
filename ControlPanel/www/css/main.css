@@ -9839,6 +9839,9 @@ button .button-icon .disabled {
 .t-gray {
   color: #ccc; }
 
+.t-small {
+  font-size: 0.75em; }
+
 .t-red {
   color: #ef473a; }
 
