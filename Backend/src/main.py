@@ -10,7 +10,7 @@ import IO.git_io as git
 import IO.app_io as app
 from multiprocessing import Process, Queue
 
-TCP_IP = '127.0.0.1'
+TCP_IP = '0.0.0.0'
 TCP_PORT = 5522
 BUFFER_SIZE = 1024
 DEBUG = False
@@ -99,7 +99,8 @@ class Main():
                 message = json.loads(message)
                 message = message['message']
             except ValueError:
-                raise Exception('Received malformed JSON from app.')
+                print('Received malformed JSON from app.', file=sys.stderr)
+                return
             self.execute_app_command(message, client)
 
     def execute_app_command(self, message, client):
@@ -110,10 +111,11 @@ class Main():
                 json['command'] = message['command']
                 if message['command'] == 'repo focus':
                     if message['repo'] not in self.states[client]:
-                        raise Exception("Repo does not exist: %s"%repo)
+                        print("Repo does not exist: %s"%message['repo'], file=sys.stderr)
+                        return
                     json['repo'] = message['repo']
                 elif message['command'] == 'labels':
-                    json['labels'] = True
+                    json['labels'] = message['show']
                 elif message['command'] == 'activity threshold':
                     json['threshold'] = message['threshold']
                 self.send_all(client, json)
@@ -122,7 +124,7 @@ class Main():
             elif message['command'] == 'repo add':
                 self.add_repo(message['repo'], client)
         except KeyError:
-            raise Exception('Received malformed JSON from app.')
+            print('Received malformed JSON from app.',file=sys.stderr)
 
     def add_repo(self, repo, client):
         # This requires valid repo name.
