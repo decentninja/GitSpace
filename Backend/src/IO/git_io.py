@@ -118,7 +118,7 @@ def get_init(repo):
     state_parsed = git_parsing.parse_raw_state(state,time = time, name=repo)
     #updates arrive in reversed order
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
-    return git_parsing.update_state(state_parsed,update_parsed)
+    return state_parsed, update_parsed
 
 if __name__ == '__main__':
     repo = 'decentninja/GitSpace'

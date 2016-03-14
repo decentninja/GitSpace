@@ -287,51 +287,65 @@ def write_updates_readable(changes):
 
 
 
+def create_user_states(state,users):
+    return {user:_deep_state_clone(state,{}) for user in users}
+
+def _deep_state_clone(state,cstate):
+    for k,v in state.items():
+        pass
+      #object is not actually iterable
+
+    
+
 
 
 #########
 ## STATE UPDATE
 #######3
 
-
-
-
 def update_state(state,updates):
+    update_user_states({None:state},updates)
+
+def update_user_states(user_states,updates):
     for update in updates:
-        _apply_update(state,update)
+        _apply_update(user_states,update)
     return state
 
-def _apply_update(state,update):
-    state_tree = state['state']
-
-    fake_state = {'subfolder':state_tree}
+def _apply_update(user_states,update):
+    fake_states = {user: {'subfolder':tree['state']} for user,tree in user_states.items()}
     fake_change = {'subfolder': update['changes']}
-    _update_children(fake_state,fake_change)
+    _update_children(fake_states,fake_change)
 
-def _update_children(state,change):
+def _update_children(user_states,change):
     for sub in change['subfolder']:
-        state_sub = None
-        for s in state['subfolder']:
-            if s['name'] == sub['name']:
-                state_sub = s
-                break
-        if state_sub == None:
-            new_folder = _create_empty_state_folder(sub['name'],sub['timestamp'])
-            state['subfolder'].append(new_folder)
-            state_sub = new_folder
-        if sub['action'] in ['update','modified']:
-            state_sub['last modified date'] = sub['timestamp']
-            state_sub['last modified by'] = sub['user']
-        elif sub['action'] == 'delete':
-            change['subfolder'].remove(sub)
-            return
-        elif sub['action'] == 'none':
-            pass
-        else:
-            raise Exception('unknwown action: %s'%sub['action'])
-        if state_sub == None:
-            raise Exception("Did not find sub in state: %s"%sub['name'])
-        _update_children(state_sub,sub)
+        is_old_folder = any(s['name'] == sub['name'] for s in user_states[None]['subfolder'])
+
+        # Add new folder to every tree
+        # Only use the timestamp for None or correct user
+        children = {}   
+        for user,user_sub in user_states.items():
+            correct_user = sub['user'] == user or user is None
+            state_sub = None #Failsafe
+            if not is_old_folder:            
+                new_folder = _create_empty_state_folder(sub['name'])
+                user_sub['subfolder'].append(new_folder)
+                state_sub = new_folder
+            else:
+                state_sub = next(usub for usub in user_sub['subfolder'] if usub['name']==sub['name'])
+            
+            children[user] = state_sub
+            if sub['action'] == 'update':
+                if correct_user:
+                    state_sub['last modified date'] = sub['timestamp']
+                    state_sub['last modified by'] = sub['user']
+            elif sub['action'] == 'delete':
+                user_sub['subfolder'].remove(state_sub)
+            elif sub['action'] == 'none':
+                pass
+            else:
+                raise Exception('unknwown action: %s'%sub['action'])
+        if not sub['action'] == 'delete':
+            _update_children(children,sub)
 
 def print_tree_structure(alist):
     '''for manual debug'''
