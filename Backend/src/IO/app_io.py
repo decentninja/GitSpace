@@ -1,9 +1,11 @@
 from IO.websocket_server import WebsocketServer
 
-IP = '127.0.0.1'
+IP = '0.0.0.0'
 PORT = 8080
 
-mock_setup_json = "{'name': 'GitSpace', 'users': 'powie'}"
+mock_setup_json_short = "{'name': 'GitSpace', 'users': 'powie'}"
+
+mock_setup_json = '{"data":[{"name":"GitSpace","users":[{"name":"Dean Martin","mail":"dean@martin.com","image":"https://sc-cdn.scaleengine.net/i/541c25f2434b87947374e4de5ea467461.png"},{"name":"Frank Sinatra","mail":"frank@sinatra.com","image":"https://sc-cdn.scaleengine.net/i/541c25f2434b87947374e4de5ea467461.png"},{"name":"Robbie Williams","mail":"robbie@williams.com","image":"https://sc-cdn.scaleengine.net/i/541c25f2434b87947374e4de5ea467461.png"}]}]}'
 
 def new_client(client, server):
     # TODO: Get init state to send to client.
