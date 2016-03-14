@@ -15,12 +15,12 @@ TCP_PORT = 5522
 BUFFER_SIZE = 1024
 DEBUG = False
 
-id_mappings = {'gitspace' : {'GitSpace' : 'decentninja'}}
+id_mappings = {'gitspace' : ['decentninja/GitSpace']}
 
 mock_json = {'hello' : 'hi'}
 
-mock_repos = {"GitSpace" : {"repo": "GitSpace"},
-              "MySpace" : {"repo": "MySpace"}}
+mock_repos = {"decentninja/GitSpace" : {"repo": "GitSpace"},
+              "tilatequila/MySpace" : {"repo": "MySpace"}}
 
 def command_json():
     command = {}
@@ -39,19 +39,18 @@ class Main():
         self.init_frontend()
         self.init_app()
 
-    def init_state(self, client, repo, owner):
+    def init_state(self, client, repo):
         if client not in self.states:
             self.states[client] = {}
         if self.testing:
             self.states[client][repo] = mock_repos[repo]
         else:
-            self.states[client][repo], _ = \
-                    git.get_init(owner, repo)
+            self.states[client][repo] = git.get_init(repo)
 
     def init_states(self):
         for client in id_mappings:
             for repo in id_mappings[client]:
-                self.init_state(client, repo, id_mappings[client][repo])
+                self.init_state(client, repo)
 
     def init_frontend(self):
         self.frontend_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -104,7 +103,6 @@ class Main():
             self.execute_app_command(message, client)
 
     def execute_app_command(self, message, client):
-        print(message)
         try:
             if message['command'] in ['labels', 'repo focus','reset camera',
                                       'activity threshold']:
@@ -122,13 +120,13 @@ class Main():
             elif message['command'] == 'repo delete':
                 self.delete_repo(message['repo'], client)
             elif message['command'] == 'repo add':
-                self.add_repo(message['repo'], message['owner'], client)
+                self.add_repo(message['repo'], client)
         except KeyError:
             raise Exception('Received malformed JSON from app.')
 
-    def add_repo(self, repo, owner, client):
+    def add_repo(self, repo, client):
         # This requires valid repo name.
-        self.init_state(client, repo, owner)
+        self.init_state(client, repo)
         self.send_all(client, self.states[client][repo])
 
     def delete_repo(self, repo, client):
