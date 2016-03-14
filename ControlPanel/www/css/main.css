@@ -9737,6 +9737,9 @@ a.button {
 .clearfix {
   clear: both; }
 
+button .button-icon .disabled {
+  color: #ccc; }
+
 #lightning {
   position: absolute;
   top: 0;

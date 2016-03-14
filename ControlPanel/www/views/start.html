@@ -1,24 +1,16 @@
 <ion-view title="GitSpace">
 	<ion-nav-buttons side="secondary">
-		<button class="button button-clear" ui-sref="app.settings">
-			<i class="ion-icon ion-gear-a"></i>
+		<button class="button button-icon icon ion-gear-a" ui-sref="app.settings">
 		</button>
 	</ion-nav-buttons>
 	<ion-nav-buttons side="primary">
-		<button class="button button-clear" ng-click="openModal()">
-			<i class="ion-icon ion-plus"></i>
+		<button class="button button-icon icon ion-plus" ng-class="{disabled: repositories.length == 0}" ng-click="repositories.length > 0 && openModal()">
 		</button>
 	</ion-nav-buttons>
 	<ion-content>
 
-		<div class="t-center" ng-show="repositories.length == 0 && rootScope.error == null">
-			<ion-spinner></ion-spinner>
-			<p>Connecting...</p>
-		</div>
-		<div class="t-center" ng-show="rootScope.error !== null">
-			<p>{{ rootScope.error }}</p>
-			<button class="button button-positive" ng-click="reloadWebsockets()"><i class="ion-icon ion-refresh"></i> Reload</button>
-		</div>
+		<div ng-include="'views/loading.html'"></div>
+
 		<div class="list" ng-show="repositories.length > 0 && error === null">
 			<div class="item item-divider">
 				Visuals
@@ -59,7 +51,7 @@
 						<div class="item item-avatar" ng-repeat="user in repository.users" ng-click="setUserActivity(user)">
 							<img src="{{ user.image }}">
 							<h3>{{ user.name }}</h3>
-							<p>{{ user.mail }}</p>
+							<p>{{ user.username }}</p>
 						</div>
 					</div>
 				</div>
