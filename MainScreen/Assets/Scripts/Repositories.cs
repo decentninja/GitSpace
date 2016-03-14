@@ -10,6 +10,7 @@ public class Repositories : MonoBehaviour {
 
     public GameObject repoPrefab;
     public SeeEverythingCamera secamera;
+    int threshold = 10080;
 
     void Start() {
 	resetCamera();
@@ -48,7 +49,7 @@ public class Repositories : MonoBehaviour {
                         }
                         break;
                     case "activity threshold":
-                        int threshold = (int)data["threshold"]; //TODO det här kanske inte funkar (int alltså)
+                        this.threshold = (int)data["threshold"]; //TODO det här kanske inte funkar (int alltså)
                         Debug.Log("Not implemented. Set activity threshold to: " + threshold);
                         break;
                 }
@@ -101,6 +102,10 @@ public class Repositories : MonoBehaviour {
 	foreach(Folder folder in Object.FindObjectsOfType<Folder>()) {
 	    folder.showtext(yes);
 	}
+    }
+    public int getThreshold()
+    {
+        return threshold;
     }
 
 }

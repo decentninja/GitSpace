@@ -15,11 +15,11 @@ public class Repository : MonoBehaviour {
     public float folderMaxSize = 2f;
     public GameObject rootStar;
 
-    // timespan given from the controlpanel to show glow, in days
-    public float timeInterval = 14;
+    // timespan given from the controlpanel to show glow, in seconds
+    public int timeInterval;
     // minimum amd max glow star will have, if not updated within the interval
-    public float minPower = 0.2f;
-    public float maxPower = 1;
+    public int minPower = 1;
+    public int maxPower = 4;
 
     bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
@@ -164,7 +164,9 @@ public class Repository : MonoBehaviour {
         Folder foldercomp = thisStar.GetComponent<Folder>();
         foldercomp.Changed((string) folder["last modified by"]);
         //foldercomp.size = ((int) folder["last modified date"]) / Datetime.Now().Second;
-	//Debug.Log(foldercomp.size);
+        //Debug.Log(foldercomp.size);
+        foldercomp.size = setFolderSize(folder);
+
 
         // Calculate color using file extension.
         int numFileTypes = folder["filetypes"].Count;
@@ -298,25 +300,30 @@ public class Repository : MonoBehaviour {
         return new Color(color.r* 255, color.g* 255, color.b* 255);
     }
 
-
-private float DateToGlow(string date){
-        float strength = 0;
-
-        //calculate time without updates
-        DateTime dateNow = DateTime.Now;
-        String datestring = date.Substring(0, 9); //om date är i formatet dd/mm/yyyy hh:mm
-        DateTime updateTime = Convert.ToDateTime(datestring);
-        TimeSpan untouchedTime = dateNow - updateTime;
-        float days = untouchedTime.Days;
-
-        if(days < timeInterval)
+    public int setFolderSize(JsonData folder)
+    {
+        Repositories sn = FindObjectOfType<Repositories>();
+        //threshold is minutes in repository.cs
+        timeInterval = 60 * sn.getThreshold();
+        JsonData moddate = folder["last modified date"];
+        int lastmoddate = int.Parse(moddate.ToString());
+        if (lastmoddate == 0)
         {
-            strength = minPower;
-        } else
-        {
-            float powerFraction = days / timeInterval;
-            strength = powerFraction * (maxPower - minPower);
+            return minPower;
         }
-        return strength;
+        else
+        {
+            double passedtime = ConvertToUnixTimestamp(DateTime.Now) - lastmoddate;
+            print(passedtime + "passedtime");
+            print(ConvertToUnixTimestamp(DateTime.Now));
+            double rounded = passedtime / timeInterval;
+            return (int)rounded;
+        }
+    }
+    public int ConvertToUnixTimestamp(DateTime date)
+    {
+        DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        TimeSpan diff = date.ToUniversalTime() - origin;
+        return (int)Math.Floor(diff.TotalSeconds);
     }
 }
