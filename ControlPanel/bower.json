@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "ngCordova": "^0.1.24-alpha",
-    "ng-websocket": "^0.2.1"
+    "ng-websocket": "^0.2.1",
+    "ngSocket": "^0.2.1"
   }
 }

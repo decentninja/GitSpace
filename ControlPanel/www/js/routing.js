@@ -17,12 +17,12 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
       }
     }
   })
-  .state('app.repository', {
-    url: 'repository/:name',
+  .state('app.settings', {
+    url: 'settings',
     views: {
       'appContent' :{
-        templateUrl: 'views/repository.html',
-        controller : "repositoryCtrl"
+        templateUrl: 'views/settings.html',
+        controller : "settingsCtrl"
       }
     }
   });

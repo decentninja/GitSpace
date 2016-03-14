@@ -9798,6 +9798,10 @@ a.button {
 .item.repository {
   padding: 0; }
 
+.actions label {
+  display: block;
+  width: 100%; }
+
 #choose-repository label {
   text-transform: uppercase;
   font-size: 0.65em;
