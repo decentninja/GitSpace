@@ -204,8 +204,8 @@ MonoBehaviour:
   folderPrefab: {fileID: 105334, guid: 8bc7afc40f43440549a18d52dc6b0055, type: 2}
   collider: {fileID: 13500030}
   hudunder: {fileID: 22344478}
-  folderStartSize: 0.25
-  folderMaxSize: 0.4
+  folderStartSize: 0.15
+  folderMaxSize: 0.5
   rootStar: {fileID: 100496, guid: f6f0f41d366fdb0499fc48e07425fc6c, type: 2}
   timeInterval: 0
   minPower: 1
@@ -355,11 +355,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: folderStartSize
-      value: 0.25
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: folderMaxSize
-      value: 0.4
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
