@@ -82,8 +82,8 @@ class Main():
         readable, writable, errored = select.select([self.frontend_server], [], [], 1)
         for s in readable:
             new_client, address = s.accept()
-            # client_id = new_client.recv() We could receive an id att conn.
-            self.init_client(new_client, 'gitspace')
+            client_id = new_client.recv(1024).decode("utf-8")
+            self.init_client(new_client, client_id)
 
     def send_webhook_updates(self):
         # For now sends cute mock JSONs in Debug mode.
