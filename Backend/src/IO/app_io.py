@@ -14,7 +14,9 @@ def new_client(client, server):
 
 def recv_message(client, server, message):
     server.out_queue.put((message, client['repo_id']))
-    server.send_message(client, server.in_queue.get())
+    response = server.in_queue.get()
+    if response != 'internal':
+        server.send_message(client, response)
 
 def serve(out_queue, in_queue):
     server = WebsocketServer(PORT, out_queue, in_queue, host=IP)

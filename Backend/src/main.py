@@ -102,7 +102,7 @@ class Main():
                 message = message['message']
             except (KeyError, ValueError):
                 print('Received malformed JSON from app.', file=sys.stderr)
-                self.app_queue_out.put('{"success": False}')
+                self.app_queue_out.put('internal')
                 return
             self.execute_app_command(message, client)
 
@@ -115,7 +115,7 @@ class Main():
                 if message['command'] == 'repo focus':
                     if message['repo'] not in self.states[client]:
                         print("Repo does not exist: %s"%message['repo'], file=sys.stderr)
-                        self.app_queue_out.put('{"success": False}')
+                        self.app_queue_out.put('internal')
                         return
                     json['repo'] = message['repo']
                 elif message['command'] == 'labels':
@@ -123,7 +123,7 @@ class Main():
                 elif message['command'] == 'activity threshold':
                     json['threshold'] = message['threshold']
                 self.send_all(client, json)
-                self.app_queue_out.put('{"success": True}')
+                self.app_queue_out.put('internal')
             elif message['command'] == 'repo delete':
                 self.delete_repo(message['repo'], client)
             elif message['command'] == 'repo add':
@@ -131,12 +131,12 @@ class Main():
             elif message['command'] == 'user activity':
                 #self.send_all(client, self.states[client][message['repo']].\
                 #        get_user_update(message['username']))
-                self.app_queue_out.put('{"success": True}')
+                self.app_queue_out.put('internal')
             elif message['command'] == 'internal_state':
                 self.app_queue_out.put(self.make_app_state(client))
         except KeyError as e:
             print('Received malformed JSON from app.', e,file=sys.stderr)
-            self.app_queue_out.put('{"success": False}')
+            self.app_queue_out.put('internal')
 
     def add_repo(self, repo, client):
         # This requires valid repo name.
