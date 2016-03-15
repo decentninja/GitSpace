@@ -123,4 +123,4 @@ def get_init(repo):
 if __name__ == '__main__':
     repo = 'decentninja/GitSpace'
     state,updates = get_init(repo)
-    print(get_collaborators(repo))
+    #print(get_collaborators(repo))
