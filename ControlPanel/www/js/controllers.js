@@ -148,7 +148,7 @@ angular.module('gitSpace.controllers', [])
 /*
 *	Repository controller
 */
-.controller("settingsCtrl", ['$scope', '$rootScope', 'Repositories', 'settings', function($scope, $rootScope, Repositories, settings) {
+.controller("settingsCtrl", ['$scope', '$rootScope', 'Repositories', 'settings', '$state', function($scope, $rootScope, Repositories, settings, $state) {
 	$scope.webSocketIP = Repositories.getIP();
 	$scope.webSocketPort = Repositories.getPort();
 
