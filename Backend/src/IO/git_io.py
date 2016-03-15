@@ -51,7 +51,7 @@ def get_collaborators(repo):
             new_user['image'] = user['avatar_url']
             new_user['name'] = get_user_name(new_user['username'])
             collabs.append(new_user)
-        except KeyError:
+        except Exception:
             pass
     return collabs
 
