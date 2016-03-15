@@ -54,8 +54,16 @@ angular.module('gitSpace.services', ['ngSocket'])
     init(url);
 
     return {
-        getUrl: function() {
-            return url;
+        getIP: function() {
+            // TODO: substring av url
+            var ip = (url.split(":")[1]).substr(2);
+            console.log("Substring för IP", ip);
+            return ip;
+        },
+        getPort: function() {
+            var port = parseInt((url.split(":")[2]));
+            console.log("Substring för port", port);
+            return port;
         },
         emit: function(data) {
             console.log("Emitting:", data);
@@ -77,7 +85,11 @@ angular.module('gitSpace.services', ['ngSocket'])
             if(ls) {
                 localStorage.setItem("gitSpaceWsUrl", url);
             }
-            init(url);
+            try {
+                init(url);
+            } catch (e) {
+                console.log("Invalid IP:", e);
+            }
         },
         reloadWs: function() {
             init(url);

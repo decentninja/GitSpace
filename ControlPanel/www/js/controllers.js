@@ -148,10 +148,12 @@ angular.module('gitSpace.controllers', [])
 /*
 *	Repository controller
 */
-.controller("settingsCtrl", ['$scope', '$rootScope', 'Repositories', 'settings', '$state', function($scope, $rootScope, Repositories, settings, $state) {
-	$scope.webSocketUrl = Repositories.getUrl();
+.controller("settingsCtrl", ['$scope', '$rootScope', 'Repositories', 'settings', function($scope, $rootScope, Repositories, settings) {
+	$scope.webSocketIP = Repositories.getIP();
+	$scope.webSocketPort = Repositories.getPort();
 
-	$scope.setWebsocketUrl = function(url) {
+	$scope.setWebsocketUrl = function(ip, port) {
+		var url = "ws://" + ip + ":" + port;
 		console.log("In controller. Settings websockets URL", url);
 		Repositories.setUrl(url);
 		$state.go('app.start');
