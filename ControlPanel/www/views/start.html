@@ -4,7 +4,7 @@
 		</button>
 	</ion-nav-buttons>
 	<ion-nav-buttons side="primary">
-		<button class="button button-icon icon ion-plus" ng-class="{disabled: repositories.length == 0}" ng-click="repositories.length > 0 && openModal()">
+		<button class="button button-icon icon ion-plus" ng-class="{disabled: repositories.length == 0 && !isWaiting}" ng-click="(repositories.length > 0 && !isWaiting) && openModal()">
 		</button>
 	</ion-nav-buttons>
 	<ion-content>
@@ -29,7 +29,12 @@
 			<div class="item item-divider">
 				Show details for repository
 			</div>
-			<div ng-repeat="repository in repositories" class="item repository" id="repo-{{ repository }}">
+			<div class="item item-input-inset" ng-show="repositories.length >= 3">
+				<label class="item-input-wrapper">
+					<input type="text" placeholder="Search in {{ repositories.length }} repositories..." ng-model="filterRepositories">
+				</label>
+			</div>
+			<div ng-repeat="repository in repositories | filter:filterRepositories | orderBy:'name'" class="item repository" id="repo-{{ repository }}">
 				<div class="padding" ng-click="activeRepository(repository)">
 					<label>
 						<span class="t-left">Repository</span>
@@ -48,7 +53,12 @@
 						</div>
 					</div>
 					<div class="list users">
-						<div class="item item-avatar" ng-repeat="user in repository.users" ng-click="setUserActivity(user)">
+						<div class="item item-input-inset" ng-show="repository.users.length >= 3">
+							<label class="item-input-wrapper">
+								<input type="text" placeholder="Search in {{ repository.users.length }} users..." ng-model="filterfield">
+							</label>
+						</div>
+						<div class="item item-avatar" ng-repeat="user in repository.users | filter:filterfield | orderBy:'username'" ng-click="setUserActivity(user)">
 							<img ng-src="{{ user.image }}">
 							<h3>{{ user.name }}</h3>
 							<p>{{ user.username }}</p>

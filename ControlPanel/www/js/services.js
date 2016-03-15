@@ -15,13 +15,15 @@ angular.module('gitSpace.services', ['ngSocket'])
     }
 
     function init(url) {
+        console.log("Init for url", url);
         $rootScope.rootScope.error = null;
         if(ws !== null) {
             ws.close();
         }
         ws = ngSocket(url);
         setTimeout(function () {
-            if(ws.socket.readyState == 3) {
+            console.log("Timeout ended, socket readystate =", ws.socket.readyState);
+            if(ws.socket.readyState == 3 || ws.socket.readyState === 0) {
                 // Socket is closed...
                 console.log("Sending websocketsError...");
                 $rootScope.$broadcast("websocketsError");
@@ -39,6 +41,7 @@ angular.module('gitSpace.services', ['ngSocket'])
             } catch (e) {
                 $rootScope.rootScope.error = "Invalid JSON from server.";
             }
+            console.log("JSON from server:", json);
             repositories = json.data;
             console.log("Repositories from server", repositories);
             $rootScope.$broadcast("dataAvailable");
@@ -51,8 +54,16 @@ angular.module('gitSpace.services', ['ngSocket'])
     init(url);
 
     return {
-        getUrl: function() {
-            return url;
+        getIP: function() {
+            // TODO: substring av url
+            var ip = (url.split(":")[1]).substr(2);
+            console.log("Substring för IP", ip);
+            return ip;
+        },
+        getPort: function() {
+            var port = parseInt((url.split(":")[2]));
+            console.log("Substring för port", port);
+            return port;
         },
         emit: function(data) {
             console.log("Emitting:", data);
@@ -74,7 +85,11 @@ angular.module('gitSpace.services', ['ngSocket'])
             if(ls) {
                 localStorage.setItem("gitSpaceWsUrl", url);
             }
-            init(url);
+            try {
+                init(url);
+            } catch (e) {
+                console.log("Invalid IP:", e);
+            }
         },
         reloadWs: function() {
             init(url);

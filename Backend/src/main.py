@@ -31,14 +31,15 @@ def command_json():
 
 class Main():
     def __init__(self, testing = False):
-        signal.signal(signal.SIGINT, self.close)
-        signal.signal(signal.SIGTERM, self.close)
         self.testing = testing
         self.clients = {}
         self.states = {}
         self.init_states()
+        print("Revolution complete")
         self.init_frontend()
+        print("Final frontier reached")
         self.init_app()
+        print("Mainframe activated")
 
     def init_state(self, client, repo):
         if client not in self.states:
@@ -83,6 +84,8 @@ class Main():
         for s in readable:
             new_client, address = s.accept()
             client_id = new_client.recv(1024).decode("utf-8")
+            if client_id == '':
+                client_id = 'gitspace'
             self.init_client(new_client, client_id)
 
     def send_webhook_updates(self):
@@ -129,13 +132,13 @@ class Main():
             elif message['command'] == 'repo add':
                 self.add_repo(message['repo'], client)
             elif message['command'] == 'user activity':
-                #self.send_all(client, self.states[client][message['repo']].\
-                #        get_user_update(message['username']))
+                self.send_all(client, self.states[client][message['repo']].\
+                        get_user_update(message['username']))
                 self.app_queue_out.put('internal')
             elif message['command'] == 'internal_state':
                 self.app_queue_out.put(self.make_app_state(client))
         except KeyError as e:
-            print('Received malformed JSON from app.', e,file=sys.stderr)
+            print('Received malformed JSON from app, missing field: ', e,file=sys.stderr)
             self.app_queue_out.put('internal')
 
     def add_repo(self, repo, client):
@@ -171,8 +174,12 @@ class Main():
                 for repo in self.states[client_id]]
 
     def close(self):
+        self.frontend_server.close()
+        self.app_queue.close()
+        self.app_queue_out.close()
         self.app_server.terminate()
         self.app_server.join()
+        print('Server shut down.')
 
     def main(self):
         try:

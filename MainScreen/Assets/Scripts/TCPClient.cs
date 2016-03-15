@@ -27,11 +27,11 @@ public class TCPClient : MonoBehaviour {
     void Update () {
         // Test Delete folder by pressing '1'. Removes Assets folder from the constellation.
         if (Input.GetKeyDown("1")) {
-            ParseJSON("{ 'type': 'update', 'repo': 'GitSpace', 'apiv': 1, 'direction': 'forward / backward', 'forced': false, 'changes': [{ 'timestamp': 1230583, 'name': 'MainScreen', 'user': 'test@test.com', 'action': 'update', 'non_master_branch': false, 'subfolder': [{ 'timestamp': 1230583, 'name': 'Assets', 'user': 'test@test.com', 'action': 'delete', 'non_master_branch': false, 'subfolder': [], 'filetypes': [] }], 'filetypes': [] }] }");
+            ParseJSON("{ 'type': 'update', 'repo': 'decentninja/GitSpace', 'apiv': 1, 'direction': 'forward', 'forced': false, 'changes': [{ 'last modified date': 1230583, 'name': 'MainScreen', 'last modified by': 'test@test.com', 'action': 'update', 'non_master_branch': false, 'subfolder': [{ 'last modified date': 1230583, 'name': 'Assets', 'last modified by': 'test@test.com', 'action': 'delete', 'non_master_branch': false, 'subfolder': [], 'filetypes': [] }], 'filetypes': [] }] }");
         }
         // Test Create folder by pressing '2'. Adds a folder containing a folder to MainScreen.
         if (Input.GetKeyDown("2")) {
-            ParseJSON("{'type': 'update','repo': 'GitSpace','apiv': 1,'direction': 'forward / backward','forced': false,'changes': [{'timestamp': 1230583,'name': 'MainScreen','user': 'test@test.com','action': 'update','non_master_branch': false,'subfolder': [{'timestamp': 1230583,'name': 'TestFolder','user': 'test@test.com','action': 'create','non_master_branch': false,'subfolder': [{'timestamp': 1230583,'name': 'TestFolder2','user': 'test@test.com','action': 'create','non_master_branch': false,'subfolder': [],'filetypes': []}],'filetypes': []}],'filetypes': []}]}");
+            ParseJSON("{'type': 'update','repo': 'decentninja/GitSpace','apiv': 1,'direction': 'forward','forced': false,'changes': [{'last modified date': 1230583,'name': 'MainScreen','last modified by': 'test@test.com','action': 'update','non_master_branch': false,'subfolder': [{'last modified date': 1230583,'name': 'TestFolder','last modified by': 'test@test.com','action': 'update','non_master_branch': false,'subfolder': [{'last modified date': 1230583,'name': 'TestFolder2','last modified by': 'test@test.com','action': 'update','non_master_branch': false,'subfolder': [],'filetypes': []}],'filetypes': []}],'filetypes': []}]}");
         }
         if (Input.GetKeyDown("3")) {
             ParseJSON("{'api version': 1,'type': 'delete','repo':'decentninja/GitSpace'}");

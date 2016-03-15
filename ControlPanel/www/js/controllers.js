@@ -23,6 +23,8 @@ angular.module('gitSpace.controllers', [])
 		for(var i in $scope.repositories) {
 			$scope.repositories[i].show = false;
 		}
+		$rootScope.rootScope.isWaiting = false;
+		$rootScope.rootScope.error = null;
 		$scope.$apply();
 	});
 
@@ -80,7 +82,7 @@ angular.module('gitSpace.controllers', [])
 		Repositories.emit({
 			command: 'user activity',
 			name: userData.name,
-			mail: userData.mail
+			username: userData.username
 		});
 	};
 
@@ -111,6 +113,8 @@ angular.module('gitSpace.controllers', [])
 			owner: null,
 			repo: null
 		};
+		// Let us wait!
+		$scope.setWaiting();
 	};
 
 	$scope.removeRepository = function(repository) {
@@ -121,22 +125,38 @@ angular.module('gitSpace.controllers', [])
 				repo: repository.name
 			});
 		}
+		// Let us wait!
+		$scope.setWaiting();
 	};
 
 	$scope.reloadWebsockets = function() {
 		Repositories.reloadWs();
+	};
+
+	$scope.setWaiting = function () {
+		$rootScope.rootScope.isWaiting = true;
+		setTimeout(function() {
+			if($rootScope.rootScope.isWaiting) {
+				$rootScope.rootScope.isWaiting = false;
+				$rootScope.rootScope.error = "Could not get the data from the server. Try again!";
+				$scope.$apply();
+			}
+		}, 15000);
 	};
 }])
 
 /*
 *	Repository controller
 */
-.controller("settingsCtrl", ['$scope', '$rootScope', 'Repositories', 'settings', function($scope, $rootScope, Repositories, settings) {
-	$scope.webSocketUrl = Repositories.getUrl();
+.controller("settingsCtrl", ['$scope', '$rootScope', 'Repositories', 'settings', '$state', function($scope, $rootScope, Repositories, settings, $state) {
+	$scope.webSocketIP = Repositories.getIP();
+	$scope.webSocketPort = Repositories.getPort();
 
-	$scope.setWebsocketUrl = function(url) {
+	$scope.setWebsocketUrl = function(ip, port) {
+		var url = "ws://" + ip + ":" + port;
 		console.log("In controller. Settings websockets URL", url);
 		Repositories.setUrl(url);
+		$state.go('app.start');
 	};
 
 }]);
