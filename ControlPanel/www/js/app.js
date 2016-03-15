@@ -8,10 +8,9 @@ var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controller
 
     $rootScope.rootScope = {
         error: null,
+        waiting: false,
         settings: settings
     };
-    console.log($rootScope.rootScope);
-
 
     $ionicPlatform.ready(function() {
         if(window.cordova && window.cordova.plugins.Keyboard) {
