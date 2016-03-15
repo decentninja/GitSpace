@@ -42,7 +42,10 @@ def get_tree(repo, sha):
         '/git/trees/'+ sha +'?recursive=1')
 
 def get_collaborators(repo):
+    print("Getting collaborators for %s"%repo)
     raw = get_api_result('https://api.github.com/repos/'+ repo +'/collaborators')
+    if not raw:
+        return []
     collabs = []
     for user in raw:
         try:
@@ -52,7 +55,7 @@ def get_collaborators(repo):
             new_user['name'] = get_user_name(new_user['username'])
             collabs.append(new_user)
         except Exception:
-            pass
+            pass # No access to collaborators
     return collabs
 
 def get_user_name(username):
@@ -102,25 +105,42 @@ def find_most_recent_sha(repo, start_date):
 
 def get_init_state(repo, time_now):
     # Get sha for a state 1 week+ ago
+    print("Getting initial state")
     sha,time = find_most_recent_sha(repo,
         time_now - datetime.timedelta(days=lookback_days))
     # Get the associated tree
     return get_tree(repo, sha),time
 
 def get_init_commits(repo, time_now):
+    print("Collecting commits")
     commits = get_commits_in_span(repo,
         time_now - datetime.timedelta(days=lookback_days),
         time_now)
     return commits
 
 def get_init(repo,lookback = lookback_days):
+    print("Getting repository: %s"%repo)
     time_now = datetime.datetime.now()
     state,time = get_init_state(repo,time_now)
-    updates = [get_full_commitinfo(repo, c) for c in
-        get_init_commits(repo, time_now)]
+    updates = []
+    commits = get_init_commits(repo, time_now)
+    print("Getting commit info from %s commits"%len(commits))
+    print('-'*50)
+    ratio = 50/len(commits)
+    tracker = 0
+    last = 0
+    for c in commits:
+        tracker+=ratio
+        int_track = int(tracker)
+        if int_track > last:
+            print("x"*(int_track-last),end='',flush=True)
+            last = int_track
+        updates.append(get_full_commitinfo(repo, c))
+    print('x')
     state_parsed = git_parsing.parse_raw_state(state,time = time, name=repo)
     #updates arrive in reversed order
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
+    print("Inital Repository complete")
     return state_parsed, update_parsed
 
 if __name__ == '__main__':
