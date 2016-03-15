@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
+using System.Linq;
 
 public class Repository : MonoBehaviour {
 
@@ -27,16 +28,17 @@ public class Repository : MonoBehaviour {
     Coroutine hiddenanimation;
 
     void Update() {
-	Bounds bounds = AndreasAwesomeHelperSuperLibrary.CalculateTotalBounds(transform);
-	hudunder.transform.position = bounds.center + new Vector3(0, 0, bounds.extents.z);
-	collider.center = bounds.center;
-	collider.radius = bounds.extents.magnitude;
+	    Bounds bounds = AndreasAwesomeHelperSuperLibrary.CalculateTotalBounds(transform);
+	    hudunder.transform.position = bounds.center + new Vector3(0, 0, bounds.extents.z);
+	    collider.center = bounds.center;
+	    collider.radius = bounds.extents.magnitude;
 
-	update_cooldown -= Time.deltaTime;
-	if(update_cooldown < 0 && queue.Count != 0) {
-	    update_cooldown = update_time;
-	    handleUpdate(queue.Dequeue());
-	}
+	    update_cooldown -= Time.deltaTime;
+	    if(update_cooldown < 0 && queue.Count != 0) {
+	        update_cooldown = update_time;
+	        handleUpdate(queue.Dequeue());
+	    }
+        updateSizes(children.Values.ToList());
     }
 
     void setTime(JsonData data) {
@@ -80,10 +82,9 @@ public class Repository : MonoBehaviour {
                 Folder star = currentChildren[foldername].GetComponent<Folder>();
                 star.lastModifiedDate = (int) data["last modified date"];
                 if (star.lastModifiedDate != 0) {
-                    print(star.gameObject.name);
                     star.Changed((string) data["last modified by"]);
                     //set sizes of stars based on update date
-                    currentChildren[foldername].GetComponent<Folder>().size = setFolderSize(data);
+                    star.size = setFolderSize(star);
                 }
 
                 int numChanges = data["subfolder"].Count;
@@ -98,9 +99,11 @@ public class Repository : MonoBehaviour {
             {
                 GameObject star = createStar(parentGameObject, data);
                 currentChildren.Add(star.name, star);
-                star.GetComponent<Folder>().Changed((string) data["last modified by"]);
+                Folder starFolder = star.GetComponent<Folder>();
+                starFolder.lastModifiedDate = (int)data["last modified date"];
+                starFolder.Changed((string) data["last modified by"]);
                 //set sizes of stars based on update date
-                star.GetComponent<Folder>().size = setFolderSize(data);
+                starFolder.size = setFolderSize(starFolder);
 
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
@@ -174,7 +177,7 @@ public class Repository : MonoBehaviour {
         //foldercomp.size = ((int) folder["last modified date"]) / Datetime.Now().Second;
         //Debug.Log(foldercomp.size);
         //set sizes of stars based on update date
-        foldercomp.size = setFolderSize(folder);
+        foldercomp.size = setFolderSize(foldercomp);
 
 
         // Calculate color using file extension.
@@ -285,13 +288,12 @@ public class Repository : MonoBehaviour {
     }
 
     /* Ändra så att det blir olika nivårer av returns, färre antal nivåer ger större skillnad i localscale när resizeallfolders kallad då man splittar sizerangen på antal nivåer*/
-    public int setFolderSize(JsonData folder)
+    public int setFolderSize(Folder folder)
     {
         Repositories sn = FindObjectOfType<Repositories>();
         //threshold is minutes in repository.cs
         timeInterval = 60 * sn.getThreshold();
-        JsonData moddate = folder["last modified date"];
-        int lastmoddate = int.Parse(moddate.ToString());
+        int lastmoddate = folder.lastModifiedDate;
         if (lastmoddate == 0 || (ConvertToUnixTimestamp(DateTime.Now) - lastmoddate) > timeInterval)
         {
             return minPower;
@@ -308,5 +310,15 @@ public class Repository : MonoBehaviour {
         DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         TimeSpan diff = date.ToUniversalTime() - origin;
         return (int)Math.Floor(diff.TotalSeconds);
+    }
+    
+    private void updateSizes(List<GameObject> currentChildren)
+    {
+        foreach (GameObject child in currentChildren)
+        {
+            Folder folder = child.GetComponent<Folder>();
+            folder.size = setFolderSize(folder);
+            updateSizes(folder.children.Values.ToList());
+        }
     }
 }
