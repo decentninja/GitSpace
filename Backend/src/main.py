@@ -40,6 +40,7 @@ class Main():
         print("Final frontier reached");
         self.init_app()
         print("Mainframe activated");
+        self.init_app()
 
     def init_state(self, client, repo):
         if client not in self.states:
