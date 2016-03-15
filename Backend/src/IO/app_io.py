@@ -21,7 +21,7 @@ def recv_message(client, server, message):
         server.send_message(client, response)
 
 def serve(out_queue, in_queue):
-    sys.stdout = open(str(os.getpid()) + ".out", "a", buffering=0)
+    sys.stdout = open(str(os.getpid()) + ".out", "a")
     print("Ready to serve")
     server = WebsocketServer(PORT, out_queue, in_queue, host=IP)
     print("websocket server created")
