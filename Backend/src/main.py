@@ -65,6 +65,11 @@ class Main():
         self.app_server = Process(target= app.serve, args=(self.app_queue, self.app_queue_out))
         self.app_server.start()
 
+    def init_hooks(self):
+        self.hook_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.hook_socket.connect(('localhost', 5000))
+        self.hook_socket.listen(5)
+
     def send(self, conn, json_obj):
       json_string = '\x02' + json.dumps(json_obj) + '\x03'
       try:

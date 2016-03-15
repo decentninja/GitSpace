@@ -30,8 +30,8 @@ class Repository:
 		return {'name': self.name, 'users': self.contributors}
 
 	def apply_updates(self, updates):
-		if (self.latest_sha in [u['sha'] for u in updates]):
-			print("WARNING: commit already applied onto repo")
+	#	if (self.latest_sha in [u['sha'] for u in updates]):
+	#		print("WARNING: commit already applied onto repo")
 		self.latest_sha = updates[-1]['sha']
 		git_parsing.update_user_states(self.user_states,updates)		
 

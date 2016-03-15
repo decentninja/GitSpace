@@ -110,7 +110,7 @@ def get_init_commits(repo, time_now):
         time_now)
     return commits
 
-def get_init(repo):
+def get_init(repo,lookback = lookback_days):
     time_now = datetime.datetime.now()
     state,time = get_init_state(repo,time_now)
     updates = [get_full_commitinfo(repo, c) for c in
@@ -123,4 +123,4 @@ def get_init(repo):
 if __name__ == '__main__':
     repo = 'decentninja/GitSpace'
     state,updates = get_init(repo)
-    #print(get_collaborators(repo))
+    print(get_collaborators(repo))
