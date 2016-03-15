@@ -9,6 +9,7 @@ class Repository:
 		self.lookback_value = lookback
 		self.contributors = git_io.get_collaborators(repo)
 		self.name = repo
+		self.latest_sha = ""
 		names = [c['username'] for c in self.contributors]
 
 		#TODO CREATE STATES FOR USERS
@@ -29,6 +30,9 @@ class Repository:
 		return {'name': self.name, 'users': self.contributors}
 
 	def apply_updates(self, updates):
+	#	if (self.latest_sha in [u['sha'] for u in updates]):
+	#		print("WARNING: commit already applied onto repo")
+	#	self.latest_sha = updates[-1]['sha']
 		git_parsing.update_user_states(self.user_states,updates)		
 
 	

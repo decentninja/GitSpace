@@ -1,21 +1,28 @@
 <ion-view title="Settings">
 	<ion-nav-bar>
 		<ion-nav-back-button>
+		Back
 		</ion-nav-back-button>
 	</ion-nav-bar>
 	<ion-content>
-		<div class="list">
-			<div class="item item-input-inset">
-				<label class="item-input-wrapper">
-					<input type="text" placeholder="Websocket URL" ng-model="webSocketUrl">
-				</label>
-				<button class="button button-small button-positive" ng-click="setWebsocketUrl(webSocketUrl)">
-					Update
-				</button>
+		<form name="settingsform" ng-submit="settingsform.$valid && setWebsocketUrl(webSocketIP, webSocketPort)">
+			<div class="list">
+				<div class="item item-divider">Server</div>
+				<div class="item item-input-inset">
+					<label class="item-input-wrapper">
+						IP
+						<input type="text" placeholder="IP" ng-model="webSocketIP" ng-pattern="/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/">
+						Port
+						<input type="number" placeholder="Port" ng-model="webSocketPort">
+					</label>
+					<button class="button button-small button-positive" type="submit">
+						Update
+					</button>
+				</div>
 			</div>
-		</div>
-		<div class="t-center t-gray t-small">
-			<p>Created by GitSpace. Version 1.0</p>
-		</div>
+			<div class="t-center t-gray t-small">
+				<p>Created by GitSpace. Version 1.0</p>
+			</div>
+		</form>
 	</ion-content>
 </ion-view>

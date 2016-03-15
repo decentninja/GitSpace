@@ -228,7 +228,7 @@ def _create_subs(parent,subs,change_map,meta_info,change):
         change_map[new_sub] = current # Add to list of folders
 
         action = change['status']
-        if action in ['added','modified']:
+        if action in ['added','modified','changed']:
             current['action'] = 'update'
         elif action in ['removed']:
             if len(subs) == 0:
@@ -355,6 +355,30 @@ def print_tree_structure(alist, keys = None):
 
 
 
+######################
+# PARSE HOOK DATA
+######################
+def hook_to_updates(hook):
+    commits = hook['commits'][::-1] #Reverse list
+    return parse_raw_updates([_hook_commit_to_raw_update(c) for c in commits])
+
+def _hook_commit_to_raw_update(hook):
+    raw_update = {}
+
+    # Change from format "2015-05-05T19:40:15-04:00"
+    # To "2015-05-05T19:40:15Z"
+    raw_update['commit'] = {}
+    raw_update['commit']['committer'] = {}
+    raw_update['commit']['committer']['date'] = hook['timestamp'][:19]+'Z'
+    raw_update['commit']['message'] = hook['message']
+    raw_update['commit']['committer']['name'] = hook['author']['name']
+    raw_update['author'] = {}
+    raw_update['author']['login'] = hook['author']['username']
+    raw_update['files'] = []
+    for action in ['added','removed','modified']:
+        raw_update['files'] += [{'filename':f,'status':action} for f in hook[action]]
+    return raw_update
+
 
 ##################
 # STATE TO UPDATE
@@ -400,11 +424,6 @@ def recursive_state_to_update(parent,state):
 if __name__ == '__main__':
     from raw_state import state as rawstate
     from raw_updates import updates as rawupdates
-    state = parse_raw_state(rawstate,time = "2016-02-23T19:30:35Z")
-    updates = parse_raw_updates(rawupdates)
-    
-    states = {None:state}
-    states.update(create_user_states(state,['Zercha']))
-    update_user_states(states,updates)
-    print_tree_structure(states['Zercha']['state'],["name","last modified date"])
-
+    from hook import hook as hook
+    hook_to_updates(hook)
+    #print_tree_structure(hook_to_updates(hook)[0]['changes'])

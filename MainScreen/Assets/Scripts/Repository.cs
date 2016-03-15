@@ -27,16 +27,18 @@ public class Repository : MonoBehaviour {
     Coroutine hiddenanimation;
 
     void Update() {
-	Bounds bounds = AndreasAwesomeHelperSuperLibrary.CalculateTotalBounds(transform);
-	hudunder.transform.position = bounds.center + new Vector3(0, 0, bounds.extents.z);
-	collider.center = bounds.center;
-	collider.radius = bounds.extents.magnitude;
+	    Bounds bounds = AndreasAwesomeHelperSuperLibrary.CalculateTotalBounds(transform);
+	    hudunder.transform.position = bounds.center + new Vector3(0, 0, bounds.extents.z);
+	    collider.center = bounds.center;
+	    collider.radius = bounds.extents.magnitude;
 
-	update_cooldown -= Time.deltaTime;
-	if(update_cooldown < 0 && queue.Count != 0) {
-	    update_cooldown = update_time;
-	    handleUpdate(queue.Dequeue());
-	}
+	    update_cooldown -= Time.deltaTime;
+	    if(update_cooldown < 0 && queue.Count != 0) {
+	        update_cooldown = update_time;
+	        handleUpdate(queue.Dequeue());
+	    }
+        updateSizes(children);
+        resizeallfolders();
     }
 
     void setTime(JsonData data) {
@@ -80,10 +82,9 @@ public class Repository : MonoBehaviour {
                 Folder star = currentChildren[foldername].GetComponent<Folder>();
                 star.lastModifiedDate = (int) data["last modified date"];
                 if (star.lastModifiedDate != 0) {
-                    print(star.gameObject.name);
                     star.Changed((string) data["last modified by"]);
                     //set sizes of stars based on update date
-                    currentChildren[foldername].GetComponent<Folder>().size = setFolderSize(data);
+                    star.size = setFolderSize(star);
                 }
 
                 int numChanges = data["subfolder"].Count;
@@ -98,9 +99,11 @@ public class Repository : MonoBehaviour {
             {
                 GameObject star = createStar(parentGameObject, data);
                 currentChildren.Add(star.name, star);
-                star.GetComponent<Folder>().Changed((string) data["last modified by"]);
+                Folder starFolder = star.GetComponent<Folder>();
+                starFolder.lastModifiedDate = (int)data["last modified date"];
+                starFolder.Changed((string) data["last modified by"]);
                 //set sizes of stars based on update date
-                star.GetComponent<Folder>().size = setFolderSize(data);
+                starFolder.size = setFolderSize(starFolder);
 
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
@@ -174,32 +177,7 @@ public class Repository : MonoBehaviour {
         //foldercomp.size = ((int) folder["last modified date"]) / Datetime.Now().Second;
         //Debug.Log(foldercomp.size);
         //set sizes of stars based on update date
-        foldercomp.size = setFolderSize(folder);
-
-
-        // Calculate color using file extension.
-        int numFileTypes = folder["filetypes"].Count;
-        string[] fileExtension = new string[numFileTypes];
-        float[] filePart = new float[numFileTypes];
-        float partMax = 0;
-        int index = -1;
-        for (int i = 0; i < numFileTypes; i++)
-        {
-            fileExtension[i] = (string)folder["filetypes"][i]["extension"];
-            filePart[i] = float.Parse(folder["filetypes"][i]["part"].ToString());
-            if (filePart[i] > partMax)
-            {
-                partMax = filePart[i];
-                index = i;
-            }
-        }
-        if (index != -1)
-        {
-            thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
-        } else
-        {
-            thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
-        }
+        foldercomp.size = setFolderSize(foldercomp);
 
         // Recursively go down the file tree.
         int numSubFolders = folder["subfolder"].Count;
@@ -223,6 +201,31 @@ public class Repository : MonoBehaviour {
         Folder foldercomp = star.GetComponent<Folder>();
         foldercomp.parent = parent;
         star.transform.parent = transform;
+
+        // Calculate color using file extension.
+        int numFileTypes = data["filetypes"].Count;
+        string[] fileExtension = new string[numFileTypes];
+        float[] filePart = new float[numFileTypes];
+        float partMax = 0;
+        int index = -1;
+        for (int i = 0; i < numFileTypes; i++)
+        {
+            fileExtension[i] = (string)data["filetypes"][i]["extension"];
+            filePart[i] = float.Parse(data["filetypes"][i]["part"].ToString());
+            if (filePart[i] > partMax)
+            {
+                partMax = filePart[i];
+                index = i;
+            }
+        }
+        if (index != -1)
+        {
+            star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+        }
+        else
+        {
+            star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+        }
 
         return star;
     }
@@ -285,13 +288,12 @@ public class Repository : MonoBehaviour {
     }
 
     /* Ändra så att det blir olika nivårer av returns, färre antal nivåer ger större skillnad i localscale när resizeallfolders kallad då man splittar sizerangen på antal nivåer*/
-    public int setFolderSize(JsonData folder)
+    public int setFolderSize(Folder folder)
     {
         Repositories sn = FindObjectOfType<Repositories>();
         //threshold is minutes in repository.cs
         timeInterval = 60 * sn.getThreshold();
-        JsonData moddate = folder["last modified date"];
-        int lastmoddate = int.Parse(moddate.ToString());
+        int lastmoddate = folder.lastModifiedDate;
         if (lastmoddate == 0 || (ConvertToUnixTimestamp(DateTime.Now) - lastmoddate) > timeInterval)
         {
             return minPower;
@@ -308,5 +310,15 @@ public class Repository : MonoBehaviour {
         DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         TimeSpan diff = date.ToUniversalTime() - origin;
         return (int)Math.Floor(diff.TotalSeconds);
+    }
+    
+    private void updateSizes(Dictionary<string, GameObject> currentChildren)
+    {
+        foreach (GameObject child in currentChildren.Values)
+        {
+            Folder folder = child.GetComponent<Folder>();
+            folder.size = setFolderSize(folder);
+            updateSizes(folder.children);
+        }
     }
 }

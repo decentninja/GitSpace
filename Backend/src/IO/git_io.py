@@ -45,11 +45,14 @@ def get_collaborators(repo):
     raw = get_api_result('https://api.github.com/repos/'+ repo +'/collaborators')
     collabs = []
     for user in raw:
-        new_user = {}
-        new_user['username'] = user['login']
-        new_user['image'] = user['avatar_url']
-        new_user['name'] = get_user_name(new_user['username'])
-        collabs.append(new_user)
+        try:
+            new_user = {}
+            new_user['username'] = user['login']
+            new_user['image'] = user['avatar_url']
+            new_user['name'] = get_user_name(new_user['username'])
+            collabs.append(new_user)
+        except Exception:
+            pass
     return collabs
 
 def get_user_name(username):
@@ -110,7 +113,7 @@ def get_init_commits(repo, time_now):
         time_now)
     return commits
 
-def get_init(repo):
+def get_init(repo,lookback = lookback_days):
     time_now = datetime.datetime.now()
     state,time = get_init_state(repo,time_now)
     updates = [get_full_commitinfo(repo, c) for c in

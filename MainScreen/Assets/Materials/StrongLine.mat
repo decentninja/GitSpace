@@ -136,11 +136,11 @@ Material:
       data:
         first:
           name: _EmissionColor
-        second: {r: 8.274509, g: 9.137255, b: 5.2549024, a: 1}
+        second: {r: 4.9411764, g: 5.137255, b: 10, a: 1}
       data:
         first:
           name: _Color
-        second: {r: 1, g: 1, b: 1, a: 0.059535418}
+        second: {r: 1, g: 1, b: 1, a: 0.06709178}
       data:
         first:
           name: _TintColor
