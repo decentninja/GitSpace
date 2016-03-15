@@ -50,7 +50,8 @@ public class TCPClient : MonoBehaviour {
         NetworkStream stream = connection.GetStream();
 	StringBuilder json = new StringBuilder();
 	string name = "gitspace";
-	stream.WriteLine(name);
+	Byte[] bytes = System.Text.Encoding.UTF8.GetBytes(name);
+	stream.Write(bytes, 0, bytes.Length);
 	while(true) {
 	    if(stream.DataAvailable) {
 		int c = stream.ReadByte();
