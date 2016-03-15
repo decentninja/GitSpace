@@ -63,6 +63,7 @@ class Main():
         self.app_queue = Queue()
         self.app_queue_out = Queue()
         self.app_server = Process(target= app.serve, args=(self.app_queue, self.app_queue_out))
+        print("Process started")
         self.app_server.start()
 
     def send(self, conn, json_obj):

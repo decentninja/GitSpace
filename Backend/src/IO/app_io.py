@@ -20,6 +20,7 @@ def recv_message(client, server, message):
 
 def serve(out_queue, in_queue):
     server = WebsocketServer(PORT, out_queue, in_queue, host=IP)
+    print("websocket server created")
     server.set_fn_new_client(new_client)
     server.set_fn_message_received(recv_message)
     server.run_forever()

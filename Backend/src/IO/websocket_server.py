@@ -28,7 +28,7 @@ CLOSE_CONN  = 0x8
 class API():
 	def run_forever(self):
 		try:
-			#print("Listening on port %d for clients.." % self.port)
+			print("Listening on port %d for clients.." % self.port)
 			self.serve_forever()
 		except KeyboardInterrupt:
 			self.server_close()
