@@ -74,9 +74,10 @@ class WebsocketServer(ThreadingMixIn, TCPServer, API):
 	clients=[]
 	id_counter=0
 
-	def __init__(self, port, queue, host='127.0.0.1'):
+	def __init__(self, port, out_queue, in_queue, host='127.0.0.1'):
 		self.port=port
-		self.queue=queue
+		self.in_queue=in_queue
+		self.out_queue=out_queue
 		TCPServer.__init__(self, (host, port), WebSocketHandler)
 
 	def _message_received_(self, handler, msg):

@@ -90,7 +90,7 @@ public class Repositories : MonoBehaviour {
     private void dierepo(string repoName) {
 	if (repoDictionary.ContainsKey(repoName))
 	{
-	    Destroy(repoDictionary[repoName]);
+	    Destroy(repoDictionary[repoName].gameObject);
 	    repoDictionary.Remove(repoName);
 	}
     }

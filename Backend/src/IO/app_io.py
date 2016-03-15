@@ -9,13 +9,17 @@ mock_setup_json = '{"data":[{"name":"decentninja/GitSpace","users":[{"username":
 
 def new_client(client, server):
     # TODO: Get init state to send to client.
-    server.send_message(client, mock_setup_json)
+    server.out_queue.put(('{"message": {"command": "internal_state"}}', client['repo_id']))
+    server.send_message(client, server.in_queue.get())
 
 def recv_message(client, server, message):
-    server.queue.put((message, client['repo_id']))
+    server.out_queue.put((message, client['repo_id']))
+    response = server.in_queue.get()
+    if response != 'internal':
+        server.send_message(client, response)
 
-def serve(queue):
-    server = WebsocketServer(PORT, queue, host=IP)
+def serve(out_queue, in_queue):
+    server = WebsocketServer(PORT, out_queue, in_queue, host=IP)
     server.set_fn_new_client(new_client)
     server.set_fn_message_received(recv_message)
     server.run_forever()

@@ -23,7 +23,7 @@ public class TCPClient : MonoBehaviour {
     void Start () {
         StartCoroutine("TCPClientRoutine");
     }
-/*
+
     void Update () {
         // Test Delete folder by pressing '1'. Removes Assets folder from the constellation.
         if (Input.GetKeyDown("1")) {
@@ -33,8 +33,12 @@ public class TCPClient : MonoBehaviour {
         if (Input.GetKeyDown("2")) {
             ParseJSON("{'type': 'update','repo': 'GitSpace','apiv': 1,'direction': 'forward / backward','forced': false,'changes': [{'timestamp': 1230583,'name': 'MainScreen','user': 'test@test.com','action': 'update','non_master_branch': false,'subfolder': [{'timestamp': 1230583,'name': 'TestFolder','user': 'test@test.com','action': 'create','non_master_branch': false,'subfolder': [{'timestamp': 1230583,'name': 'TestFolder2','user': 'test@test.com','action': 'create','non_master_branch': false,'subfolder': [],'filetypes': []}],'filetypes': []}],'filetypes': []}]}");
         }
+        if (Input.GetKeyDown("3")) {
+            ParseJSON("{'api version': 1,'type': 'delete','repo':'decentninja/GitSpace'}");
+        }
+        
     }
-*/
+
     private void ParseJSON(string json) {
         try {
 	    JsonData parsed = JsonMapper.ToObject(json);
@@ -49,6 +53,9 @@ public class TCPClient : MonoBehaviour {
         TcpClient connection = new TcpClient(ipaddress, port);
         NetworkStream stream = connection.GetStream();
 	StringBuilder json = new StringBuilder();
+	string name = "gitspace";
+	Byte[] bytes = System.Text.Encoding.UTF8.GetBytes(name);
+	stream.Write(bytes, 0, bytes.Length);
 	while(true) {
 	    if(stream.DataAvailable) {
 		int c = stream.ReadByte();
