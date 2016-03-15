@@ -49,6 +49,8 @@ public class TCPClient : MonoBehaviour {
         TcpClient connection = new TcpClient(ipaddress, port);
         NetworkStream stream = connection.GetStream();
 	StringBuilder json = new StringBuilder();
+	string name = "gitspace";
+	stream.WriteLine(name);
 	while(true) {
 	    if(stream.DataAvailable) {
 		int c = stream.ReadByte();
