@@ -19,6 +19,7 @@ def recv_message(client, server, message):
         server.send_message(client, response)
 
 def serve(out_queue, in_queue):
+    print("Ready to serve")
     server = WebsocketServer(PORT, out_queue, in_queue, host=IP)
     print("websocket server created")
     server.set_fn_new_client(new_client)
