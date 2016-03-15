@@ -37,8 +37,11 @@ class Main():
         self.clients = {}
         self.states = {}
         self.init_states()
+        print("Revolution complete");
         self.init_frontend()
+        print("Final frontier reached");
         self.init_app()
+        print("Mainframe activated");
 
     def init_state(self, client, repo):
         if client not in self.states:
