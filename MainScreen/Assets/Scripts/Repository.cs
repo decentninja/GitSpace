@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using LitJson;
-using System.Linq;
 
 public class Repository : MonoBehaviour {
 
@@ -38,7 +37,8 @@ public class Repository : MonoBehaviour {
 	        update_cooldown = update_time;
 	        handleUpdate(queue.Dequeue());
 	    }
-        updateSizes(children.Values.ToList());
+        updateSizes(children);
+        resizeallfolders();
     }
 
     void setTime(JsonData data) {
@@ -179,31 +179,6 @@ public class Repository : MonoBehaviour {
         //set sizes of stars based on update date
         foldercomp.size = setFolderSize(foldercomp);
 
-
-        // Calculate color using file extension.
-        int numFileTypes = folder["filetypes"].Count;
-        string[] fileExtension = new string[numFileTypes];
-        float[] filePart = new float[numFileTypes];
-        float partMax = 0;
-        int index = -1;
-        for (int i = 0; i < numFileTypes; i++)
-        {
-            fileExtension[i] = (string)folder["filetypes"][i]["extension"];
-            filePart[i] = float.Parse(folder["filetypes"][i]["part"].ToString());
-            if (filePart[i] > partMax)
-            {
-                partMax = filePart[i];
-                index = i;
-            }
-        }
-        if (index != -1)
-        {
-            thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
-        } else
-        {
-            thisStar.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
-        }
-
         // Recursively go down the file tree.
         int numSubFolders = folder["subfolder"].Count;
         for (int i = 0; i < numSubFolders; i++)
@@ -226,6 +201,31 @@ public class Repository : MonoBehaviour {
         Folder foldercomp = star.GetComponent<Folder>();
         foldercomp.parent = parent;
         star.transform.parent = transform;
+
+        // Calculate color using file extension.
+        int numFileTypes = data["filetypes"].Count;
+        string[] fileExtension = new string[numFileTypes];
+        float[] filePart = new float[numFileTypes];
+        float partMax = 0;
+        int index = -1;
+        for (int i = 0; i < numFileTypes; i++)
+        {
+            fileExtension[i] = (string)data["filetypes"][i]["extension"];
+            filePart[i] = float.Parse(data["filetypes"][i]["part"].ToString());
+            if (filePart[i] > partMax)
+            {
+                partMax = filePart[i];
+                index = i;
+            }
+        }
+        if (index != -1)
+        {
+            star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+        }
+        else
+        {
+            star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+        }
 
         return star;
     }
@@ -312,13 +312,13 @@ public class Repository : MonoBehaviour {
         return (int)Math.Floor(diff.TotalSeconds);
     }
     
-    private void updateSizes(List<GameObject> currentChildren)
+    private void updateSizes(Dictionary<string, GameObject> currentChildren)
     {
-        foreach (GameObject child in currentChildren)
+        foreach (GameObject child in currentChildren.Values)
         {
             Folder folder = child.GetComponent<Folder>();
             folder.size = setFolderSize(folder);
-            updateSizes(folder.children.Values.ToList());
+            updateSizes(folder.children);
         }
     }
 }
