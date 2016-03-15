@@ -31,8 +31,6 @@ def command_json():
 
 class Main():
     def __init__(self, testing = False):
-        signal.signal(signal.SIGINT, self.close)
-        signal.signal(signal.SIGTERM, self.close)
         self.testing = testing
         self.clients = {}
         self.states = {}
@@ -171,8 +169,12 @@ class Main():
                 for repo in self.states[client_id]]
 
     def close(self):
+        self.frontend_server.close()
+        self.app_queue.close()
+        self.app_queue_out.close()
         self.app_server.terminate()
         self.app_server.join()
+        print('Server shut down.')
 
     def main(self):
         try:

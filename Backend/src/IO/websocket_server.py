@@ -32,7 +32,7 @@ class API():
 			self.serve_forever()
 		except KeyboardInterrupt:
 			self.server_close()
-			#print("Server terminated.")
+			print("Server terminated.")
 		except Exception as e:
 			print("ERROR: WebSocketsServer: "+str(e))
 			exit(1)
