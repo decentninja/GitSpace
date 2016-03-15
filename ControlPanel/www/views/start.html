@@ -4,14 +4,13 @@
 		</button>
 	</ion-nav-buttons>
 	<ion-nav-buttons side="primary">
-		<button class="button button-icon icon ion-plus" ng-class="{disabled: repositories.length == 0 && !isWaiting}" ng-click="(repositories.length > 0 && !isWaiting) && openModal()">
+		<button class="button button-icon icon ion-plus" ng-class="{disabled: rootScope.waiting}" ng-click="!rootScope.waiting && openModal()">
 		</button>
 	</ion-nav-buttons>
 	<ion-content>
-
 		<div ng-include="'views/loading.html'"></div>
 
-		<div class="list" ng-show="repositories.length > 0">
+		<div class="list">
 			<div class="item item-divider">
 				Visuals
 			</div>
@@ -58,7 +57,7 @@
 								<input type="text" placeholder="Search in {{ repository.users.length }} users..." ng-model="filterfield">
 							</label>
 						</div>
-						<div class="item item-avatar" ng-repeat="user in repository.users | filter:filterfield | orderBy:'username'" ng-click="setUserActivity(user)">
+						<div class="item item-avatar" ng-repeat="user in repository.users | filter:filterfield | orderBy:'username'" ng-click="setUserActivity(user, repository)">
 							<img ng-src="{{ user.image }}">
 							<h3>{{ user.name }}</h3>
 							<p>{{ user.username }}</p>

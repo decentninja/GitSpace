@@ -9,7 +9,8 @@ var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controller
     $rootScope.rootScope = {
         error: null,
         waiting: false,
-        settings: settings
+        settings: settings,
+        webSocketStatus: "Connecting..."
     };
 
     $ionicPlatform.ready(function() {

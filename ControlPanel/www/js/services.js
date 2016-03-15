@@ -28,6 +28,10 @@ angular.module('gitSpace.services', ['ngSocket'])
                 console.log("Sending websocketsError...");
                 $rootScope.$broadcast("websocketsError");
             }
+            if(ws.socket.readyState == 1) {
+                $rootScope.rootScope.webSocketStatus = null;
+                $rootScope.$apply();
+            }
         }, 3000);
         ws.onOpen(function() {
             console.log("Open!");

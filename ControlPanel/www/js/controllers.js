@@ -78,10 +78,10 @@ angular.module('gitSpace.controllers', [])
 		});
 	};
 
-	$scope.setUserActivity = function(userData) {
+	$scope.setUserActivity = function(userData, repository) {
 		Repositories.emit({
 			command: 'user activity',
-			name: userData.name,
+			repo: repository.name,
 			username: userData.username
 		});
 	};

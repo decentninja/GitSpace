@@ -1,9 +1,9 @@
 <div id="waiting" class="padding t-center t-gray" ng-show="rootScope.isWaiting">
     <ion-spinner></ion-spinner>
 </div>
-<div class="t-center padding" ng-show="repositories.length == 0 && rootScope.error == null">
+<div class="t-center padding" ng-show="repositories.length == 0 && rootScope.error == null && rootScope.webSocketStatus !== null">
     <ion-spinner></ion-spinner>
-    <p>Connecting...</p>
+    <p>{{ rootScope.webSocketStatus }}</p>
 </div>
 <div class="t-center padding" ng-show="rootScope.error !== null">
     <p>{{ rootScope.error }}</p>
