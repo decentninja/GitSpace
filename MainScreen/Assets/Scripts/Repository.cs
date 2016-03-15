@@ -77,12 +77,13 @@ public class Repository : MonoBehaviour {
         {
             if (currentChildren.ContainsKey((string)data["name"]))
             {
-                Folder star = parent.children[foldername].GetComponent<Folder>();
+                Folder star = currentChildren[foldername].GetComponent<Folder>();
                 star.lastModifiedDate = (int) data["last modified date"];
-                if (star.lastModifiedDate != 0) { 
+                if (star.lastModifiedDate != 0) {
+                    print(star.gameObject.name);
                     star.Changed((string) data["last modified by"]);
                     //set sizes of stars based on update date
-                    parent.children[foldername].GetComponent<Folder>().size = setFolderSize(data);
+                    currentChildren[foldername].GetComponent<Folder>().size = setFolderSize(data);
                 }
 
                 int numChanges = data["subfolder"].Count;
@@ -97,7 +98,7 @@ public class Repository : MonoBehaviour {
             {
                 GameObject star = createStar(parentGameObject, data);
                 currentChildren.Add(star.name, star);
-                star.GetComponent<Folder>().Changed((string) data["user"]);
+                star.GetComponent<Folder>().Changed((string) data["last modified by"]);
                 //set sizes of stars based on update date
                 star.GetComponent<Folder>().size = setFolderSize(data);
 

@@ -14,14 +14,14 @@ public class DrawLines : MonoBehaviour {
 				foreach(Transform grandchild in child.transform) {
 					Folder folder = grandchild.GetComponent<Folder>();
 					if(folder != null) {
-						mat.SetPass(0);
 						mat.SetColor("_EmissionColor", folder.EmailToColor());
 						Color c = mat.color;
 						c.a = lowest + folder.extraglow;
 						mat.color = c;
-						GL.Begin(GL.LINES);
-						GL.Vertex(folder.transform.position);
-						GL.Vertex(folder.parent.transform.position);
+                        mat.SetPass(0);
+                        GL.Begin(GL.LINES);
+                        GL.Vertex(folder.parent.transform.position);
+                        GL.Vertex(folder.transform.position);
 						GL.End();
 					}
 				}
