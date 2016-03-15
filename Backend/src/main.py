@@ -38,7 +38,7 @@ class Main():
         self.states = {}
         self.init_states()
         self.init_frontend()
-        self.init_app()
+        # self.init_app()
 
     def init_state(self, client, repo):
         if client not in self.states:
@@ -162,7 +162,7 @@ class Main():
             while 1:
                 self.find_clients()
                 self.send_webhook_updates()
-                self.read_app_commands()
+                #self.read_app_commands()
                 #time.sleep(1)
         except KeyboardInterrupt:
             self.close()
