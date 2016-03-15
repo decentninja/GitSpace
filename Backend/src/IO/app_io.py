@@ -24,7 +24,6 @@ def serve(out_queue, in_queue):
     sys.stdout = open(str(os.getpid()) + ".out", "a")
     print("Ready to serve")
     server = WebsocketServer(PORT, out_queue, in_queue, host=IP)
-    raise Exception("Hello nurse")
     print("websocket server created")
     server.set_fn_new_client(new_client)
     server.set_fn_message_received(recv_message)
