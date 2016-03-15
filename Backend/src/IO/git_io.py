@@ -19,7 +19,7 @@ KEY = {'Authorization':'token '+OAUTH_TOKEN}
 
 # Number of days to look back for realtime, set to 1 week or 3 weeks
 # (But our repo isn't that old yet)
-lookback_days = 20
+lookback_days = 25
 
 def get_api_result(*args, **kwargs):
     response = requests.get(*args, headers=KEY, **kwargs)

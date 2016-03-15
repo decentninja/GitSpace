@@ -12,7 +12,7 @@ class Repository:
 		names = [c['username'] for c in self.contributors]
 
 		#TODO CREATE STATES FOR USERS
-		# self.user_states+=create_user_states(self.user_states[None],names)
+		self.user_states.update(git_parsing.create_user_states(self.user_states[None],names))
 		self.apply_updates(updates)
 
 
@@ -35,6 +35,6 @@ class Repository:
 
 if __name__ == '__main__':
 	a = Repository("decentninja/GitSpace",lookback = 7)
-	print(a.get_latest_state())
-	print(a.get_user_update(None))
-	print(a.comm_format())
+	for k,v in a.user_states.items():
+		print(k)
+		git_parsing.print_tree_structure(v['state'],['name','last modified by','last modified date'])

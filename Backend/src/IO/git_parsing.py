@@ -38,14 +38,6 @@ def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
             _apply_depth(state['state'])
         return state
 
-def _write_readable_structure_to_file(f,parsed_state):
-    '''for manual debug'''
-    def print_tree(depth,tree):
-        for t in tree:
-            print("  "*depth+t['name'],t['size'],t['filetypes'],file=f)
-            print_tree(depth+1,t["subfolder"])
-    print_tree(0,parsed_state['state'])
-
 def _extract_folders(tree, API_version,time):
     '''
     list tree: list of files/folders sorted hierical
@@ -76,6 +68,7 @@ def _extract_folders(tree, API_version,time):
 
 def _fix_file_ratios(tree,API_version):
     '''Recursively divides all '''
+    return
     if API_version == 1:
         for folder in tree:
             for ext in folder['filetypes']:
@@ -123,7 +116,6 @@ def _handle_tree_type(API_version,node,parent,name,folder_map,time = 0):
 def _create_empty_state_folder(name,date = 0):
     folder = {}
     folder['name'] = name
-    folder['size'] = 0
     folder['last modified date'] = date
     folder['last modified by'] = "none"
     folder['subfolder'] = []
@@ -146,7 +138,6 @@ def _handle_blob_type(API_version,node,parent,folder_map):
         ext = ext[1:]
 
         # Adds size to parent
-        parent['size'] += node['size']
         parent_ext = parent['filetypes']
         match = None
         # Find matching extension in parent
@@ -184,14 +175,13 @@ def parse_raw_updates(raw_updates, API_version = None):
         raise Exception('Unknown API version: ' + API_version)
     if API_version == 1:
         parsed = [_parse_raw_update(update,API_version) for update in raw_updates]
-        #write_updates_readable(parsed)
         return parsed
 
 def _parse_raw_update(raw_update, API_version):
-    meta_info = raw_update['commit']
-    date = meta_info['committer']['date']
+    meta_info = raw_update
+    date = meta_info['commit']['committer']['date']
     time = parse_git_time_format(date)
-    meta_info['committer']['date'] = time
+    meta_info['commit']['committer']['date'] = time
 
     changes = []
     change_map = {'': changes}
@@ -200,7 +190,7 @@ def _parse_raw_update(raw_update, API_version):
     update['type'] = 'update'
     update['repo'] = 'GitSpace' # TODO placeholder
     update['apiv'] = 1
-    update['message'] = meta_info['message']
+    update['message'] = meta_info['commit']['message']
     update['direction'] = 'forward'
     update['forced'] = False # will not be lower case when written :S
     update['changes'] = changes
@@ -262,10 +252,12 @@ def _create_subs(parent,subs,change_map,meta_info,change):
 def _create_empty_change_subfolder(name,meta_info):
     change = {}
     change['name'] = name
-    change['size'] = 0
-    change['last modified by'] = meta_info['committer']['name']
+    if not meta_info.get('author'):
+        change['last modified by'] = "Unknown: %s"%meta_info['commit']['committer']['name']
+    else:
+        change['last modified by'] = meta_info['author']['login']
     change['action'] = "none"
-    change['last modified date'] = meta_info['committer']['date']
+    change['last modified date'] = meta_info['commit']['committer']['date']
     change['non_master_branch'] = False
     change['subfolder'] = []
     change['filetypes'] = []
@@ -275,12 +267,27 @@ def parse_git_time_format(date):
     return int(datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ").timestamp())
 
 def create_user_states(state,users):
-    return {user:_deep_state_clone(state,{}) for user in users}
+    return {user:_state_clone(state,{}) for user in users}
 
-def _deep_state_clone(state,cstate):
-    for k,v in state.items():
-        pass
-      #object is not actually iterable
+def _state_clone(state,clone):
+    clone['type'] = state['type']
+    clone['repo'] = state['repo']
+    clone['api version'] = state['api version']
+    clone["state"] = []
+    _recursive_state_clone(state['state'], clone['state'])
+    return clone
+
+def _recursive_state_clone(parent,c_parent):
+    for sub in parent:
+        c_sub = {}
+        c_sub['last modified by'] = sub['last modified by']
+        c_sub['last modified date'] = sub['last modified date']
+        c_sub['name'] = sub['name']
+        c_sub['subfolder'] = []
+        c_sub['filetypes'] = [{k:v for k,v in a_type.items()} for a_type in sub['filetypes']]
+
+        c_parent.append(c_sub)
+        _recursive_state_clone(sub['subfolder'],c_sub['subfolder'])
 
     
 
@@ -333,14 +340,16 @@ def _update_children(user_states,change):
         if not sub['action'] == 'delete':
             _update_children(children,sub)
 
-def print_tree_structure(alist):
+def print_tree_structure(alist, keys = None):
     '''for manual debug'''
     def print_tree(depth,tree):
         for t in tree:
-            if 'action' in tree:
-                print("  "*depth+t['name'],t['last modified date'],t['last modified by'],t['action'])
-            else:
-                print("  "*depth+t['name'],t['last modified date'],t['last modified by'])
+            print("\t"*depth,end='')
+            for k,v in t.items():
+                if keys == None or k in keys:
+                    if k != 'subfolder':
+                        print(k,v,end=', ')
+            print()
             print_tree(depth+1,t["subfolder"])
     print_tree(0,alist)
 
@@ -393,7 +402,9 @@ if __name__ == '__main__':
     from raw_updates import updates as rawupdates
     state = parse_raw_state(rawstate,time = "2016-02-23T19:30:35Z")
     updates = parse_raw_updates(rawupdates)
-    update_state(state,updates)
-    print_tree_structure(state['state'])
-    print("-----------------------")
-    print_tree_structure(state_to_update(state)['changes'])
+    
+    states = {None:state}
+    states.update(create_user_states(state,['Zercha']))
+    update_user_states(states,updates)
+    print_tree_structure(states['Zercha']['state'],["name","last modified date"])
+
