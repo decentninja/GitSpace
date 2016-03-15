@@ -228,7 +228,7 @@ def _create_subs(parent,subs,change_map,meta_info,change):
         change_map[new_sub] = current # Add to list of folders
 
         action = change['status']
-        if action in ['added','modified']:
+        if action in ['added','modified','changed']:
             current['action'] = 'update'
         elif action in ['removed']:
             if len(subs) == 0:
