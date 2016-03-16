@@ -28,7 +28,7 @@ public class Repository : MonoBehaviour {
     float update_time = 1;	// Time between updates in milliseconds
     Coroutine hiddenanimation;
 
-    void Start() {
+    void Awake() {
         tm = FindObjectOfType<TimeManager>();
     }
 
