@@ -204,8 +204,8 @@ MonoBehaviour:
   folderPrefab: {fileID: 105334, guid: 8bc7afc40f43440549a18d52dc6b0055, type: 2}
   collider: {fileID: 13500030}
   hudunder: {fileID: 22344478}
-  folderStartSize: 0.15
-  folderMaxSize: 0.7
+  folderStartSize: 0.08
+  folderMaxSize: 1
   rootStar: {fileID: 100496, guid: f6f0f41d366fdb0499fc48e07425fc6c, type: 2}
   starcolor:
     key0:
@@ -251,8 +251,6 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   timeInterval: 0
-  minPower: 1
-  maxPower: 7
 --- !u!114 &11468998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -398,11 +396,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: folderStartSize
-      value: 0.15
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: folderMaxSize
-      value: 0.7
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key0.rgba
