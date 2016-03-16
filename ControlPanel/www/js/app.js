@@ -7,11 +7,21 @@ var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controller
 .run(function($ionicPlatform, $rootScope, settings) {
 
     $rootScope.rootScope = {
+        loggedIn: false,
         error: null,
         waiting: false,
         settings: settings,
-        webSocketStatus: "Connecting..."
+        webSocketStatus: "Connecting...",
+        ls: false
     };
+
+    if(typeof(Storage) !== "undefined") {
+        $rootScope.rootScope.ls = true;
+        var user = localStorage.getItem("gitSpaceLogin");
+        if(user !== null) {
+            $rootScope.rootScope.loggedIn = user;
+        }
+    }
 
     $ionicPlatform.ready(function() {
         if(window.cordova && window.cordova.plugins.Keyboard) {
