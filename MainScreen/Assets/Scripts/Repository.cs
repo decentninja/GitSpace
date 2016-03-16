@@ -16,6 +16,7 @@ public class Repository : MonoBehaviour {
     public GameObject rootStar;
     public Gradient starcolor;
     public bool isUserUpdate;
+    public TimeManager tm;
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
@@ -26,6 +27,10 @@ public class Repository : MonoBehaviour {
     float update_cooldown = 0;
     float update_time = 1;	// Time between updates in milliseconds
     Coroutine hiddenanimation;
+
+    void Start() {
+        tm = FindObjectOfType<TimeManager>();
+    }
 
     void Update() {
 	    Bounds bounds = AndreasAwesomeHelperSuperLibrary.CalculateTotalBounds(transform);
@@ -44,11 +49,14 @@ public class Repository : MonoBehaviour {
 
     void setTime(JsonData data) {
 	try {
-	    GameObject gh = GameObject.Find("HUD");
-	    if(gh != null) {
-		gh.GetComponent<HUD>().setTime((int) data["last modified date"]);
+	    if(tm != null) {
+		tm.setCurrentDate((int) data["last modified date"]);
 	    }
 	} catch(KeyNotFoundException) {}
+    }
+
+    void setToRealTime() {
+        tm.setToRealtime();
     }
 
     void handleUpdate(JsonData data)
