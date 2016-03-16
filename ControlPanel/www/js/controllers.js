@@ -1,6 +1,10 @@
 angular.module('gitSpace.controllers', [])
 
-.controller("mainCtrl", ['$scope', '$rootScope', 'Repositories', '$ionicModal', 'settings', function($scope, $rootScope, Repositories, $ionicModal, settings) {
+.controller("mainCtrl", ['$scope', '$rootScope', 'Repositories', '$ionicModal', 'settings', '$state', function($scope, $rootScope, Repositories, $ionicModal, settings, $state) {
+
+	if($rootScope.rootScope.loggedIn === false) {
+		$state.go("app.login");
+	}
 
 	$scope.repositories = Repositories.all();
 	$scope.rewindThreshold = 0;
@@ -169,7 +173,7 @@ angular.module('gitSpace.controllers', [])
 }])
 
 /*
-*	Repository controller
+*	Settings controller
 */
 .controller("settingsCtrl", ['$scope', '$rootScope', 'Repositories', 'settings', '$state', function($scope, $rootScope, Repositories, settings, $state) {
 	$scope.webSocketIP = Repositories.getIP();
@@ -182,4 +186,15 @@ angular.module('gitSpace.controllers', [])
 		$state.go('app.start');
 	};
 
+}])
+
+/*
+*	Login controller
+*/
+.controller("login", ['$scope', '$rootScope', 'settings', '$state', '$ionicNavBarDelegate', function($scope, $rootScope, settings, $state, $ionicNavBarDelegate) {
+	$ionicNavBarDelegate.showBackButton(false);
+
+	if($rootScope.rootScope.loggedIn === true) {
+		$state.go("app.start");
+	}
 }]);

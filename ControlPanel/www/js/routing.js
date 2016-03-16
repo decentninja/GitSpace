@@ -25,8 +25,17 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
         controller : "settingsCtrl"
       }
     }
+  })
+  .state('app.login', {
+    url: 'login',
+    views: {
+      'appContent' :{
+        templateUrl: 'views/login.html',
+        controller : "login"
+      }
+    }
   });
 
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/login');
 
 }]);
