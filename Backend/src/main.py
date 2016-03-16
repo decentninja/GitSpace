@@ -6,7 +6,7 @@ import signal
 import socket
 import sys
 import time
-import hook.io
+import IO.git_io as hook
 import IO.git_io as git
 import IO.app_io as app
 from repository import Repository
