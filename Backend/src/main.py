@@ -72,8 +72,9 @@ class Main():
 
     def init_hook(self):
         self.hook_queue = Queue()
-        self.hook_server = Process(target= new_hook_client, args=(self.hook_queue))
-        
+        self.hook_server = Process(target= hook.new_hook_client, args=(self.hook_queue, ))
+        self.hook_server.start()
+
     def send(self, conn, json_obj):
       json_string = '\x02' + json.dumps(json_obj) + '\x03'
       try:
@@ -103,13 +104,11 @@ class Main():
                 repo, update = self.hook_queue.get_nowait()
             except queue.Empty:
                 return
-            for c_id,c in self.states.items():
+            for c_id, c in self.states.items():
                 if repo in c:
-                    c[repo].apply_updates(update)
-                    if c_id in [self.clients]:
-                        send(self.clients[c_id],update)
-                    else:
-                        print("WARNING: %s has repo %s but no client"%(c_id,repo))
+                    c[repo].apply_updates([update])
+                    if c_id in self.clients:
+                        self.send_all(c_id, update)
 
     def read_app_commands(self):
         while 1:
@@ -196,6 +195,8 @@ class Main():
         self.app_queue_out.close()
         self.app_server.terminate()
         self.app_server.join()
+        self.hook_server.terminate()
+        self.hook_server.join()
         print('Server shut down.')
 
     def main(self):
