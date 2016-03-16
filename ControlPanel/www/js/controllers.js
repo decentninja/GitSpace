@@ -108,68 +108,68 @@ angular.module('gitSpace.controllers', [])
 			console.log("Rewind", minutes, "minutes");
 		}
 		/*Repositories.emit({
-			command: 'rewind',
-			minutes: minutes
-		});*/
-	};
+		command: 'rewind',
+		minutes: minutes
+	});*/
+};
 
-	$ionicModal.fromTemplateUrl('views/add-modal.html', {
-		scope: $scope,
-		animation: 'slide-in-up'
-	}).then(function(modal) {
-		$scope.modal = modal;
-	});
-	$scope.openModal = function() {
-		$scope.modal.show();
-	};
-	$scope.closeModal = function() {
-		$scope.modal.hide();
-	};
-	//Cleanup the modal when we're done with it!
-	$scope.$on('$destroy', function() {
-		$scope.modal.remove();
-	});
+$ionicModal.fromTemplateUrl('views/add-modal.html', {
+	scope: $scope,
+	animation: 'slide-in-up'
+}).then(function(modal) {
+	$scope.modal = modal;
+});
+$scope.openModal = function() {
+	$scope.modal.show();
+};
+$scope.closeModal = function() {
+	$scope.modal.hide();
+};
+//Cleanup the modal when we're done with it!
+$scope.$on('$destroy', function() {
+	$scope.modal.remove();
+});
 
-	$scope.addRepository = function(repository) {
+$scope.addRepository = function(repository) {
+	Repositories.emit({
+		command: 'repo add',
+		repo: repository.owner + "/" + repository.repo
+	});
+	$scope.modal.hide();
+	$scope.newRepository = {
+		owner: null,
+		repo: null
+	};
+	// Let us wait!
+	$scope.setWaiting();
+};
+
+$scope.removeRepository = function(repository) {
+	var confirmDialog = confirm("Are you sure?");
+	if(confirmDialog) {
 		Repositories.emit({
-			command: 'repo add',
-			repo: repository.owner + "/" + repository.repo
+			command: 'repo delete',
+			repo: repository.name
 		});
-		$scope.modal.hide();
-		$scope.newRepository = {
-			owner: null,
-			repo: null
-		};
-		// Let us wait!
-		$scope.setWaiting();
-	};
+	}
+	// Let us wait!
+	$scope.setWaiting();
+};
 
-	$scope.removeRepository = function(repository) {
-		var confirmDialog = confirm("Are you sure?");
-		if(confirmDialog) {
-			Repositories.emit({
-				command: 'repo delete',
-				repo: repository.name
-			});
+$scope.reloadWebsockets = function() {
+	Repositories.reloadWs();
+};
+
+$scope.setWaiting = function () {
+	$rootScope.rootScope.isWaiting = true;
+	setTimeout(function() {
+		if($rootScope.rootScope.isWaiting) {
+			$rootScope.rootScope.isWaiting = false;
+			$rootScope.rootScope.error = "Could not get the data from the server. Try again!";
+			$scope.$apply();
 		}
-		// Let us wait!
-		$scope.setWaiting();
-	};
-
-	$scope.reloadWebsockets = function() {
-		Repositories.reloadWs();
-	};
-
-	$scope.setWaiting = function () {
-		$rootScope.rootScope.isWaiting = true;
-		setTimeout(function() {
-			if($rootScope.rootScope.isWaiting) {
-				$rootScope.rootScope.isWaiting = false;
-				$rootScope.rootScope.error = "Could not get the data from the server. Try again!";
-				$scope.$apply();
-			}
-		}, 15000);
-	};
+	}, 15000);
+};
 }])
 
 /*
@@ -197,4 +197,8 @@ angular.module('gitSpace.controllers', [])
 	if($rootScope.rootScope.loggedIn === true) {
 		$state.go("app.start");
 	}
+
+	$scope.login = function() {
+		window.open("https://github.com/login/oauth/authorize?client_id=7c7d1017c8a91f87d6f7", "_blank");
+	};
 }]);
