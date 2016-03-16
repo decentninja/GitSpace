@@ -91,7 +91,7 @@ public class Repository : MonoBehaviour {
             {
                 Folder star = currentChildren[foldername].GetComponent<Folder>();
 
-                int thresholdDate = ConvertToUnixTimestamp(DateTime.Now) - (60 * FindObjectOfType<Repositories>().getThreshold());
+                int thresholdDate = ConvertToUnixTimestamp(tm.getCurrentDate()) - (60 * FindObjectOfType<Repositories>().getThreshold());
                 if ((int)data["last modified date"] > thresholdDate) {
                     if (!isUserUpdate) star.lastModifiedDate = (int)data["last modified date"];
                     star.Changed((string) data["last modified by"]);
@@ -313,13 +313,13 @@ public class Repository : MonoBehaviour {
         //threshold is minutes in repository.cs
         timeInterval = 60 * sn.getThreshold();
         int lastmoddate = folder.lastModifiedDate;
-        if (lastmoddate == 0 || (ConvertToUnixTimestamp(DateTime.Now) - lastmoddate) > timeInterval)
+        if (lastmoddate == 0 || (ConvertToUnixTimestamp(tm.getCurrentDate()) - lastmoddate) > timeInterval)
         {
             return minPower;
         }
         else
         {
-            double passedtime = ConvertToUnixTimestamp(DateTime.Now) - lastmoddate;
+            double passedtime = ConvertToUnixTimestamp(tm.getCurrentDate()) - lastmoddate;
             double rounded = 1 - (passedtime / timeInterval);
             return (int)(rounded*10);
         }
