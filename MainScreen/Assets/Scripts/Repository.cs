@@ -320,7 +320,7 @@ public class Repository : MonoBehaviour {
     {
         DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         TimeSpan diff = date.ToUniversalTime() - origin;
-        return (int)Math.Floor(diff.TotalSeconds);
+        return (int)Math.Floor(diff.TotalSeconds) - 3600; // Adjusting for utc time zone
     }
     
     private void updateSizes(Dictionary<string, GameObject> currentChildren)
