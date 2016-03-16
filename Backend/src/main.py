@@ -35,11 +35,11 @@ class Main():
         self.clients = {}
         self.states = {}
         self.init_states()
-        print("Revolution complete")
+        print("Git states parsed.")
         self.init_frontend()
-        print("Final frontier reached")
+        print("Final frontend reached.")
         self.init_app()
-        print("Mainframe activated")
+        print("Websocket server running.")
 
     def init_state(self, client, repo):
         if client not in self.states:
@@ -63,9 +63,8 @@ class Main():
         self.app_queue = Queue()
         self.app_queue_out = Queue()
         self.app_server = Process(target= app.serve, args=(self.app_queue, self.app_queue_out))
-        print("Process started")
+        print("Starting Websocket server process.")
         self.app_server.start()
-        print("Ooo hi")
 
     def send(self, conn, json_obj):
       json_string = '\x02' + json.dumps(json_obj) + '\x03'
@@ -108,7 +107,7 @@ class Main():
                 message = message['message']
             except (KeyError, ValueError):
                 print('Received malformed JSON from app.', file=sys.stderr)
-                self.app_queue_out.put('internal')
+                self.app_queue_out.put('internal_error')
                 return
             self.execute_app_command(message, client)
 
@@ -121,7 +120,7 @@ class Main():
                 if message['command'] == 'repo focus':
                     if message['repo'] not in self.states[client]:
                         print("Repo does not exist: %s"%message['repo'], file=sys.stderr)
-                        self.app_queue_out.put('internal')
+                        self.app_queue_out.put('internal_error')
                         return
                     json['repo'] = message['repo']
                 elif message['command'] == 'labels':
@@ -129,7 +128,7 @@ class Main():
                 elif message['command'] == 'activity threshold':
                     json['threshold'] = message['threshold']
                 self.send_all(client, json)
-                self.app_queue_out.put('internal')
+                self.app_queue_out.put('internal_error')
             elif message['command'] == 'repo delete':
                 self.delete_repo(message['repo'], client)
             elif message['command'] == 'repo add':
@@ -146,7 +145,7 @@ class Main():
                 self.app_queue_out.put(self.make_app_state(client))
         except KeyError as e:
             print('Received malformed JSON from app, missing field: ', e,file=sys.stderr)
-            self.app_queue_out.put('internal')
+            self.app_queue_out.put('internal_error')
 
     def add_repo(self, repo, client):
         # This requires valid repo name.
