@@ -45,7 +45,7 @@ public class Repository : MonoBehaviour {
 	try {
 	    GameObject gh = GameObject.Find("HUD");
 	    if(gh != null) {
-		gh.GetComponent<HUD>().setTime((int) data["timestamp"]);
+		gh.GetComponent<HUD>().setTime((int) data["last modified date"]);
 	    }
 	} catch(KeyNotFoundException) {}
     }
@@ -116,14 +116,20 @@ public class Repository : MonoBehaviour {
         }
         else if ("delete".Equals((string)data["action"]))
         {
-            Folder f = currentChildren[foldername].GetComponent<Folder>();
-            List<GameObject> rmList = getSubFolders(f, null);
-            foreach (GameObject g in rmList)
+            try
             {
-                Destroy(g);
+                Folder f = currentChildren[foldername].GetComponent<Folder>();
+                List<GameObject> rmList = getSubFolders(f, null);
+                foreach (GameObject g in rmList)
+                {
+                    Destroy(g);
+                }
+                Destroy(currentChildren[foldername]);
+                currentChildren.Remove(foldername);
             }
-            Destroy(currentChildren[foldername]);
-            currentChildren.Remove(foldername);
+            catch (KeyNotFoundException e) {
+                Debug.LogError(e);
+            }
         }
         return;
     }
