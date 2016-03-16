@@ -34,6 +34,9 @@ class Main():
         self.testing = testing
         self.clients = {}
         self.states = {}
+
+    def init(self):
+        signal.signal(signal.SIGTERM, self.sighandler)
         self.init_states()
         print("Git states parsed.", file=sys.stderr)
         self.init_frontend()
@@ -179,6 +182,9 @@ class Main():
         [self.send(new_client, self.states[client_id][repo].get_latest_state())
                 for repo in self.states[client_id]]
 
+    def sighandler(self, sig, frame):
+        self.close()
+
     def close(self):
         self.frontend_server.close()
         self.app_queue.close()
@@ -200,5 +206,6 @@ class Main():
 if __name__ == '__main__':
     print('Starting server...', file=sys.stderr)
     main = Main()
+    main.init()
     print('Server is up and running!', file=sys.stderr)
     main.main()
