@@ -28,13 +28,13 @@ CLOSE_CONN  = 0x8
 class API():
 	def run_forever(self):
 		try:
-			print("Listening on port %d for clients.." % self.port)
+			print("Websocket server listening on port %d for clients.." % self.port, file=sys.stderr)
 			self.serve_forever()
 		except KeyboardInterrupt:
 			self.server_close()
 			print("Server terminated.")
 		except Exception as e:
-			print("ERROR: WebSocketsServer: "+str(e))
+			print("Error in WebsocketServer: "+str(e))
 			exit(1)
 	def new_client(self, client, server):
 		pass

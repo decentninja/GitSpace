@@ -11,20 +11,26 @@ mock_setup_json = '{"data":[{"name":"decentninja/GitSpace","users":[{"username":
 
 def new_client(client, server):
     # TODO: Get init state to send to client.
+    print('App has connected.', file=sys.stderr)
     server.out_queue.put(('{"message": {"command": "internal_state"}}', client['repo_id']))
     server.send_message(client, server.in_queue.get())
 
 def recv_message(client, server, message):
     server.out_queue.put((message, client['repo_id']))
     response = server.in_queue.get()
-    if response != 'internal':
+    if response == 'internal':
+        print('App command has been processed.', file=sys.stderr)
+    elif response == 'internal_error':
+        pass
+    else:
         server.send_message(client, response)
+        print('App command has been processed.', file=sys.stderr)
 
 def serve(out_queue, in_queue):
     sys.stdout = open(str(os.getpid()) + ".out", "a")
-    print("Ready to serve")
+    print("Creating Websocket server...", file=sys.stderr)
     server = WebsocketServer(PORT, out_queue, in_queue, host=IP)
-    print("websocket server created")
+    print("Websocket server created, starting...", file=sys.stderr)
     server.set_fn_new_client(new_client)
     server.set_fn_message_received(recv_message)
     server.run_forever()

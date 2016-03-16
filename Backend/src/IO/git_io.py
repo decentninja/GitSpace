@@ -10,6 +10,7 @@ TODO-list:
 
 import datetime
 import requests
+import sys
 import IO.git_parsing as git_parsing
 
 # Should stay rather constant
@@ -25,7 +26,7 @@ def get_api_result(*args, **kwargs):
     response = requests.get(*args, headers=KEY, **kwargs)
     if (response.status_code != requests.codes.ok):
         # Error handling TBD
-        print('Not OK!')
+        print('Error in request to git, error code:', response.status_code, file=sys.stderr)
     result = None
     try:
         jsondata = response.json()
@@ -34,7 +35,7 @@ def get_api_result(*args, **kwargs):
     else:
         result = jsondata
         if int(response.headers.get('X-RateLimit-Remaining')) < 3000:
-            print('WARNING Rate Limit:',response.headers.get('X-RateLimit-Remaining'))
+            print('WARNING Rate Limit:',response.headers.get('X-RateLimit-Remaining'), file=sys.stderr)
     return result
 
 def get_tree(repo, sha):
@@ -42,7 +43,7 @@ def get_tree(repo, sha):
         '/git/trees/'+ sha +'?recursive=1')
 
 def get_collaborators(repo):
-    print("Getting collaborators for %s"%repo)
+    print("Getting collaborators for %s"%repo, file=sys.stderr)
     raw = get_api_result('https://api.github.com/repos/'+ repo +'/collaborators')
     if not raw:
         return []
@@ -105,27 +106,27 @@ def find_most_recent_sha(repo, start_date):
 
 def get_init_state(repo, time_now):
     # Get sha for a state 1 week+ ago
-    print("Getting initial state")
+    print("Getting initial state", file=sys.stderr)
     sha,time = find_most_recent_sha(repo,
         time_now - datetime.timedelta(days=lookback_days))
     # Get the associated tree
     return get_tree(repo, sha),time
 
 def get_init_commits(repo, time_now):
-    print("Collecting commits")
+    print("Collecting commits", file=sys.stderr)
     commits = get_commits_in_span(repo,
         time_now - datetime.timedelta(days=lookback_days),
         time_now)
     return commits
 
 def get_init(repo,lookback = lookback_days):
-    print("Getting repository: %s"%repo)
+    print("Getting repository: %s"%repo, file=sys.stderr)
     time_now = datetime.datetime.now()
     state,time = get_init_state(repo,time_now)
     updates = []
     commits = get_init_commits(repo, time_now)
-    print("Getting commit info from %s commits"%len(commits))
-    print('-'*50)
+    print("Getting commit info from %s commits"%len(commits), file=sys.stderr)
+    print('-'*50, file=sys.stderr)
     ratio = 50/len(commits)
     tracker = 0
     last = 0
@@ -133,14 +134,14 @@ def get_init(repo,lookback = lookback_days):
         tracker+=ratio
         int_track = int(tracker)
         if int_track > last:
-            print("x"*(int_track-last),end='',flush=True)
+            print("x"*(int_track-last),end='',flush=True, file=sys.stderr)
             last = int_track
         updates.append(get_full_commitinfo(repo, c))
-    print('x')
+    print('x', file=sys.stderr)
     state_parsed = git_parsing.parse_raw_state(state,time = time, name=repo)
     #updates arrive in reversed order
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
-    print("Inital Repository complete")
+    print("Inital Repository complete", file=sys.stderr)
     return state_parsed, update_parsed
 
 if __name__ == '__main__':

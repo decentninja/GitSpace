@@ -15,6 +15,7 @@ public class Repository : MonoBehaviour {
     public float folderMaxSize = 2f;
     public GameObject rootStar;
     public Gradient starcolor;
+    public bool isUserUpdate;
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
@@ -52,6 +53,7 @@ public class Repository : MonoBehaviour {
 
     void handleUpdate(JsonData data)
     {
+        isUserUpdate = (bool) data["check_threshold"];
         int numChanges = data["changes"].Count;
         for (int i = 0; i < numChanges; i++)
         {
@@ -80,8 +82,10 @@ public class Repository : MonoBehaviour {
             if (currentChildren.ContainsKey((string)data["name"]))
             {
                 Folder star = currentChildren[foldername].GetComponent<Folder>();
-                star.lastModifiedDate = (int) data["last modified date"];
-                if (star.lastModifiedDate != 0) {
+
+                int thresholdDate = ConvertToUnixTimestamp(DateTime.Now) - (60 * FindObjectOfType<Repositories>().getThreshold());
+                if ((int)data["last modified date"] > thresholdDate) {
+                    if (!isUserUpdate) star.lastModifiedDate = (int)data["last modified date"];
                     star.Changed((string) data["last modified by"]);
                     //set sizes of stars based on update date
                     star.size = setFolderSize(star);
@@ -179,6 +183,7 @@ public class Repository : MonoBehaviour {
         // Add star.
         GameObject thisStar = createStar(parent, folder);
         Folder foldercomp = thisStar.GetComponent<Folder>();
+        foldercomp.lastModifiedDate = (int)folder["last modified date"];
         foldercomp.Changed((string) folder["last modified by"]);
         //foldercomp.size = ((int) folder["last modified date"]) / Datetime.Now().Second;
         //Debug.Log(foldercomp.size);
@@ -315,7 +320,7 @@ public class Repository : MonoBehaviour {
     {
         DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         TimeSpan diff = date.ToUniversalTime() - origin;
-        return (int)Math.Floor(diff.TotalSeconds);
+        return (int)Math.Floor(diff.TotalSeconds) - 3600; // Adjusting for utc time zone
     }
     
     private void updateSizes(Dictionary<string, GameObject> currentChildren)

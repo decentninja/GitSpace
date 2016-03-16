@@ -19,10 +19,17 @@
 			<button class="button button-outline button-small button-assertive button-block">Show {{ repository.issues }} issues</button>
 		</div>-->
 		<div class="item item-divider">
-			Show activity for {{ activityThreshold | activityThresholdTime }} ago
+			Show activity for {{ activityThreshold | timeFilter }} ago
 		</div>
 		<div class="item range range-positive flipH">
 			<input type="range" min="1" max="168" step="1" ng-model="activityThreshold" on-release="setActivityThreshold(activityThreshold)">
+		</div>
+		<div class="item item-divider">
+			Rewind development <span ng-class="{ hide: rewindThreshold == 0 }"> to {{ rewindThreshold | timeFilter }} ago</span>
+			<span ng-class="{ hide: rewindThreshold != 0 }" class="pulsate realtime">Showing real-time activity</span>
+		</div>
+		<div class="item range range-positive flipH">
+			<input type="range" min="0" max="504" step="1" ng-model="rewindThreshold" on-release="rewind(rewindThreshold)">
 		</div>
 		<div class="list" id="choose-repository">
 			<div class="item item-divider">
@@ -51,11 +58,11 @@
 							<button class="button button-full button-assertive" ng-click="removeRepository(repository)">Remove</button>
 						</div>
 					</div>
-						<div class="row" ng-show="usersActivity">
-							<div class="col">
-								<button class="button button-full button-positive" ng-click="resetUserActivity(repository)">Reset activity</button>
-							</div>
+					<div class="row" ng-show="usersActivity">
+						<div class="col">
+							<button class="button button-full button-positive" ng-click="resetUserActivity(repository)">Reset activity</button>
 						</div>
+					</div>
 					<div class="list users">
 						<div class="item item-input-inset" ng-show="repository.users.length >= 3">
 							<label class="item-input-wrapper">
