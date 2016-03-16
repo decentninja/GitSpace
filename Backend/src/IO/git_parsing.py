@@ -31,7 +31,8 @@ def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
         state = {}
         state['api version'] = 1
         state['type'] = 'state'
-        state['repo'] = name
+        state['repo'] = time
+        state['timestamp'] = name
         state['state'] = _extract_folders(raw_state['tree'],API_version,time)
     #   with open("state_output.txt","w+") as f:
     #       _write_readable_structure_to_file(f,state)
@@ -192,6 +193,7 @@ def _parse_raw_update(raw_update, API_version):
     update['type'] = 'update'
     update['repo'] = 'GitSpace' # TODO placeholder
     update['apiv'] = 1
+    update['timestamp'] = time
     update['message'] = meta_info['commit']['message']
     update['direction'] = 'forward'
     update['forced'] = False # will not be lower case when written :S
@@ -398,6 +400,7 @@ def state_to_update(state):
     update['direction'] = "forward"
     update['forced'] = False
     update["changes"] = []
+    update["timestamp"] = state["timestamp"]
     update["check_threshold"] = True
     recursive_state_to_update(update['changes'], state['state'])
     return update
