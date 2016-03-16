@@ -17,7 +17,7 @@ __cache_state = False
 
 def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
     print("Parsing State")
-    time = 0 # Override time argument to avoid lightning 
+    time = 0 # Override time argument to avoid lightning
     if __cache_state:
         with codecs.open("raw_state.py", "w+",'utf-8') as f:
             print("state=%s"%raw_state,file=f)
@@ -194,7 +194,7 @@ def _parse_raw_update(raw_update, API_version):
     update['apiv'] = 1
     update['message'] = meta_info['commit']['message']
     update['direction'] = 'forward'
-    update['forced'] = False # will not be lower case when written :S
+    update['forced'] = False # It WILL be with lower case, if written with json.dumps
     update['changes'] = changes
     update["check_threshold"] = False
     for change in raw_update['files']:
@@ -270,9 +270,10 @@ def parse_git_time_format(date):
 
 def create_user_states(state,users):
     print("Cloning State for %s users"%len(users))
-    return {user:_state_clone(state,{}) for user in users}
+    return {user:_state_clone(state) for user in users}
 
-def _state_clone(state,clone):
+def _state_clone(state):
+    clone = {}
     clone['type'] = state['type']
     clone['repo'] = state['repo']
     clone['api version'] = state['api version']
@@ -292,7 +293,6 @@ def _recursive_state_clone(parent,c_parent):
         c_parent.append(c_sub)
         _recursive_state_clone(sub['subfolder'],c_sub['subfolder'])
 
-    
 
 
 
@@ -319,17 +319,17 @@ def _update_children(user_states,change):
 
         # Add new folder to every tree
         # Only use the timestamp for None or correct user
-        children = {}   
+        children = {}
         for user,user_sub in user_states.items():
             correct_user = sub['last modified by'] == user or user is None
             state_sub = None #Failsafe
-            if not is_old_folder:            
+            if not is_old_folder:
                 new_folder = _create_empty_state_folder(sub['name'])
                 user_sub['subfolder'].append(new_folder)
                 state_sub = new_folder
             else:
                 state_sub = next(usub for usub in user_sub['subfolder'] if usub['name']==sub['name'])
-            
+
             children[user] = state_sub
             if sub['action'] == 'update':
                 if correct_user:
@@ -377,7 +377,7 @@ def _hook_commit_to_raw_update(hook):
     raw_update['commit']['committer']['date'] = hook['timestamp'][:19]+'Z'
     raw_update['commit']['message'] = hook['message']
     raw_update['commit']['committer']['name'] = hook['author']['name']
-    raw_update['author'] = {} 
+    raw_update['author'] = {}
     raw_update['author']['login'] = hook['author']['username']
     raw_update['files'] = []
     for action in ['added','removed','modified']:
