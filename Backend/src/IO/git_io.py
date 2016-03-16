@@ -128,7 +128,7 @@ def get_init(repo,lookback = lookback_days):
     print("Getting commit info from %s commits"%len(commits), file=sys.stderr)
     print('-'*50, file=sys.stderr)
     ratio = 50/len(commits)
-    tracker = 0
+    tracker = 0 
     last = 0
     for c in commits:
         tracker+=ratio
