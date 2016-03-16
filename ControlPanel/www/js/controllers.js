@@ -5,6 +5,7 @@ angular.module('gitSpace.controllers', [])
 	$scope.repositories = Repositories.all();
 	$scope.rewindDays = 0;
 	$scope.activityThreshold = 12;
+	$scope.usersActivity = false;
 	$scope.visuals = {
 		labels: false
 	};
@@ -84,6 +85,15 @@ angular.module('gitSpace.controllers', [])
 			repo: repository.name,
 			username: userData.username
 		});
+		$scope.usersActivity = true;
+	};
+
+	$scope.resetUserActivity = function(repository) {
+		Repositories.emit({
+			command: 'user activity reset',
+			repo: repository.name,
+		});
+		$scope.usersActivity = false;
 	};
 
 	$ionicModal.fromTemplateUrl('views/add-modal.html', {

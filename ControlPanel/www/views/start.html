@@ -51,6 +51,11 @@
 							<button class="button button-full button-assertive" ng-click="removeRepository(repository)">Remove</button>
 						</div>
 					</div>
+						<div class="row" ng-show="usersActivity">
+							<div class="col">
+								<button class="button button-full button-positive" ng-click="resetUserActivity(repository)">Reset activity</button>
+							</div>
+						</div>
 					<div class="list users">
 						<div class="item item-input-inset" ng-show="repository.users.length >= 3">
 							<label class="item-input-wrapper">
