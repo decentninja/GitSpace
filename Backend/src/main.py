@@ -86,6 +86,7 @@ class Main():
         for s in readable:
             new_client, address = s.accept()
             client_id = new_client.recv(1024).decode("utf-8")
+            client_id.strip('\n')
             if client_id == '':
                 client_id = 'gitspace'
             self.init_client(new_client, client_id)
@@ -136,6 +137,10 @@ class Main():
             elif message['command'] == 'user activity':
                 self.send_all(client, self.states[client][message['repo']].\
                         get_user_update(message['username']))
+                self.app_queue_out.put('internal')
+            elif message['command'] == 'user activity reset':
+                self.send_all(client, self.states[client][message['repo']].\
+                        get_user_update(None))
                 self.app_queue_out.put('internal')
             elif message['command'] == 'internal_state':
                 self.app_queue_out.put(self.make_app_state(client))

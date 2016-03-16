@@ -25,7 +25,7 @@ def get_api_result(*args, **kwargs):
     response = requests.get(*args, headers=KEY, **kwargs)
     if (response.status_code != requests.codes.ok):
         # Error handling TBD
-        print('Not OK!')
+        print('Error in request to git, error code:', response.status_code, file=sys.stderr)
     result = None
     try:
         jsondata = response.json()
