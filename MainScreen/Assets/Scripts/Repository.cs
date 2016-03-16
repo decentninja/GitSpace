@@ -15,6 +15,7 @@ public class Repository : MonoBehaviour {
     public float folderMaxSize = 2f;
     public GameObject rootStar;
     public Gradient starcolor;
+    public bool isUserUpdate;
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
@@ -52,6 +53,7 @@ public class Repository : MonoBehaviour {
 
     void handleUpdate(JsonData data)
     {
+        isUserUpdate = (bool) data["check_threshold"];
         int numChanges = data["changes"].Count;
         for (int i = 0; i < numChanges; i++)
         {
@@ -80,9 +82,10 @@ public class Repository : MonoBehaviour {
             if (currentChildren.ContainsKey((string)data["name"]))
             {
                 Folder star = currentChildren[foldername].GetComponent<Folder>();
-                
-                if ((int)data["last modified date"] != 0) {
-                    star.lastModifiedDate = (int)data["last modified date"];
+
+                int thresholdDate = ConvertToUnixTimestamp(DateTime.Now) - (60 * FindObjectOfType<Repositories>().getThreshold());
+                if ((int)data["last modified date"] > thresholdDate) {
+                    if (!isUserUpdate) star.lastModifiedDate = (int)data["last modified date"];
                     star.Changed((string) data["last modified by"]);
                     //set sizes of stars based on update date
                     star.size = setFolderSize(star);
