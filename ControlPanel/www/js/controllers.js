@@ -108,12 +108,20 @@ angular.module('gitSpace.controllers', [])
 			console.log("Rewind", minutes, "minutes");
 		}
 		/*Repositories.emit({
-		command: 'rewind',
-		minutes: minutes,
-		repo: repository.name,
-		username: userData.username
+			command: 'rewind',
+			minutes: minutes,
+			repo: repository.name,
+			username: userData.username
 	});*/
-};
+	};
+
+	/*$scope.resetRewind = function(userData, repository) {
+		Repositories.emit({
+			command: 'rewind reset',
+			repo: repository.name,
+			username: userData.username
+		});
+	};*/
 
 $ionicModal.fromTemplateUrl('views/add-modal.html', {
 	scope: $scope,
