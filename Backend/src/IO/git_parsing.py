@@ -196,6 +196,7 @@ def _parse_raw_update(raw_update, API_version):
     update['direction'] = 'forward'
     update['forced'] = False # will not be lower case when written :S
     update['changes'] = changes
+    update["check_threshold"] = False
     for change in raw_update['files']:
         _parse_change(change,change_map,meta_info)
     if __force_depth:
@@ -376,7 +377,7 @@ def _hook_commit_to_raw_update(hook):
     raw_update['commit']['committer']['date'] = hook['timestamp'][:19]+'Z'
     raw_update['commit']['message'] = hook['message']
     raw_update['commit']['committer']['name'] = hook['author']['name']
-    raw_update['author'] = {}
+    raw_update['author'] = {} 
     raw_update['author']['login'] = hook['author']['username']
     raw_update['files'] = []
     for action in ['added','removed','modified']:
@@ -397,6 +398,7 @@ def state_to_update(state):
     update['direction'] = "forward"
     update['forced'] = False
     update["changes"] = []
+    update["check_threshold"] = True
     recursive_state_to_update(update['changes'], state['state'])
     return update
 
