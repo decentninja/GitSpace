@@ -6,6 +6,7 @@ import signal
 import socket
 import sys
 import time
+import hook.io
 import IO.git_io as git
 import IO.app_io as app
 from repository import Repository
@@ -67,6 +68,10 @@ class Main():
         self.app_server.start()
         print("Ooo hi")
 
+    def init_hook(self):
+        self.hook_queue = Queue()
+        self.hook_server = Process(target= app.serve, args=(self.hook_queue))
+        
     def send(self, conn, json_obj):
       json_string = '\x02' + json.dumps(json_obj) + '\x03'
       try:
