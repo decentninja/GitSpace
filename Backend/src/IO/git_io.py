@@ -125,22 +125,24 @@ def get_init(repo,lookback = lookback_days):
     state,time = get_init_state(repo,time_now)
     updates = []
     commits = get_init_commits(repo, time_now)
-    print("Getting commit info from %s commits"%len(commits), file=sys.stderr)
-    print('-'*50, file=sys.stderr)
-    ratio = 50/len(commits)
-    tracker = 0 
-    last = 0
-    for c in commits:
-        tracker+=ratio
-        int_track = int(tracker)
-        if int_track > last:
-            print("x"*(int_track-last),end='',flush=True, file=sys.stderr)
-            last = int_track
-        updates.append(get_full_commitinfo(repo, c))
-    print('x', file=sys.stderr)
-    state_parsed = git_parsing.parse_raw_state(state,time = time, name=repo)
+    if len(commits) > 0:
+        print("Getting commit info from %s commits"%len(commits), file=sys.stderr)
+        print('-'*50, file=sys.stderr)
+        ratio = 50/len(commits)
+        tracker = 0 
+        last = 0
+        for c in commits:
+            tracker+=ratio
+            int_track = int(tracker)
+            if int_track > last:
+                print("x"*(int_track-last),end='',flush=True, file=sys.stderr)
+                last = int_track
+            updates.append(get_full_commitinfo(repo, c))
+        print('x', file=sys.stderr)
     #updates arrive in reversed order
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
+
+    state_parsed = git_parsing.parse_raw_state(state,time = time, name=repo)
     print("Inital Repository complete", file=sys.stderr)
     return state_parsed, update_parsed
 

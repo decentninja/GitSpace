@@ -6,7 +6,7 @@ import signal
 import socket
 import sys
 import time
-import IO.git_io as hook
+import IO.hook_io as hook
 import IO.git_io as git
 import IO.app_io as app
 from repository import Repository
@@ -35,15 +35,14 @@ class Main():
         self.testing = testing
         self.clients = {}
         self.states = {}
-
-    def init(self):
-        signal.signal(signal.SIGTERM, self.sighandler)
         self.init_states()
-        print("Git states parsed.", file=sys.stderr)
+        print("Revolution complete")
         self.init_frontend()
-        print("Final frontend reached.", file=sys.stderr)
+        print("Final frontier reached")
         self.init_app()
-        print("Websocket server running.", file=sys.stderr)
+        print("Mainframe activated")
+        self.init_hook()
+        print("Hooked on Github")
 
     def init_state(self, client, repo):
         if client not in self.states:
@@ -67,12 +66,13 @@ class Main():
         self.app_queue = Queue()
         self.app_queue_out = Queue()
         self.app_server = Process(target= app.serve, args=(self.app_queue, self.app_queue_out))
-        print("Starting Websocket server process.", file=sys.stderr)
+        print("Process started")
         self.app_server.start()
+        print("Ooo hi")
 
     def init_hook(self):
         self.hook_queue = Queue()
-        self.hook_server = Process(target= app.serve, args=(self.hook_queue))
+        self.hook_server = Process(target= new_hook_client, args=(self.hook_queue))
         
     def send(self, conn, json_obj):
       json_string = '\x02' + json.dumps(json_obj) + '\x03'
@@ -93,16 +93,23 @@ class Main():
         for s in readable:
             new_client, address = s.accept()
             client_id = new_client.recv(1024).decode("utf-8")
-            client_id.strip('\n')
             if client_id == '':
                 client_id = 'gitspace'
             self.init_client(new_client, client_id)
 
     def send_webhook_updates(self):
-        # For now sends cute mock JSONs in Debug mode.
-        if len (self.clients) > 0 and len(self.clients['gitspace']) > 0 and DEBUG:
-            self.send_all('gitspace', mock_json)
-            print('sending mock')
+        while 1:
+            try:
+                repo, update = self.hook_queue.get_nowait()
+            except queue.Empty:
+                return
+            for c_id,c in self.states.items():
+                if repo in c:
+                    c[repo].apply_updates(update)
+                    if c_id in [self.clients]:
+                        send(self.clients[c_id],update)
+                    else:
+                        print("WARNING: %s has repo %s but no client"%(c_id,repo))
 
     def read_app_commands(self):
         while 1:
@@ -115,7 +122,7 @@ class Main():
                 message = message['message']
             except (KeyError, ValueError):
                 print('Received malformed JSON from app.', file=sys.stderr)
-                self.app_queue_out.put('internal_error')
+                self.app_queue_out.put('internal')
                 return
             self.execute_app_command(message, client)
 
@@ -128,7 +135,7 @@ class Main():
                 if message['command'] == 'repo focus':
                     if message['repo'] not in self.states[client]:
                         print("Repo does not exist: %s"%message['repo'], file=sys.stderr)
-                        self.app_queue_out.put('internal_error')
+                        self.app_queue_out.put('internal')
                         return
                     json['repo'] = message['repo']
                 elif message['command'] == 'labels':
@@ -136,7 +143,7 @@ class Main():
                 elif message['command'] == 'activity threshold':
                     json['threshold'] = message['threshold']
                 self.send_all(client, json)
-                self.app_queue_out.put('internal_error')
+                self.app_queue_out.put('internal')
             elif message['command'] == 'repo delete':
                 self.delete_repo(message['repo'], client)
             elif message['command'] == 'repo add':
@@ -145,15 +152,11 @@ class Main():
                 self.send_all(client, self.states[client][message['repo']].\
                         get_user_update(message['username']))
                 self.app_queue_out.put('internal')
-            elif message['command'] == 'user activity reset':
-                self.send_all(client, self.states[client][message['repo']].\
-                        get_user_update(None))
-                self.app_queue_out.put('internal')
             elif message['command'] == 'internal_state':
                 self.app_queue_out.put(self.make_app_state(client))
         except KeyError as e:
             print('Received malformed JSON from app, missing field: ', e,file=sys.stderr)
-            self.app_queue_out.put('internal_error')
+            self.app_queue_out.put('internal')
 
     def add_repo(self, repo, client):
         # This requires valid repo name.
@@ -187,16 +190,13 @@ class Main():
         [self.send(new_client, self.states[client_id][repo].get_latest_state())
                 for repo in self.states[client_id]]
 
-    def sighandler(self, sig, frame):
-        self.close()
-
     def close(self):
         self.frontend_server.close()
         self.app_queue.close()
         self.app_queue_out.close()
         self.app_server.terminate()
         self.app_server.join()
-        print('Server shut down.', file=sys.stderr)
+        print('Server shut down.')
 
     def main(self):
         try:
@@ -211,6 +211,5 @@ class Main():
 if __name__ == '__main__':
     print('Starting server...', file=sys.stderr)
     main = Main()
-    main.init()
     print('Server is up and running!', file=sys.stderr)
     main.main()
