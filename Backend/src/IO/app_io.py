@@ -28,9 +28,9 @@ def recv_message(client, server, message):
 
 def serve(out_queue, in_queue):
     sys.stdout = open(str(os.getpid()) + ".out", "a")
-    print("Creating Websocket server...")
+    print("Creating Websocket server...", file=sys.stderr)
     server = WebsocketServer(PORT, out_queue, in_queue, host=IP)
-    print("Websocket server created, starting...")
+    print("Websocket server created, starting...", file=sys.stderr)
     server.set_fn_new_client(new_client)
     server.set_fn_message_received(recv_message)
     server.run_forever()

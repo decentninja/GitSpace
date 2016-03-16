@@ -35,11 +35,11 @@ class Main():
         self.clients = {}
         self.states = {}
         self.init_states()
-        print("Git states parsed.")
+        print("Git states parsed.", file=sys.stderr)
         self.init_frontend()
-        print("Final frontend reached.")
+        print("Final frontend reached.", file=sys.stderr)
         self.init_app()
-        print("Websocket server running.")
+        print("Websocket server running.", file=sys.stderr)
 
     def init_state(self, client, repo):
         if client not in self.states:
@@ -63,7 +63,7 @@ class Main():
         self.app_queue = Queue()
         self.app_queue_out = Queue()
         self.app_server = Process(target= app.serve, args=(self.app_queue, self.app_queue_out))
-        print("Starting Websocket server process.")
+        print("Starting Websocket server process.", file=sys.stderr)
         self.app_server.start()
 
     def send(self, conn, json_obj):
@@ -185,7 +185,7 @@ class Main():
         self.app_queue_out.close()
         self.app_server.terminate()
         self.app_server.join()
-        print('Server shut down.')
+        print('Server shut down.', file=sys.stderr)
 
     def main(self):
         try:
