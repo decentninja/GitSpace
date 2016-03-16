@@ -3,7 +3,7 @@ angular.module('gitSpace.controllers', [])
 .controller("mainCtrl", ['$scope', '$rootScope', 'Repositories', '$ionicModal', 'settings', function($scope, $rootScope, Repositories, $ionicModal, settings) {
 
 	$scope.repositories = Repositories.all();
-	$scope.rewindDays = 0;
+	$scope.rewindThreshold = 0;
 	$scope.activityThreshold = 12;
 	$scope.usersActivity = false;
 	$scope.visuals = {
@@ -94,6 +94,19 @@ angular.module('gitSpace.controllers', [])
 			repo: repository.name,
 		});
 		$scope.usersActivity = false;
+	};
+
+	$scope.rewind = function(rewind) {
+		var minutes = rewind * 60; // We recieve hours
+		if(minutes === 0) {
+			console.log("Set realtime!");
+		} else {
+			console.log("Rewind", minutes, "minutes");
+		}
+		/*Repositories.emit({
+			command: 'rewind',
+			minutes: minutes
+		});*/
 	};
 
 	$ionicModal.fromTemplateUrl('views/add-modal.html', {
