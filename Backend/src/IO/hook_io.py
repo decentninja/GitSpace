@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import git_parsing
-import urllib
+import json
 import socketserver
 import requests
 import os
@@ -8,11 +8,13 @@ import sys
 
 IP = '0.0.0.0'
 PORT = 5000
+hook_dicts = {}
+
+def get_name_from_hook(hook):
+    pass
+
 
 class HookRequestHandler(BaseHTTPRequestHandler):
-    def __init__(self,queue):
-        self.queue = queue
-        super().__init__()
 
     def _set_headers(self):
         self.send_response(200)
@@ -27,10 +29,11 @@ class HookRequestHandler(BaseHTTPRequestHandler):
     
     def do_POST(self):
         length = int(self.headers['Content-Length'])
-        text = self.rfile.read(length).decode('utf-8')
+        text = str(self.rfile.read(length))
+        print(text)
         with open('hook_example','w+') as f:
             print(text,file=f)
-        post_data = urllib.parse.parse_qs(text)
+        post_data = json.loads(text)[0]
         git_parsing.hook_to_updates(post_data)
         self_set_headers()
         # You now have a dictionary of the post data
