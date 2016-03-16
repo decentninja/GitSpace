@@ -100,7 +100,7 @@ angular.module('gitSpace.controllers', [])
 		$scope.usersActivity = false;
 	};
 
-	$scope.rewind = function(rewind) {
+	$scope.rewind = function(rewind, userData, repository) {
 		var minutes = rewind * 60; // We recieve hours
 		if(minutes === 0) {
 			console.log("Set realtime!");
@@ -109,7 +109,9 @@ angular.module('gitSpace.controllers', [])
 		}
 		/*Repositories.emit({
 		command: 'rewind',
-		minutes: minutes
+		minutes: minutes,
+		repo: repository.name,
+		username: userData.username
 	});*/
 };
 
