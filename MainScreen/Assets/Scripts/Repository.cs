@@ -18,10 +18,11 @@ public class Repository : MonoBehaviour {
     public bool isUserUpdate;
     public bool isRealtime = true;
     public TimeManager tm;
+    private ArrayList extensionList = new ArrayList();
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
-    float minPower = 0.2f;
+    int minPower = 0;
 
     bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
@@ -126,10 +127,11 @@ public class Repository : MonoBehaviour {
                 {
                     star.ext = fileExtension[index];
                     star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
-                }
-                else
-                {
-                    star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+                    // add extension file type to legendlist
+                    if (!extensionList.Contains(fileExtension[index]))
+                    {
+                        extensionList.Add(fileExtension[index]);
+                    }
                 }
 
                 int numChanges = data["subfolder"].Count;
@@ -274,6 +276,15 @@ public class Repository : MonoBehaviour {
         {
             foldercomp.ext = fileExtension[index];
             star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+            // add extension file type to legendlist
+            if (!extensionList.Contains(fileExtension[index]))
+            {
+                extensionList.Add(fileExtension[index]);
+            }
+        }
+        else
+        {
+            star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
         }
 
         return star;
@@ -284,7 +295,14 @@ public class Repository : MonoBehaviour {
 	foreach(Transform t in transform) {
 	    Folder folder = t.GetComponent<Folder>();
 	    if(folder != null) {
-            t.GetChild(0).localScale = new Vector3(folder.size,folder.size,folder.size);
+		List<Folder> row;
+		if(children.ContainsKey(folder.size)) {
+		    row = children[folder.size];
+		} else {
+		    row = new List<Folder>();
+		}
+		row.Add(folder);
+		children[folder.size] = row;
 	    }
 	}
 	float step = (folderMaxSize - folderStartSize) / children.Count;
@@ -330,7 +348,7 @@ public class Repository : MonoBehaviour {
     }
 
     /* Ändra så att det blir olika nivårer av returns, färre antal nivåer ger större skillnad i localscale när resizeallfolders kallad då man splittar sizerangen på antal nivåer*/
-    public float setFolderSize(Folder folder)
+    public int setFolderSize(Folder folder)
     {
         Repositories sn = FindObjectOfType<Repositories>();
         //threshold is minutes in repository.cs
@@ -343,8 +361,8 @@ public class Repository : MonoBehaviour {
         else
         {
             double passedtime = ConvertToUnixTimestamp(tm.getCurrentDate()) - lastmoddate;
-            double rounded = ((1 - (passedtime / timeInterval))*0.7) + minPower;
-            return (float)(rounded);
+            double rounded = 1 - (passedtime / timeInterval);
+            return (int)(rounded*10);
         }
     }
     public int ConvertToUnixTimestamp(DateTime date)
@@ -354,6 +372,10 @@ public class Repository : MonoBehaviour {
         return (int)Math.Floor(diff.TotalSeconds) - 3600; // Adjusting for utc time zone
     }
 
+    public ArrayList getExtensionList()
+    {
+        return extensionList;
+    }
     
     private void updateSizes(Dictionary<string, GameObject> currentChildren)
     {
