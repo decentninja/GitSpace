@@ -11,12 +11,15 @@ TODO-list:
 import datetime
 import requests
 import sys
+import os.path
+import json
 import IO.git_parsing as git_parsing
 
 # Should stay rather constant
 GIT_URL = 'https://api.github.com'
 OAUTH_TOKEN = '4a85521efe17ec4ef6eb4c1c76a8a097396880e1'
 KEY = {'Authorization':'token '+OAUTH_TOKEN}
+CACHE_REPOS = False
 
 # Number of days to look back for realtime, set to 1 week or 3 weeks
 # (But our repo isn't that old yet)
@@ -122,30 +125,72 @@ def get_init_commits(repo, time_now,lookback = standard_lookback):
 
 def get_init(repo,lookback = standard_lookback):
     print("Getting repository: %s"%repo, file=sys.stderr)
-    time_now = datetime.datetime.now()
-    state,time = get_init_state(repo,time_now,lookback=lookback)
-    updates = []
-    commits = get_init_commits(repo, time_now,lookback=lookback)
-    if len(commits) > 0:
-        print("Getting commit info from %s commits"%len(commits), file=sys.stderr)
-        print('-'*50, file=sys.stderr)
-        ratio = 50/len(commits)
-        tracker = 0
-        last = 0
-        for c in commits:
-            tracker+=ratio
-            int_track = int(tracker)
-            if int_track > last:
-                print("x"*(int_track-last),end='',flush=True, file=sys.stderr)
-                last = int_track
-            updates.append(get_full_commitinfo(repo, c))
-        print('x', file=sys.stderr)
-    #updates arrive in reversed order
+    if repo_is_cached(repo):
+        print("%s is cached"%repo,file=sys.stderr)
+        state,updates = read_repo(repo)
+        time = state['cached_time']
+    else:
+        print("%s is not cached"%repo,sys.stderr)
+        time_now = datetime.datetime.now()
+        state,time = get_init_state(repo,time_now,lookback=lookback)
+        updates = []
+        commits = get_init_commits(repo, time_now,lookback=lookback)
+        if len(commits) > 0:
+            print("Getting commit info from %s commits"%len(commits), file=sys.stderr)
+            print('-'*50, file=sys.stderr)
+            ratio = 50/len(commits)
+            tracker = 0
+            last = 0
+            for c in commits:
+                tracker+=ratio
+                int_track = int(tracker)
+                if int_track > last:
+                    print("x"*(int_track-last),end='',flush=True, file=sys.stderr)
+                    last = int_track
+                updates.append(get_full_commitinfo(repo, c))
+            print('x', file=sys.stderr)
+
+            if CACHE_REPOS:
+                state['cached_time'] = time
+                cache_repo(repo,state,updates)
+        #updates arrive in reversed order
+
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
 
     state_parsed = git_parsing.parse_raw_state(state,time = time, name=repo)
     print("Inital Repository complete", file=sys.stderr)
     return state_parsed, update_parsed
+
+### 
+## CACHE
+###
+
+def repo_name_to_file(repo):
+    return "Repositories/%s"%repo.replace("/",".")
+
+def repo_is_cached(repo):
+    return os.path.isfile(repo_name_to_file(repo)) 
+
+def read_repo(repo):
+    state,updates = None,[]
+    with open("Repositories/%s"%repo.replace("/","."),"r") as f:
+        lines = f.readlines()
+        if len(lines) > 0:   
+            state = json.loads(lines[0])
+            for u in lines[1:]:
+                if len(u) > 0:
+                    update = json.loads(u)
+                    updates.append(update)
+    return (state,updates)
+
+def cache_repo(repo,state,updates):
+    with open(repo_name_to_file(repo),"a+") as f:
+        state = json.dumps(state)
+        f.write(state+"\n")
+        for u in updates:
+            update = json.dumps(u)
+            f.write(update+"\n")
+
 
 if __name__ == '__main__':
     repo = 'decentninja/GitSpace'
