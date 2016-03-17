@@ -210,34 +210,34 @@ MonoBehaviour:
   starcolor:
     key0:
       serializedVersion: 2
-      rgba: 4294933615
+      rgba: 4294930423
     key1:
       serializedVersion: 2
-      rgba: 4294638847
+      rgba: 4294869365
     key2:
       serializedVersion: 2
-      rgba: 5085951
+      rgba: 16777159
     key3:
       serializedVersion: 2
-      rgba: 5085951
+      rgba: 16448767
     key4:
       serializedVersion: 2
-      rgba: 5085951
+      rgba: 3487231
     key5:
       serializedVersion: 2
-      rgba: 0
+      rgba: 5085951
     key6:
       serializedVersion: 2
       rgba: 0
     key7:
       serializedVersion: 2
       rgba: 0
-    ctime0: 6361
-    ctime1: 32768
-    ctime2: 59174
-    ctime3: 65535
-    ctime4: 65535
-    ctime5: 0
+    ctime0: 771
+    ctime1: 14264
+    ctime2: 24865
+    ctime3: 34695
+    ctime4: 48573
+    ctime5: 63993
     ctime6: 0
     ctime7: 0
     atime0: 0
@@ -248,8 +248,11 @@ MonoBehaviour:
     atime5: 0
     atime6: 0
     atime7: 0
-    m_NumColorKeys: 3
+    m_NumColorKeys: 6
     m_NumAlphaKeys: 2
+  isUserUpdate: 0
+  isRealtime: 1
+  tm: {fileID: 0}
   timeInterval: 0
 --- !u!114 &11468998
 MonoBehaviour:
@@ -404,47 +407,55 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key0.rgba
-      value: 4294933615
+      value: 4294930423
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime1
-      value: 32768
+      value: 14264
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key2.rgba
-      value: 5085951
+      value: 16777159
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime2
-      value: 59174
+      value: 24865
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.m_NumColorKeys
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key3.rgba
-      value: 5085951
+      value: 16448767
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime3
-      value: 65535
+      value: 34695
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key1.rgba
-      value: 4294638847
+      value: 4294869365
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key4.rgba
-      value: 5085951
+      value: 3487231
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime4
-      value: 65535
+      value: 48573
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime0
-      value: 6361
+      value: 771
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.key5.rgba
+      value: 5085951
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.ctime5
+      value: 63993
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

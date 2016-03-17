@@ -10,6 +10,7 @@ public class Legend : MonoBehaviour {
     public GameObject userPanel;
     public GameObject extensionPanel;
     public Repository repo;
+    public Folder folder;
     private ArrayList texts = new ArrayList();
 
     public void updateLegend(ArrayList users, ArrayList extensions)
@@ -32,7 +33,8 @@ public class Legend : MonoBehaviour {
             Text newtext = Instantiate(text) as Text;
             newtext.text = user;
             newtext.fontSize = Screen.width / 80;
-            newtext.color = fixColor(repo.StringToColor(user));
+            newtext.color = fixColor(EmailToColor(user));
+            print(newtext.color);
             newtext.transform.SetParent(userPanel.transform);
             texts.Add(newtext);
         }
@@ -57,5 +59,14 @@ public class Legend : MonoBehaviour {
     {
         Color newcolor = new Color(color.r / 255, color.g / 255, color.b / 255);
         return newcolor;
+    }
+    public Color EmailToColor(string mail)
+    {
+        Color c = folder.edgecolor.Evaluate((1 + (float)(mail).GetHashCode() / int.MaxValue) / 2);
+        print(c);
+        //float g = Mathf.Max(folder.minimumglow, folder.extraglow) * folder.maxglow;
+        float g = 255;
+        c = new Color(c.r * g, c.g * g, c.b * g);
+        return c;
     }
 }
