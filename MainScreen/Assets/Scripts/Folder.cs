@@ -14,6 +14,7 @@ public class Folder : MonoBehaviour {
     public Text text;
     public float extraglow = 0;
     public float glowdiminish = 0.5f;
+    public float slowGlowdiminish = 0.5f;
     public float minimumglow = 0.2f;
     public float maxglow = 200;
     public Gradient edgecolor;
@@ -25,9 +26,11 @@ public class Folder : MonoBehaviour {
     }
 
     void Update() {
-	if(extraglow > 0) {
+	if(extraglow > 0.3) {
 	    extraglow -= Time.deltaTime * glowdiminish;
-	}
+	} else if(extraglow > 0) {
+	    extraglow -= Time.deltaTime * slowGlowdiminish;
+    }
 	EmailToColor();
     }
 
