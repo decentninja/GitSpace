@@ -71,7 +71,7 @@ class Repository:
 		git_parsing.update_user_states({username:o_state}, update_list)
 		rewind_list.append(git_parsing._state_clone(o_state))
 		while (next_time < time_now):
-			next_time = next_time + datetime.timedelta(hours=2.5)
+			next_time = next_time + datetime.timedelta(hours=0.5)
 			update_list, i = self.get_updates_before(next_time, i)
 			if len(update_list) < 1:
 				rewind_list.append(self.empty_update(int(next_time.timestamp())))
