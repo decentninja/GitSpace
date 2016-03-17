@@ -11,7 +11,7 @@ class Repository:
 		self.contributors = git_io.get_collaborators(repo)
 		self.name = repo
 		self.latest_sha = ""
-		names = [c['username'] for c in self.contributors]
+		names = [c['username'] for c in self.contributors] 
 
 		#TODO CREATE STATES FOR USERS
 		self.user_states.update(git_parsing.create_user_states(self.user_states[None],names))
