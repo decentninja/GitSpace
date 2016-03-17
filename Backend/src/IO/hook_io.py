@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from multiprocessing import Queue
-import IO.git_parsing
+import IO.git_parsing as git_parsing
 import json
 import socketserver
 import requests
