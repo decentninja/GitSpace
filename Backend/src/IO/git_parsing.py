@@ -452,7 +452,7 @@ def recursive_state_to_update(parent,state):
         new_sub['name'] = sub['name']
         new_sub['action'] = 'update'
         new_sub['subfolder'] = []
-        new_sub['filetypes'] = []
+        new_sub['filetypes'] = [{k:v for k,v in a_type.items()} for a_type in sub['filetypes']]
 
         parent.append(new_sub)
         recursive_state_to_update(new_sub['subfolder'],sub['subfolder'])
