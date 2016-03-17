@@ -205,7 +205,8 @@ def _parse_raw_update(raw_update, API_version, repo = "decentninja/GitSpace"):
     for change in raw_update['files']:
         _parse_change(change,change_map,meta_info)
     if __force_depth:
-            _apply_depth(update['changes'])
+         _apply_depth(update['changes'])
+
     return update
 
 
@@ -237,8 +238,24 @@ def _create_subs(parent,subs,change_map,meta_info,change):
         action = change['status']
         if action in ['added','modified','changed']:
             current['action'] = 'update'
+            if len(subs) == 1:
+                filename, ext = os.path.splitext(change['filename'])
+                match = None
+                # Find matching extension in parent
+                for ext_dict in current['filetypes']:
+                    if ext_dict['extension'] == ext:
+                        match = ext_dict
+                        break
+                # If no match, create new
+                if not match:
+                    match = dict([('extension',ext),('part',0)])
+                    current['filetypes'].append(match)
+
+                # Add new size to ratio
+                match['part'] += change['additions']-change['deletions']
+
         elif action in ['removed']:
-            if len(subs) == 0:
+            if len(subs) == 1:
                 current['action'] = 'delete'
         elif action in ['renamed']:
             #Only rename of files
@@ -344,6 +361,20 @@ def _update_children(user_states,change):
                 if correct_user:
                     state_sub['last modified date'] = sub['last modified date']
                     state_sub['last modified by'] = sub['last modified by']
+                    for ext in sub['filetypes']:
+                        match = None
+                        # Find matching extension in parent
+                        for ext_dict in state_sub['filetypes']:
+                            if ext_dict['extension'] == ext['extension']:
+                                match = ext_dict
+                                break
+                        # If no match, create new
+                        if not match:
+                            match = dict([('extension',ext),('part',0)])
+                            state_sub['filetypes'].append(match)
+
+                        # Add new size to ratio
+                        match['part'] += ext['part']
             elif sub['action'] == 'delete':
                 user_sub['subfolder'].remove(state_sub)
             elif sub['action'] == 'none':
