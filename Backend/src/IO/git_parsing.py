@@ -422,7 +422,7 @@ def _hook_commit_to_raw_update(hook):
     raw_update['author']['login'] = hook['author']['username']
     raw_update['files'] = []
     for action in ['added','removed','modified']:
-        raw_update['files'] += [{'filename':f,'status':action} for f in hook[action]]
+        raw_update['files'] += [{'filename':f,'status':action,'additions':0,'deletions':0} for f in hook[action]]
     return raw_update
 
 

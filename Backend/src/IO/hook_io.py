@@ -32,8 +32,7 @@ class HookRequestHandler(BaseHTTPRequestHandler):
             global hook_queue
             hook_queue.put((repo, update))
         except Exception as e:
-            print(e,file=sys.stderr)
-
+            print("ERROR IN HOOK:%s"%e,file=sys.stderr) 
 
 def new_hook_client(queue):
     Handler = HookRequestHandler
