@@ -56,7 +56,7 @@ def _extract_folders(tree, API_version,time):
             path = os.path.dirname(node['path'])
             name = os.path.basename(node['path'])
             parent = folder_map[path] if len(path) > 0 else None
-            if node['type'] == 'tree':
+            if node['type'] in ['tree','commit']:
                 _handle_tree_type(API_version,node,parent,name,folder_map,time)
             elif node['type'] == 'blob':
                 # Files have type blob

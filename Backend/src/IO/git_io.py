@@ -19,7 +19,7 @@ import IO.git_parsing as git_parsing
 GIT_URL = 'https://api.github.com'
 OAUTH_TOKEN = '4a85521efe17ec4ef6eb4c1c76a8a097396880e1'
 KEY = {'Authorization':'token '+OAUTH_TOKEN}
-CACHE_REPOS = False
+CACHE_REPOS = True
 
 # Number of days to look back for realtime, set to 1 week or 3 weeks
 # (But our repo isn't that old yet)

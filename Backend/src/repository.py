@@ -84,7 +84,7 @@ class Repository:
 		return rewind_list
 
 if __name__ == '__main__':
-	a = Repository("decentninja/GitSpace")
+	a = Repository("torvalds/linux")
 	for k,v in a.user_states.items():
 		print(k)
 		git_parsing.print_tree_structure(v['state'],['name','last modified by','last modified date'])
