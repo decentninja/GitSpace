@@ -29,6 +29,7 @@ public class Repository : MonoBehaviour {
     float update_cooldown = 0;
     float update_time = 1;	// Time between updates in milliseconds
     Coroutine hiddenanimation;
+    private bool overrideFileTypes = false;
 
     void Awake() {
         tm = FindObjectOfType<TimeManager>();
@@ -65,6 +66,7 @@ public class Repository : MonoBehaviour {
     {
         isUserUpdate = (bool) data["check_threshold"];
         isRealtime = (bool) data["real_time"];
+        overrideFileTypes = (bool)data["override_filetypes"];
         if (isRealtime) {
             tm.setToRealtime(); 
         }
@@ -132,8 +134,12 @@ public class Repository : MonoBehaviour {
                     {
                         extensionList.Add(fileExtension[index]);
                     }
+                    if (overrideFileTypes) { 
+                        star.ext = "";
+                        star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+                    }
                 }
-
+                
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
                 {
