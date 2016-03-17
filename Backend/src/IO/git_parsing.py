@@ -31,8 +31,8 @@ def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
         state = {}
         state['api version'] = 1
         state['type'] = 'state'
-        state['repo'] = time
-        state['timestamp'] = name
+        state['repo'] = name
+        state['timestamp'] = time
         state['state'] = _extract_folders(raw_state['tree'],API_version,time)
     #   with open("state_output.txt","w+") as f:
     #       _write_readable_structure_to_file(f,state)
