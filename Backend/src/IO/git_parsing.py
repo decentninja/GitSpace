@@ -6,7 +6,7 @@ import codecs
 __version = 1
 __supported_state_versions = [1]
 __supported_update_versions = [1]
-__default_depth = 2
+__default_depth = 3
 __force_depth = True
 __cache_updates = False
 __cache_state = False
@@ -30,6 +30,7 @@ def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
             time = parse_git_time_format(time)
         state = {}
         state['api version'] = 1
+        state['real_time'] = False
         state['type'] = 'state'
         state['repo'] = name
         state['timestamp'] = time
