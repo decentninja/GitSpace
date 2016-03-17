@@ -14,6 +14,13 @@ angular.module('gitSpace.services', ['ngSocket'])
         }
     }
 
+    $rootScope.$on('$destroy', function() {
+        console.log("Destroyed!");
+        if(ws !== null) {
+            ws.close();
+        }
+    });
+
     function init(url) {
         console.log("Init for url", url);
         $rootScope.rootScope.error = null;
