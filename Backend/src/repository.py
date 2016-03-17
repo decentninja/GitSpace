@@ -61,7 +61,7 @@ class Repository:
 				update_time = datetime.datetime.fromtimestamp(self.updates[i]['timestamp'])
 		return update_list, i
 
-	def get_rewind_list(self, minutes):
+	def get_rewind_list(self, minutes, username=None):
 		rewind_list = []
 		o_state = git_parsing._state_clone(self.original_state)
 		o_state['real_time'] = False
@@ -76,7 +76,7 @@ class Repository:
 			if len(update_list) < 1:
 				rewind_list.append(self.empty_update(int(next_time.timestamp())))
 			else:
-				git_parsing.update_state(o_state, update_list)
+				git_parsing.update_user_states({username:o_state},update_list)
 				rewind_list.append(git_parsing.state_to_update(o_state))
 		rewind_list[-1]['real_time'] = True
 		print('Rewind list done')
