@@ -27,7 +27,7 @@ public class Repository : MonoBehaviour {
     bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
     float update_cooldown = 0;
-    float update_time = 10;	// Time between updates in milliseconds
+    float update_time = 5;	// Time between updates in milliseconds
     Coroutine hiddenanimation;
 
     void Awake() {
