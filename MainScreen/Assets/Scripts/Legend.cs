@@ -23,6 +23,7 @@ public class Legend : MonoBehaviour {
         delExtList.CopyTo(sumList, delUserList.Length);
         foreach(Text text in sumList)
         {
+            texts.Remove(text);
             Destroy(text.gameObject);
         }
 
@@ -44,31 +45,10 @@ public class Legend : MonoBehaviour {
         }
     }
 
-    /*
-    void Start()
-    {
-        Text newtext1 = Instantiate(text) as Text;
-        newtext1.fontStyle = FontStyle.Bold;
-        newtext1.fontSize = newtext1.fontSize + 4;
-        newtext1.text = "Users";
-        newtext1.color = Color.white;
-        newtext1.transform.SetParent(userPanel.transform);
-
-        Text newtext2 = Instantiate(text) as Text;
-        newtext2.fontStyle = FontStyle.Bold;
-        newtext2.fontSize = newtext2.fontSize + 4;
-        newtext2.text = "Extensions";
-        newtext2.color = Color.white;
-        newtext2.transform.SetParent(extensionPanel.transform);
-    }*/
-
-
     public void showText(bool yes)
     {
-        foreach(Text text in texts)
-        {
-            text.enabled = yes;
-        }
+        userPanel.active = yes;
+        extensionPanel.active = yes;
     }
 
     private Color fixColor(Color color)
