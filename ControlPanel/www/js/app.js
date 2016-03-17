@@ -7,8 +7,9 @@ var app = angular.module('gitSpace', ['ionic', 'ngCordova', 'gitSpace.controller
 .run(function($ionicPlatform, $rootScope, settings) {
 
     $rootScope.rootScope = {
+        isInitialized: false,
         error: null,
-        waiting: false,
+        connectionOpenedButNoData: false,
         settings: settings,
         webSocketStatus: "Connecting..."
     };
