@@ -21,6 +21,10 @@ public class TCPClient : MonoBehaviour {
     Thread thread;
 
     void Start () {
+	GameObject settings = GameObject.Find("Settings");
+	if(settings != null) {
+	    ipaddress = settings.GetComponent<Settings>().options.host;
+	}
         StartCoroutine("TCPClientRoutine");
     }
 

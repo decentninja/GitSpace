@@ -68,7 +68,8 @@ def get_commits_in_span(repo, since, until):
     last_sha = 'none'
     while True:
         params = {'since': since.isoformat(),
-                  'until': until.isoformat()}
+                  'until': until.isoformat(),
+                  'per_page': 100}
         new_commits = (get_api_result('https://api.github.com/repos/' + repo +\
                 '/commits',params=params))
         if len(new_commits) == 0:

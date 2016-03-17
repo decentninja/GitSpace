@@ -66,9 +66,9 @@ public class Repository : MonoBehaviour {
         isUserUpdate = (bool) data["check_threshold"];
         isRealtime = (bool) data["real_time"];
         if (isRealtime) {
-            tm.setCurrentDate((int) data["timestamp"]);
+            tm.setToRealtime(); 
         } else {
-            tm.setToRealtime();
+            tm.setCurrentDate((int)data["timestamp"]);
         }
         int numChanges = data["changes"].Count;
         for (int i = 0; i < numChanges; i++)
