@@ -300,16 +300,10 @@ public class Repository : MonoBehaviour {
 	SortedList<int,List<Folder>> children = new SortedList<int,List<Folder>>();
 	foreach(Transform t in transform) {
 	    Folder folder = t.GetComponent<Folder>();
-            t.GetChild(0).localScale = new Vector3(folder.size, folder.size, folder.size);
+            if (folder != null) {
+                t.GetChild(0).localScale = new Vector3(folder.size, folder.size, folder.size);
+            }
         }
-	float step = (folderMaxSize - folderStartSize) / children.Count;
-	float currentSize = folderStartSize;
-	foreach(KeyValuePair<int, List<Folder>> kvp in children) {
-	    foreach(Folder folder in kvp.Value) {
-		folder.transform.GetChild(0).transform.localScale = Vector3.one * currentSize;
-	    }
-	    currentSize += step;
-	}
     }
     
     public void cueUpdate(JsonData update) {
