@@ -1,6 +1,7 @@
 import os.path
 import datetime
 import codecs
+import sys
 # Constants
 # Could be translated to properties
 __version = 1
@@ -16,7 +17,7 @@ __cache_state = False
 #################
 
 def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
-    print("Parsing State")
+    print("Parsing State",file=sys.stderr)
     time = 0 # Override time argument to avoid lightning
     if __cache_state:
         with codecs.open("raw_state.py", "w+",'utf-8') as f:
@@ -30,8 +31,10 @@ def parse_raw_state(raw_state, time = 0, API_version = None, name='GitSpace'):
             time = parse_git_time_format(time)
         state = {}
         state['api version'] = 1
+        state['real_time'] = False
         state['type'] = 'state'
         state['repo'] = name
+        state['timestamp'] = time
         state['state'] = _extract_folders(raw_state['tree'],API_version,time)
     #   with open("state_output.txt","w+") as f:
     #       _write_readable_structure_to_file(f,state)
@@ -166,8 +169,8 @@ def _handle_blob_type(API_version,node,parent,folder_map):
 
 
 
-def parse_raw_updates(raw_updates, API_version = None):
-    print("parsing %s commits"%len(raw_updates))
+def parse_raw_updates(raw_updates, API_version = None,repo = "decentninja/GitSpace"):
+    print("parsing %s commits"%len(raw_updates),file=sys.stderr)
     if __cache_updates:
         with codecs.open("raw_updates.py", "w+",'utf-8') as f:
             print("updates=%s"%raw_updates,file=f)
@@ -176,10 +179,10 @@ def parse_raw_updates(raw_updates, API_version = None):
     if API_version not in __supported_update_versions:
         raise Exception('Unknown API version: ' + API_version)
     if API_version == 1:
-        parsed = [_parse_raw_update(update,API_version) for update in raw_updates]
+        parsed = [_parse_raw_update(update,API_version,repo=repo) for update in raw_updates]
         return parsed
 
-def _parse_raw_update(raw_update, API_version):
+def _parse_raw_update(raw_update, API_version, repo = "decentninja/GitSpace"):
     meta_info = raw_update
     date = meta_info['commit']['committer']['date']
     time = parse_git_time_format(date)
@@ -190,8 +193,9 @@ def _parse_raw_update(raw_update, API_version):
 
     update = {}
     update['type'] = 'update'
-    update['repo'] = 'GitSpace' # TODO placeholder
+    update['repo'] = repo
     update['apiv'] = 1
+    update['timestamp'] = time
     update['message'] = meta_info['commit']['message']
     update['direction'] = 'forward'
     update['forced'] = False # It WILL be with lower case, if written with json.dumps
@@ -269,7 +273,7 @@ def parse_git_time_format(date):
     return int(datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ").timestamp())
 
 def create_user_states(state,users):
-    print("Cloning State for %s users"%len(users))
+    print("Cloning State for %s users"%len(users),file=sys.stderr)
     return {user:_state_clone(state) for user in users}
 
 def _state_clone(state):
@@ -304,7 +308,7 @@ def update_state(state,updates):
     update_user_states({None:state},updates)
 
 def update_user_states(user_states,updates):
-    print("Applying %s updates to %s states"%(len(updates),len(user_states)))
+    print("Applying %s updates to %s states"%(len(updates),len(user_states)),file=sys.stderr)
     for update in updates:
         _apply_update(user_states,update)
 
@@ -363,7 +367,7 @@ def print_tree_structure(alist, keys = None):
 # PARSE HOOK DATA
 ######################
 def hook_to_updates(hook):
-    print("Parsig Hook")
+    print("Parsing Hook",file=sys.stderr)
     commits = hook['commits'][::-1] #Reverse list
     return parse_raw_updates([_hook_commit_to_raw_update(c) for c in commits])
 
@@ -390,7 +394,7 @@ def _hook_commit_to_raw_update(hook):
 ##################
 
 def state_to_update(state):
-    print("Converting state to update")
+    print("Converting state to update",file=sys.stderr)
     update = {}
     update['type'] = "update"
     update['repo'] = state['repo']
@@ -398,6 +402,7 @@ def state_to_update(state):
     update['direction'] = "forward"
     update['forced'] = False
     update["changes"] = []
+    update["timestamp"] = state["timestamp"]
     update["check_threshold"] = True
     recursive_state_to_update(update['changes'], state['state'])
     return update

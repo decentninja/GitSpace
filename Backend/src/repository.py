@@ -6,8 +6,9 @@ import datetime
 class Repository:
 
 	def __init__(self,repo,lookback = 21):
-		self.original_state, self.updates = git_io.get_init(repo)
+		self.original_state, self.updates = git_io.get_init(repo ,lookback=lookback)
 		self.user_states = {None: self.original_state}
+		self.original_state['real_time'] = True
 		self.lookback_value = lookback
 		self.contributors = git_io.get_collaborators(repo)
 		self.name = repo

@@ -6,7 +6,7 @@ import signal
 import socket
 import sys
 import time
-import hook.io
+import IO.hook_io as hook
 import IO.git_io as git
 import IO.app_io as app
 from repository import Repository
@@ -44,6 +44,8 @@ class Main():
         print("Final frontend reached.", file=sys.stderr)
         self.init_app()
         print("Websocket server running.", file=sys.stderr)
+        self.init_hook()
+        print("Hooked on Github", file = sys.stderr)
 
     def init_state(self, client, repo):
         if client not in self.states:
@@ -72,7 +74,9 @@ class Main():
 
     def init_hook(self):
         self.hook_queue = Queue()
-        self.hook_server = Process(target= app.serve, args=(self.hook_queue))
+        self.hook_server = Process(target= hook.new_hook_client, args=(self.hook_queue, ))
+        print("Starting Hook http server process.", file=sys.stderr)
+        self.hook_server.start()
 
     def send(self, conn, json_obj):
       json_string = '\x02' + json.dumps(json_obj) + '\x03'
@@ -99,10 +103,18 @@ class Main():
             self.init_client(new_client, client_id)
 
     def send_webhook_updates(self):
-        # For now sends cute mock JSONs in Debug mode.
-        if len (self.clients) > 0 and len(self.clients['gitspace']) > 0 and DEBUG:
-            self.send_all('gitspace', mock_json)
-            print('sending mock')
+        while 1:
+            try:
+                repo, updates = self.hook_queue.get_nowait()
+            except queue.Empty:
+                return
+            for c_id, c in self.states.items():
+                if repo in c:
+                    print("Applying hook update in backend",file=sys.stderr)
+                    c[repo].apply_updates(updates)
+                    print('Sending hook update to frontend',file=sys.stderr)
+                    for update in updates:
+                        self.send_all(c_id, update)
 
     def read_app_commands(self):
         while 1:
@@ -165,6 +177,9 @@ class Main():
         self.send_all(client, self.states[client][repo].get_latest_state())
         self.app_queue_out.put(self.make_app_state(client))
 
+    def sighandler(self, sig, frame):
+        self.close()
+
     def delete_repo(self, repo, client):
         if repo not in self.states[client]:
             print("Repo does not exist: %s"%repo, file=sys.stderr)
@@ -191,15 +206,14 @@ class Main():
         [self.send(new_client, self.states[client_id][repo].get_latest_state())
                 for repo in self.states[client_id]]
 
-    def sighandler(self, sig, frame):
-        self.close()
-
     def close(self):
         self.frontend_server.close()
         self.app_queue.close()
         self.app_queue_out.close()
         self.app_server.terminate()
         self.app_server.join()
+        self.hook_server.terminate()
+        self.hook_server.join()
         print('Server shut down.', file=sys.stderr)
 
     def main(self):

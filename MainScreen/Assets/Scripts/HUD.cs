@@ -6,11 +6,14 @@ using System;
 public class HUD : MonoBehaviour {
 
 	public Text time;
+    public bool isRealtime = true;
+    private TimeManager tm;
 
-	public void setTime(int unixtime) { }
+    void Start() {
+        tm = FindObjectOfType<TimeManager>();
+    }
 
 	void Update() {
-		DateTime datetime = DateTime.Now;
-		time.text = datetime.ToString("yyyy.MM.dd HH:mm");
+		time.text = tm.getCurrentDate().ToString("yyyy.MM.dd HH:mm");
 	}
 }

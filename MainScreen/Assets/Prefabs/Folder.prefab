@@ -172,6 +172,7 @@ MonoBehaviour:
   text: {fileID: 11445736}
   extraglow: 0
   glowdiminish: 0.05
+  slowGlowdiminish: 0.001
   minimumglow: 0.1
   maxglow: 100
   edgecolor:

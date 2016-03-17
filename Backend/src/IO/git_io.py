@@ -20,7 +20,7 @@ KEY = {'Authorization':'token '+OAUTH_TOKEN}
 
 # Number of days to look back for realtime, set to 1 week or 3 weeks
 # (But our repo isn't that old yet)
-lookback_days = 25
+standard_lookback = 3
 
 def get_api_result(*args, **kwargs):
     response = requests.get(*args, headers=KEY, **kwargs)
@@ -104,43 +104,45 @@ def find_most_recent_sha(repo, start_date):
         commits = get_commits_in_span(repo, since, start_date)
     return (commits[0]['sha'],commits[0]['commit']['committer']['date'])
 
-def get_init_state(repo, time_now):
+def get_init_state(repo, time_now,lookback = standard_lookback):
     # Get sha for a state 1 week+ ago
     print("Getting initial state", file=sys.stderr)
     sha,time = find_most_recent_sha(repo,
-        time_now - datetime.timedelta(days=lookback_days))
+        time_now - datetime.timedelta(days=lookback))
     # Get the associated tree
     return get_tree(repo, sha),time
 
-def get_init_commits(repo, time_now):
+def get_init_commits(repo, time_now,lookback = standard_lookback):
     print("Collecting commits", file=sys.stderr)
     commits = get_commits_in_span(repo,
-        time_now - datetime.timedelta(days=lookback_days),
+        time_now - datetime.timedelta(days=lookback),
         time_now)
     return commits
 
-def get_init(repo,lookback = lookback_days):
+def get_init(repo,lookback = standard_lookback):
     print("Getting repository: %s"%repo, file=sys.stderr)
     time_now = datetime.datetime.now()
-    state,time = get_init_state(repo,time_now)
+    state,time = get_init_state(repo,time_now,lookback=lookback)
     updates = []
-    commits = get_init_commits(repo, time_now)
-    print("Getting commit info from %s commits"%len(commits), file=sys.stderr)
-    print('-'*50, file=sys.stderr)
-    ratio = 50/len(commits)
-    tracker = 0
-    last = 0
-    for c in commits:
-        tracker+=ratio
-        int_track = int(tracker)
-        if int_track > last:
-            print("x"*(int_track-last),end='',flush=True, file=sys.stderr)
-            last = int_track
-        updates.append(get_full_commitinfo(repo, c))
-    print('x', file=sys.stderr)
-    state_parsed = git_parsing.parse_raw_state(state,time = time, name=repo)
+    commits = get_init_commits(repo, time_now,lookback=lookback)
+    if len(commits) > 0:
+        print("Getting commit info from %s commits"%len(commits), file=sys.stderr)
+        print('-'*50, file=sys.stderr)
+        ratio = 50/len(commits)
+        tracker = 0
+        last = 0
+        for c in commits:
+            tracker+=ratio
+            int_track = int(tracker)
+            if int_track > last:
+                print("x"*(int_track-last),end='',flush=True, file=sys.stderr)
+                last = int_track
+            updates.append(get_full_commitinfo(repo, c))
+        print('x', file=sys.stderr)
     #updates arrive in reversed order
     update_parsed = git_parsing.parse_raw_updates(updates[::-1])
+
+    state_parsed = git_parsing.parse_raw_state(state,time = time, name=repo)
     print("Inital Repository complete", file=sys.stderr)
     return state_parsed, update_parsed
 
