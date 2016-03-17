@@ -16,6 +16,7 @@ public class Repository : MonoBehaviour {
     public GameObject rootStar;
     public Gradient starcolor;
     public bool isUserUpdate;
+    public bool isRealtime = true;
     public TimeManager tm;
 
     // timespan given from the controlpanel to show glow, in seconds
@@ -62,6 +63,12 @@ public class Repository : MonoBehaviour {
     void handleUpdate(JsonData data)
     {
         isUserUpdate = (bool) data["check_threshold"];
+        isRealtime = (bool) data["real_time"];
+        if (isRealtime) {
+            tm.setCurrentDate((int) data["timestamp"]);
+        } else {
+            tm.setToRealtime();
+        }
         int numChanges = data["changes"].Count;
         for (int i = 0; i < numChanges; i++)
         {

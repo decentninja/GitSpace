@@ -18,20 +18,26 @@ public class Folder : MonoBehaviour {
     public float minimumglow = 0.2f;
     public float maxglow = 200;
     public Gradient edgecolor;
+    private TimeManager tm;
     string mail = "";
 
     void Start () {
-	spring.connectedBody = parent.GetComponent<Rigidbody>();
-	text.text = name;
+	    spring.connectedBody = parent.GetComponent<Rigidbody>();
+	    text.text = name;
+        tm = FindObjectOfType<TimeManager>();
     }
 
     void Update() {
-	if(extraglow > 0.3) {
-	    extraglow -= Time.deltaTime * glowdiminish;
-	} else if(extraglow > 0) {
-	    extraglow -= Time.deltaTime * slowGlowdiminish;
-    }
-	EmailToColor();
+	    if(extraglow > 0.3) {
+	        extraglow -= Time.deltaTime * glowdiminish;
+	    } else if(extraglow > 0) {
+            if  (tm.isRealTime()) {
+                extraglow -= Time.deltaTime * slowGlowdiminish;
+            } else {
+                extraglow -= Time.deltaTime * glowdiminish;
+            }
+        } 
+	    EmailToColor();
     }
 
     public void showtext(bool yes) {

@@ -21,7 +21,7 @@ def get_name_from_hook(hook):
 
 class HookRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
-        print("Hook recieved",file= os.stderr)
+        print("Hook recieved",file= sys.stderr)
         try:
             self.send_response(200)
             length = int(self.headers['Content-Length'])
@@ -29,10 +29,10 @@ class HookRequestHandler(BaseHTTPRequestHandler):
             post_data = json.loads(text)
             update = git_parsing.hook_to_updates(post_data)
             repo = get_name_from_hook(post_data)
-            global hook_queue 
+            global hook_queue
             hook_queue.put((repo, update))
         except Exception as e:
-            print(e,file=os.stderr)
+            print(e,file=sys.stderr)
 
 
 def new_hook_client(queue):

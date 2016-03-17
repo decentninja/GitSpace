@@ -4,6 +4,7 @@ angular.module('gitSpace.controllers', [])
 
 	$scope.repositories = Repositories.all();
 	$scope.rewindThreshold = 0;
+	$scope.userRewindThreshold = 0;
 	$scope.activityThreshold = 12;
 	$scope.usersActivity = false;
 	$scope.visuals = {
@@ -14,7 +15,12 @@ angular.module('gitSpace.controllers', [])
 		repo: null,
 		owner: null
 	};
-	$scope.modal = null;
+	$scope.addModal = null;
+	$scope.userModal = null;
+
+	$scope.activeUser = null;
+	$scope.currentRepository = null;
+
 
 
 	$rootScope.$on("dataAvailable", function() {
@@ -45,6 +51,7 @@ angular.module('gitSpace.controllers', [])
 		if(!repository.show) {
 			// We are focusing on a repo!
 			repository.show = true;
+			$scope.currentRepository = repository;
 		} else {
 			// We are closing a repo
 			Repositories.emit({
@@ -52,6 +59,7 @@ angular.module('gitSpace.controllers', [])
 				repo: repository.name
 			});
 			repository.show = false;
+			$scope.currentRepository = null;
 		}
 	};
 
@@ -96,34 +104,56 @@ angular.module('gitSpace.controllers', [])
 		$scope.usersActivity = false;
 	};
 
-	$scope.rewind = function(rewind) {
+	$scope.rewind = function(rewind, repository, user) {
 		var minutes = rewind * 60; // We recieve hours
+		var username = "";
+		if(user !== null) {
+			username = user.username;
+		}
 		if(minutes === 0) {
 			console.log("Set realtime!");
 		} else {
 			console.log("Rewind", minutes, "minutes");
 		}
-		/*Repositories.emit({
+		Repositories.emit({
 			command: 'rewind',
-			minutes: minutes
-		});*/
+			minutes: minutes,
+			repo: repository.name,
+			username: username
+		});
 	};
 
 	$ionicModal.fromTemplateUrl('views/add-modal.html', {
 		scope: $scope,
 		animation: 'slide-in-up'
 	}).then(function(modal) {
-		$scope.modal = modal;
+		$scope.addModal = modal;
 	});
-	$scope.openModal = function() {
-		$scope.modal.show();
+	$scope.openAddModal = function(user) {
+		$scope.addModal.show();
 	};
-	$scope.closeModal = function() {
-		$scope.modal.hide();
+	$scope.closeAddModal = function() {
+		$scope.addModal.hide();
+	};
+	// User modal
+	$ionicModal.fromTemplateUrl('views/user-modal.html', {
+		scope: $scope,
+		animation: 'slide-in-up'
+	}).then(function(modal) {
+		$scope.userModal = modal;
+	});
+	$scope.openUserModal = function(user) {
+		$scope.activeUser = user;
+		$scope.userModal.show();
+	};
+	$scope.closeUserModal = function() {
+		$scope.activeUser = null;
+		$scope.userModal.hide();
 	};
 	//Cleanup the modal when we're done with it!
 	$scope.$on('$destroy', function() {
-		$scope.modal.remove();
+		$scope.addModal.remove();
+		$scope.userModal.remove();
 	});
 
 	$scope.addRepository = function(repository) {
@@ -131,7 +161,7 @@ angular.module('gitSpace.controllers', [])
 			command: 'repo add',
 			repo: repository.owner + "/" + repository.repo
 		});
-		$scope.modal.hide();
+		$scope.addModal.hide();
 		$scope.newRepository = {
 			owner: null,
 			repo: null

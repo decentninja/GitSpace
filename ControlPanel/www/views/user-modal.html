@@ -1,0 +1,33 @@
+<ion-modal-view>
+    <ion-header-bar>
+        <div class="buttons">
+            <button class="button button-icon icon ion-close" ng-click="closeUserModal()"></button>
+        </div>
+
+        <h1 class="title">User activity</h1>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list">
+            <div class="item t-center">
+                <div>
+                    <img ng-src="{{ activeUser.image }}" class="user-image">
+                </div>
+                <div>
+                    <h3>{{ activeUser.name }}</h3>
+                    <p>{{ activeUser.username }}</p>
+                </div>
+            </div>
+            <div class="item item-divider">
+    			Rewind development <span ng-class="{ hide: userRewindThreshold == 0 }"> to {{ userRewindThreshold | timeFilter }} ago</span>
+    			<span ng-class="{ hide: userRewindThreshold != 0 }" class="pulsate realtime">Showing real-time activity</span>
+    		</div>
+            <div class="item range range-positive flipH">
+                <input type="range" min="0" max="504" step="1" ng-model="userRewindThreshold" on-release="rewind(userRewindThreshold, currentRepository, activeUser)">
+            </div>
+        </div>
+        <div class="t-center">
+            <button class="button button-positive" ng-click="setUserActivity(activeUser, currentRepository)">Show user activity</button>
+            <button class="button button-positive" ng-class="{disabled: !usersActivity}" ng-click="resetUserActivity(currentRepository)">Reset activity</button>
+        </div>
+    </ion-content>
+</ion-modal-view>

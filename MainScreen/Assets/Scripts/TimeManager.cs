@@ -3,8 +3,8 @@ using System.Collections;
 using System;
 
 public class TimeManager : MonoBehaviour {
-    public bool isRealtime = true;
-    public DateTime currentDate;
+    private bool isRealtime = true;
+    private DateTime currentDate;
 	
 	void Update () {
         if (isRealtime) {
@@ -14,6 +14,10 @@ public class TimeManager : MonoBehaviour {
 
     public void setToRealtime() {
         isRealtime = true;
+    }
+
+    public bool isRealTime() {
+        return isRealtime;
     }
 
     public DateTime getCurrentDate() {
