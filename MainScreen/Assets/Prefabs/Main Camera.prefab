@@ -151,14 +151,14 @@ MonoBehaviour:
   hdr: 1
   sepBlurSpread: 4.5
   quality: 1
-  bloomIntensity: 0.3
+  bloomIntensity: 0.24
   bloomThreshold: 0.08
   bloomThresholdColor: {r: 1, g: 1, b: 1, a: 1}
   bloomBlurIterations: 2
   hollywoodFlareBlurIterations: 1
   flareRotation: 0
   lensflareMode: 1
-  hollyStretchWidth: 1.73
+  hollyStretchWidth: 1
   lensflareIntensity: 0.15
   lensflareThreshold: 0
   lensFlareSaturation: 0.75

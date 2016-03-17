@@ -407,31 +407,31 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key0.rgba
-      value: 4294930423
+      value: 2902421495
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime1
-      value: 14264
+      value: 4433
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key2.rgba
-      value: 16777159
+      value: 14679682
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime2
-      value: 24865
+      value: 7710
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.m_NumColorKeys
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key3.rgba
-      value: 16448767
+      value: 5811521
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime3
-      value: 34695
+      value: 13107
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key1.rgba
@@ -439,11 +439,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key4.rgba
-      value: 3487231
+      value: 16777159
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime4
-      value: 48573
+      value: 24865
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime0
@@ -451,10 +451,26 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.key5.rgba
-      value: 5085951
+      value: 16448767
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: starcolor.ctime5
+      value: 34695
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.key6.rgba
+      value: 3487231
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.ctime6
+      value: 48573
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.key7.rgba
+      value: 5085951
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: starcolor.ctime7
       value: 63993
       objectReference: {fileID: 0}
     m_RemovedComponents: []
