@@ -22,7 +22,7 @@ public class Repository : MonoBehaviour {
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
-    int minPower = 0;
+    float minPower = 0.2f;
 
     bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
@@ -134,12 +134,12 @@ public class Repository : MonoBehaviour {
                     {
                         extensionList.Add(fileExtension[index]);
                     }
-                    if (overrideFileTypes) { 
-                        star.ext = "";
-                        star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
-                    }
+                } else if (overrideFileTypes)
+                {
+                    star.ext = "";
+                    star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
                 }
-                
+
                 int numChanges = data["subfolder"].Count;
                 for (int i = 0; i < numChanges; i++)
                 {
@@ -300,17 +300,8 @@ public class Repository : MonoBehaviour {
 	SortedList<int,List<Folder>> children = new SortedList<int,List<Folder>>();
 	foreach(Transform t in transform) {
 	    Folder folder = t.GetComponent<Folder>();
-	    if(folder != null) {
-		List<Folder> row;
-		if(children.ContainsKey(folder.size)) {
-		    row = children[folder.size];
-		} else {
-		    row = new List<Folder>();
-		}
-		row.Add(folder);
-		children[folder.size] = row;
-	    }
-	}
+            t.GetChild(0).localScale = new Vector3(folder.size, folder.size, folder.size);
+        }
 	float step = (folderMaxSize - folderStartSize) / children.Count;
 	float currentSize = folderStartSize;
 	foreach(KeyValuePair<int, List<Folder>> kvp in children) {
@@ -354,7 +345,7 @@ public class Repository : MonoBehaviour {
     }
 
     /* Ändra så att det blir olika nivårer av returns, färre antal nivåer ger större skillnad i localscale när resizeallfolders kallad då man splittar sizerangen på antal nivåer*/
-    public int setFolderSize(Folder folder)
+    public float setFolderSize(Folder folder)
     {
         Repositories sn = FindObjectOfType<Repositories>();
         //threshold is minutes in repository.cs
@@ -367,8 +358,8 @@ public class Repository : MonoBehaviour {
         else
         {
             double passedtime = ConvertToUnixTimestamp(tm.getCurrentDate()) - lastmoddate;
-            double rounded = 1 - (passedtime / timeInterval);
-            return (int)(rounded*10);
+            double rounded = ((1 - (passedtime / timeInterval)) * 0.7) + minPower;
+            return (float)(rounded);
         }
     }
     public int ConvertToUnixTimestamp(DateTime date)
