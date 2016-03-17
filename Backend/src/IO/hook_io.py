@@ -20,28 +20,20 @@ def get_name_from_hook(hook):
     return hook['repository']['full_name']
 
 class HookRequestHandler(BaseHTTPRequestHandler):
-
-    def _set_headers(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-
-    def do_GET(self):
-        self._set_headers()
-
-    def do_HEAD(self):
-        self._set_headers()
-
     def do_POST(self):
-        print("Hook recieved")
-        length = int(self.headers['Content-Length'])
-        text = self.rfile.read(length).decode('utf-8')
-        post_data = json.loads(text)
-        update = git_parsing.hook_to_updates(post_data)
-        repo = get_name_from_hook(post_data)
-        global hook_queue 
-        hook_queue.put((repo, update))
-        # You now have a dictionary of the post data
+        print("Hook recieved",file= os.stderr)
+        try:
+            self.send_response(200)
+            length = int(self.headers['Content-Length'])
+            text = self.rfile.read(length).decode('utf-8')
+            post_data = json.loads(text)
+            update = git_parsing.hook_to_updates(post_data)
+            repo = get_name_from_hook(post_data)
+            global hook_queue 
+            hook_queue.put((repo, update))
+        except Exception as e:
+            print(e,file=os.stderr)
+
 
 def new_hook_client(queue):
     Handler = HookRequestHandler
