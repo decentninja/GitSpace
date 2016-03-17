@@ -4,12 +4,12 @@
 		</button>
 	</ion-nav-buttons>
 	<ion-nav-buttons side="primary">
-		<button class="button button-icon icon ion-plus" ng-class="{disabled: rootScope.waiting}" ng-click="!rootScope.waiting && openAddModal()">
+		<button class="button button-icon icon ion-plus" ng-class="{disabled: !rootScope.isInitialized}" ng-click="rootScope.isInitialized && openAddModal()">
 		</button>
 	</ion-nav-buttons>
 	<ion-content>
 		<div ng-include="'views/loading.html'"></div>
-		<div id="main-control-panel" ng-show="isInitialized">
+		<div id="main-control-panel" ng-show="rootScope.isInitialized">
 			<div class="list">
 				<div class="item item-divider">
 					Visuals
