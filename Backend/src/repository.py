@@ -6,7 +6,7 @@ import datetime
 
 class Repository:
 
-	def __init__(self,repo,lookback = 1):
+	def __init__(self,repo,lookback = 27):
 		self.original_state, self.updates = git_io.get_init(repo ,lookback=lookback)
 		self.user_states = {None: git_parsing._state_clone(self.original_state)}
 		self.original_state['real_time'] = True
@@ -19,7 +19,6 @@ class Repository:
 		#TODO CREATE STATES FOR USERS
 		self.user_states.update(git_parsing.create_user_states(self.user_states[None],names))
 		self.apply_updates(self.updates)
-
 
 	def get_latest_state(self,user = None):
 		return self.user_states.get(user)
