@@ -26,7 +26,7 @@
 		</div>
 		<div class="item item-divider">
 			Rewind development <span ng-class="{ hide: rewindThreshold == 0 }"> to {{ rewindThreshold | timeFilter }} ago</span>
-			<span ng-class="{ hide: rewindThreshold != 0 }" class="pulsate realtime">Showing real-time activity</span>
+			<span ng-class="{ hide: rewindThreshold != 0 }" class="pulsate realtime">Showing real-time</span>
 		</div>
 		<div class="item range range-positive flipH">
 			<input type="range" min="0" max="504" step="1" ng-model="rewindThreshold" on-release="rewind(rewindThreshold)">
