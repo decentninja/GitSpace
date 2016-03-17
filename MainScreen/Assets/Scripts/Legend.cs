@@ -34,7 +34,6 @@ public class Legend : MonoBehaviour {
             newtext.text = user;
             newtext.fontSize = Screen.width / 80;
             newtext.color = fixColor(EmailToColor(user));
-            print(newtext.color);
             newtext.transform.SetParent(userPanel.transform);
             texts.Add(newtext);
         }
@@ -63,7 +62,6 @@ public class Legend : MonoBehaviour {
     public Color EmailToColor(string mail)
     {
         Color c = folder.edgecolor.Evaluate((1 + (float)(mail).GetHashCode() / int.MaxValue) / 2);
-        print(c);
         //float g = Mathf.Max(folder.minimumglow, folder.extraglow) * folder.maxglow;
         float g = 255;
         c = new Color(c.r * g, c.g * g, c.b * g);
