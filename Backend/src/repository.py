@@ -75,7 +75,7 @@ class Repository:
 			next_time = next_time + datetime.timedelta(hours=5)
 			update_list, i = self.get_updates_before(next_time, i)
 			if len(update_list) < 1:
-				rewind_list.append(self.empty_update(next_time.timestamp()))
+				rewind_list.append(self.empty_update(int(next_time.timestamp())))
 			else:
 				git_parsing.update_state(o_state, update_list)
 				rewind_list.append(git_parsing.state_to_update(o_state))
