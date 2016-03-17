@@ -18,7 +18,6 @@ public class Repository : MonoBehaviour {
     public bool isUserUpdate;
     public bool isRealtime = true;
     public TimeManager tm;
-    private ArrayList extensionList = new ArrayList();
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
@@ -105,6 +104,32 @@ public class Repository : MonoBehaviour {
                     star.Changed((string) data["last modified by"]);
                     //set sizes of stars based on update date
                     star.size = setFolderSize(star);
+                }
+
+                // Calculate color using file extension.
+                int numFileTypes = data["filetypes"].Count;
+                string[] fileExtension = new string[numFileTypes];
+                float[] filePart = new float[numFileTypes];
+                float partMax = 0;
+                int index = -1;
+                for (int i = 0; i < numFileTypes; i++)
+                {
+                    fileExtension[i] = (string)data["filetypes"][i]["extension"];
+                    filePart[i] = float.Parse(data["filetypes"][i]["part"].ToString());
+                    if (filePart[i] > partMax)
+                    {
+                        partMax = filePart[i];
+                        index = i;
+                    }
+                }
+                if (index != -1)
+                {
+                    star.ext = fileExtension[index];
+                    star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+                }
+                else
+                {
+                    star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
                 }
 
                 int numChanges = data["subfolder"].Count;
@@ -247,16 +272,8 @@ public class Repository : MonoBehaviour {
         }
         if (index != -1)
         {
+            foldercomp.ext = fileExtension[index];
             star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
-            // add extension file type to legendlist
-            if (!extensionList.Contains(fileExtension[index]))
-            {
-                extensionList.Add(fileExtension[index]);
-            }
-        }
-        else
-        {
-            star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
         }
 
         return star;
@@ -344,10 +361,6 @@ public class Repository : MonoBehaviour {
         return (int)Math.Floor(diff.TotalSeconds) - 3600; // Adjusting for utc time zone
     }
 
-    public ArrayList getExtensionList()
-    {
-        return extensionList;
-    }
     
     private void updateSizes(Dictionary<string, GameObject> currentChildren)
     {

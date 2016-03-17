@@ -20,6 +20,7 @@ public class Folder : MonoBehaviour {
     public Gradient edgecolor;
     private TimeManager tm;
     public string mail = "";
+    public string ext = "";
 
     void Start () {
 	    spring.connectedBody = parent.GetComponent<Rigidbody>();
