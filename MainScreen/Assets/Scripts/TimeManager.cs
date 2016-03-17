@@ -28,7 +28,7 @@ public class TimeManager : MonoBehaviour {
     public DateTime UnixTimeStampToDateTime(double unixTimeStamp)
     {
         DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-        dtDateTime = dtDateTime.AddSeconds(unixTimeStamp - 3600).ToLocalTime(); // -3600 to Adjust for timezone
+        dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
         return dtDateTime;
     }
 }
