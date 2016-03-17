@@ -7,7 +7,7 @@ class Repository:
 
 	def __init__(self,repo,lookback = 21):
 		self.original_state, self.updates = git_io.get_init(repo ,lookback=lookback)
-		self.user_states = {None: git_parsing._state_clone(self.original_state})
+		self.user_states = {None: git_parsing._state_clone(self.original_state)}
 		self.original_state['real_time'] = True
 		self.lookback_value = lookback
 		self.contributors = git_io.get_collaborators(repo)
