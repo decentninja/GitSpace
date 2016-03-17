@@ -164,15 +164,12 @@ class Main():
             elif message['command'] == 'internal_state':
                 self.app_queue_out.put(self.make_app_state(client))
             elif message['command'] == 'rewind':
-                if 'username' in message:
-                    rewind_list = self.states[client][message['repo']]\
-                            .get_rewind_list(message['minutes'], username=message['username'])
-            #    print(message)
-            #    for r in rewind_list:
-             #       print(r)
-                else:
-                    rewind_list = self.states[client][message['repo']]\
-                            .get_rewind_list(message['minutes'])
+                user = message.get('username') if len(message.get('username')) > 0 else None
+                rewind_list = self.states[client][message['repo']]\
+                        .get_rewind_list(message['minutes'], username=user)
+                print(message)
+                for r in rewind_list:
+                    print(r)
                 [self.send_all(client, update) for update in rewind_list]
                 self.app_queue_out.put('internal')
         except KeyError as e:

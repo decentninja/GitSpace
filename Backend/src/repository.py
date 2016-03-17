@@ -67,7 +67,7 @@ class Repository:
 		time_now = datetime.datetime.now()
 		next_time = time_now - datetime.timedelta(minutes=minutes)
 		update_list, i = self.get_updates_before(next_time)
-		git_parsing.update_state(o_state, update_list)
+		git_parsing.update_user_states({username:o_state}, update_list)
 		rewind_list.append(git_parsing._state_clone(o_state))
 		while (next_time < time_now):
 			next_time = next_time + datetime.timedelta(hours=5)
