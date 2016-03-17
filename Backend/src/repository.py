@@ -48,6 +48,7 @@ class Repository:
 		update['forced'] = False
 		update['changes'] = []
 		update["check_threshold"] = False
+		update["override_filetypes"] = False
 		return update
 
 	def get_updates_before(self, next_time, i=0):
