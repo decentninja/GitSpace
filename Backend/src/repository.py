@@ -52,12 +52,13 @@ class Repository:
 
 	def get_updates_before(self, next_time, i=0):
 		update_list = []
-		update_time = datetime.datetime.fromtimestamp(self.updates[i]['timestamp'])
-		while (update_time < next_time and i < len(self.updates)):
-			update_list.append(self.updates[i])
-			i += 1
-			if i < len(self.updates):
-				update_time = datetime.datetime.fromtimestamp(self.updates[i]['timestamp'])
+		if len(self.updates) > i:
+			update_time = datetime.datetime.fromtimestamp(self.updates[i]['timestamp'])
+			while (update_time < next_time and i < len(self.updates)):
+				update_list.append(self.updates[i])
+				i += 1
+				if i < len(self.updates):
+					update_time = datetime.datetime.fromtimestamp(self.updates[i]['timestamp'])
 		return update_list, i
 
 	def get_rewind_list(self, minutes, username=None):
@@ -70,7 +71,7 @@ class Repository:
 		git_parsing.update_user_states({username:o_state}, update_list)
 		rewind_list.append(git_parsing._state_clone(o_state))
 		while (next_time < time_now):
-			next_time = next_time + datetime.timedelta(hours=5)
+			next_time = next_time + datetime.timedelta(hours=0.5)
 			update_list, i = self.get_updates_before(next_time, i)
 			if len(update_list) < 1:
 				rewind_list.append(self.empty_update(int(next_time.timestamp())))

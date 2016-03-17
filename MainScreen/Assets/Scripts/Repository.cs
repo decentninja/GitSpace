@@ -27,7 +27,7 @@ public class Repository : MonoBehaviour {
     bool hidden = false;
     Queue<JsonData> queue = new Queue<JsonData>();
     float update_cooldown = 0;
-    float update_time = 10;	// Time between updates in milliseconds
+    float update_time = 1;	// Time between updates in milliseconds
     Coroutine hiddenanimation;
 
     void Awake() {
@@ -67,14 +67,15 @@ public class Repository : MonoBehaviour {
         isRealtime = (bool) data["real_time"];
         if (isRealtime) {
             tm.setToRealtime(); 
-        } else {
-            tm.setCurrentDate((int)data["timestamp"]);
         }
         int numChanges = data["changes"].Count;
         for (int i = 0; i < numChanges; i++)
         {
             JsonData change = data["changes"][i];
             recursiveUpdate(null, (string)change["name"], change);
+        }
+        if (!isRealtime){
+            tm.setCurrentDate((int)data["timestamp"]);
         }
         resizeallfolders();
     }
@@ -98,10 +99,9 @@ public class Repository : MonoBehaviour {
             if (currentChildren.ContainsKey((string)data["name"]))
             {
                 Folder star = currentChildren[foldername].GetComponent<Folder>();
-
                 int thresholdDate = ConvertToUnixTimestamp(tm.getCurrentDate()) - (60 * FindObjectOfType<Repositories>().getThreshold());
-                if ((int)data["last modified date"] > thresholdDate && (int)data["last modified date"] != 0) {
-                    if (!isUserUpdate) star.lastModifiedDate = (int)data["last modified date"];
+                star.lastModifiedDate = (int)data["last modified date"];
+                if ((int)data["last modified date"] > thresholdDate) {
                     star.Changed((string) data["last modified by"]);
                     //set sizes of stars based on update date
                     star.size = setFolderSize(star);
