@@ -31,6 +31,7 @@ public class Legend : MonoBehaviour {
         {
             Text newtext = Instantiate(text) as Text;
             newtext.text = user;
+            newtext.fontSize = Screen.width / 80;
             newtext.color = fixColor(repo.StringToColor(user));
             newtext.transform.SetParent(userPanel.transform);
             texts.Add(newtext);
@@ -39,6 +40,7 @@ public class Legend : MonoBehaviour {
         {
             Text newtext2 = Instantiate(text) as Text;
             newtext2.text = extension;
+            newtext2.fontSize = Screen.width / 80;
             newtext2.color = fixColor(repo.StringToColor(extension));
             newtext2.transform.SetParent(extensionPanel.transform);
             texts.Add(newtext2);
