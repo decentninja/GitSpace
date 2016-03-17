@@ -171,6 +171,7 @@ class Main():
                     rewind_list = self.states[client][message['repo']]\
                             .get_rewind_list(message['minutes'])
                 [self.send_all(client, update) for update in rewind_list]
+                self.app_queue_out.put('internal')
         except KeyError as e:
             print('Received malformed JSON from app, missing field: ', e,file=sys.stderr)
             self.app_queue_out.put('internal_error')
