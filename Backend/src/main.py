@@ -133,6 +133,7 @@ class Main():
 
     def execute_app_command(self, message, client):
         '''try:'''
+        print(message,file = sys.stderr)
         if message['command'] in ['labels', 'repo focus','reset camera',
                                   'activity threshold']:
             json = command_json()

@@ -1,11 +1,12 @@
 import IO.git_io as git_io
 import IO.git_parsing as git_parsing
+import json
 
 import datetime
 
 class Repository:
 
-	def __init__(self,repo,lookback = 21):
+	def __init__(self,repo,lookback = 1):
 		self.original_state, self.updates = git_io.get_init(repo ,lookback=lookback)
 		self.user_states = {None: git_parsing._state_clone(self.original_state)}
 		self.original_state['real_time'] = True
@@ -27,15 +28,13 @@ class Repository:
 		state = self.get_latest_state(user)
 		if not state:
 			raise Exception("ERROR: user %s missing in repo %s"%(user,self.name))
-		return git_parsing.state_to_update(state)
+		update = git_parsing.state_to_update(state)
+		return update
 
 	def comm_format(self):
 		return {'name': self.name, 'users': self.contributors}
 
 	def apply_updates(self, updates):
-	#	if (self.latest_sha in [u['sha'] for u in updates]):
-	#		print("WARNING: commit already applied onto repo")
-	#	self.latest_sha = updates[-1]['sha']
 		git_parsing.update_user_states(self.user_states,updates)
 
 	def empty_update(self, timestamp):
@@ -84,7 +83,7 @@ class Repository:
 		return rewind_list
 
 if __name__ == '__main__':
-	a = Repository("decentninja/GitSpace",lookback = 7)
+	a = Repository("decentninja/GitSpace")
 	for k,v in a.user_states.items():
 		print(k)
 		git_parsing.print_tree_structure(v['state'],['name','last modified by','last modified date'])
