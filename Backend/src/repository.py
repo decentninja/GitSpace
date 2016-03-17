@@ -4,7 +4,7 @@ import IO.git_parsing as git_parsing
 class Repository:
 
 	def __init__(self,repo,lookback = 21):
-		state,updates = git_io.get_init(repo)
+		state,updates = git_io.get_init(repo,lookback=lookback)
 		self.user_states = {None: state}
 		self.lookback_value = lookback
 		self.contributors = git_io.get_collaborators(repo)
