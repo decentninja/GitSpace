@@ -311,7 +311,6 @@ def update_state(state,updates):
     update_user_states({None:state},updates)
 
 def update_user_states(user_states,updates):
-    print(user_states)
     print("Applying %s updates to %s states"%(len(updates),len(user_states)),file=sys.stderr)
     for update in updates:
         _apply_update(user_states,update)
