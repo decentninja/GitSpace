@@ -73,17 +73,17 @@ public class Repositories : MonoBehaviour {
     void Update()
     {
         ArrayList newMailList = new ArrayList();
+        ArrayList newExtList = new ArrayList();
         foreach (Folder folder in Object.FindObjectsOfType<Folder>())
         {
             if (!newMailList.Contains(folder.mail))
             {
                 newMailList.Add(folder.mail);
             }
-        }
-        ArrayList newExtList = new ArrayList();
-        foreach (Repository rp in repoDictionary.Values)
-        {
-            newExtList = mergeLists(newExtList, rp.getExtensionList());
+            if (!newExtList.Contains(folder.ext))
+            {
+                newExtList.Add(folder.ext);
+            }
         }
 
         legend.GetComponent<Legend>().updateLegend(filterList(newMailList), filterList(newExtList));
