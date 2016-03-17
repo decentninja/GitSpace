@@ -167,6 +167,9 @@ class Main():
                 if 'username' in message:
                     rewind_list = self.states[client][message['repo']]\
                             .get_rewind_list(message['minutes'], username=message['username'])
+            #    print(message)
+            #    for r in rewind_list:
+             #       print(r)
                 else:
                     rewind_list = self.states[client][message['repo']]\
                             .get_rewind_list(message['minutes'])

@@ -318,6 +318,8 @@ def update_user_states(user_states,updates):
 def _apply_update(user_states,update):
     fake_states = {user: {'subfolder':tree['state']} for user,tree in user_states.items()}
     fake_change = {'subfolder': update['changes']}
+    for user,state in user_states.items():
+        state['timestamp'] = update['timestamp']
     _update_children(fake_states,fake_change)
 
 def _update_children(user_states,change):
