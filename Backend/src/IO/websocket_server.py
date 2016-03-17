@@ -143,8 +143,12 @@ class WebSocketHandler(StreamRequestHandler):
 			return bytes
 
 	def read_next_message(self):
-
-		b1, b2 = self.read_bytes(2)
+		try:
+			b1, b2 = self.read_bytes(2)
+		except ValueError:
+			print('App left without closing connection.')
+			self.keep_alive = 0
+			return
 
 		fin    = b1 & FIN
 		opcode = b1 & OPCODE
@@ -152,15 +156,15 @@ class WebSocketHandler(StreamRequestHandler):
 		payload_length = b2 & PAYLOAD_LEN
 
 		if not b1:
-			#print("Client closed connection.")
+			print("App closed connection.")
 			self.keep_alive = 0
 			return
 		if opcode == CLOSE_CONN:
-			#print("Client asked to close connection.")
+			print("App asked to close connection.")
 			self.keep_alive = 0
 			return
 		if not masked:
-			#print("Client must always be masked.")
+			print("App must always be masked.")
 			self.keep_alive = 0
 			return
 
