@@ -201,6 +201,7 @@ def _parse_raw_update(raw_update, API_version, repo = "decentninja/GitSpace"):
     update['forced'] = False # It WILL be with lower case, if written with json.dumps
     update['changes'] = changes
     update["check_threshold"] = False
+    update['real_time'] = False
     for change in raw_update['files']:
         _parse_change(change,change_map,meta_info)
     if __force_depth:
@@ -283,6 +284,7 @@ def _state_clone(state):
     clone['api version'] = state['api version']
     clone['timestamp'] = state['timestamp']
     clone["state"] = []
+    clone['real_time'] = state['real_time']
     _recursive_state_clone(state['state'], clone['state'])
     return clone
 
@@ -404,6 +406,7 @@ def state_to_update(state):
     update['forced'] = False
     update["changes"] = []
     update["timestamp"] = state["timestamp"]
+    update["real_time"] = state["real_time"]
     update["check_threshold"] = True
     recursive_state_to_update(update['changes'], state['state'])
     return update

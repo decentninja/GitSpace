@@ -65,6 +65,7 @@ class Repository:
 	def get_rewind_list(self, minutes):
 		rewind_list = []
 		o_state = git_parsing._state_clone(self.original_state)
+		o_state['real_time'] = False
 		time_now = datetime.datetime.now()
 		next_time = time_now - datetime.timedelta(minutes=minutes)
 		update_list, i = self.get_updates_before(next_time)

@@ -27,7 +27,6 @@ def recv_message(client, server, message):
         print('App command has been processed.', file=sys.stderr)
 
 def serve(out_queue, in_queue):
-    sys.stdout = open(str(os.getpid()) + ".out", "a")
     print("Creating Websocket server...", file=sys.stderr)
     server = WebsocketServer(PORT, out_queue, in_queue, host=IP)
     print("Websocket server created, starting...", file=sys.stderr)
