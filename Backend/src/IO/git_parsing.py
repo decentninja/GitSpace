@@ -167,7 +167,7 @@ def _handle_blob_type(API_version,node,parent,folder_map):
 
 
 
-def parse_raw_updates(raw_updates, API_version = None):
+def parse_raw_updates(raw_updates, API_version = None,repo = "decentninja/GitSpace"):
     print("parsing %s commits"%len(raw_updates))
     if __cache_updates:
         with codecs.open("raw_updates.py", "w+",'utf-8') as f:
@@ -177,10 +177,10 @@ def parse_raw_updates(raw_updates, API_version = None):
     if API_version not in __supported_update_versions:
         raise Exception('Unknown API version: ' + API_version)
     if API_version == 1:
-        parsed = [_parse_raw_update(update,API_version) for update in raw_updates]
+        parsed = [_parse_raw_update(update,API_version,repo=repo) for update in raw_updates]
         return parsed
 
-def _parse_raw_update(raw_update, API_version):
+def _parse_raw_update(raw_update, API_version, repo = "decentninja/GitSpace"):
     meta_info = raw_update
     date = meta_info['commit']['committer']['date']
     time = parse_git_time_format(date)
@@ -191,7 +191,7 @@ def _parse_raw_update(raw_update, API_version):
 
     update = {}
     update['type'] = 'update'
-    update['repo'] = 'GitSpace' # TODO placeholder
+    update['repo'] = repo
     update['apiv'] = 1
     update['timestamp'] = time
     update['message'] = meta_info['commit']['message']
