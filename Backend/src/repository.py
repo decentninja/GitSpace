@@ -3,7 +3,7 @@ import IO.git_parsing as git_parsing
 
 class Repository:
 
-	def __init__(self,repo,lookback = 21):
+	def __init__(self,repo,lookback = 27):
 		state,updates = git_io.get_init(repo,lookback=lookback)
 		state['real_time'] = True
 		self.user_states = {None: state}
