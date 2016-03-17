@@ -132,44 +132,44 @@ class Main():
             self.execute_app_command(message, client)
 
     def execute_app_command(self, message, client):
-        try:
-            if message['command'] in ['labels', 'repo focus','reset camera',
-                                      'activity threshold']:
-                json = command_json()
-                json['command'] = message['command']
-                if message['command'] == 'repo focus':
-                    if message['repo'] not in self.states[client]:
-                        print("Repo does not exist: %s"%message['repo'], file=sys.stderr)
-                        self.app_queue_out.put('internal_error')
-                        return
-                    json['repo'] = message['repo']
-                elif message['command'] == 'labels':
-                    json['labels'] = message['show']
-                elif message['command'] == 'activity threshold':
-                    json['threshold'] = message['threshold']
-                self.send_all(client, json)
-                self.app_queue_out.put('internal_error')
-            elif message['command'] == 'repo delete':
-                self.delete_repo(message['repo'], client)
-            elif message['command'] == 'repo add':
-                self.add_repo(message['repo'], client)
-            elif message['command'] == 'user activity':
-                self.send_all(client, self.states[client][message['repo']].\
-                        get_user_update(message['username']))
-                self.app_queue_out.put('internal')
-            elif message['command'] == 'user activity reset':
-                self.send_all(client, self.states[client][message['repo']].\
-                        get_user_update(None))
-                self.app_queue_out.put('internal')
-            elif message['command'] == 'internal_state':
-                self.app_queue_out.put(self.make_app_state(client))
-            elif message['command'] == 'rewind':
-                rewind_list = self.states[client][message['repo']]\
-                        .get_rewind_list[message['minutes']]
-                [self.send_all(client, update) for update in rewind_list]
-        except KeyError as e:
-            print('Received malformed JSON from app, missing field: ', e,file=sys.stderr)
+        '''try:'''
+        if message['command'] in ['labels', 'repo focus','reset camera',
+                                  'activity threshold']:
+            json = command_json()
+            json['command'] = message['command']
+            if message['command'] == 'repo focus':
+                if message['repo'] not in self.states[client]:
+                    print("Repo does not exist: %s"%message['repo'], file=sys.stderr)
+                    self.app_queue_out.put('internal_error')
+                    return
+                json['repo'] = message['repo']
+            elif message['command'] == 'labels':
+                json['labels'] = message['show']
+            elif message['command'] == 'activity threshold':
+                json['threshold'] = message['threshold']
+            self.send_all(client, json)
             self.app_queue_out.put('internal_error')
+        elif message['command'] == 'repo delete':
+            self.delete_repo(message['repo'], client)
+        elif message['command'] == 'repo add':
+            self.add_repo(message['repo'], client)
+        elif message['command'] == 'user activity':
+            self.send_all(client, self.states[client][message['repo']].\
+                    get_user_update(message['username']))
+            self.app_queue_out.put('internal')
+        elif message['command'] == 'user activity reset':
+            self.send_all(client, self.states[client][message['repo']].\
+                    get_user_update(None))
+            self.app_queue_out.put('internal')
+        elif message['command'] == 'internal_state':
+            self.app_queue_out.put(self.make_app_state(client))
+        elif message['command'] == 'rewind':
+            rewind_list = self.states[client][message['repo']]\
+                    .get_rewind_list(message['minutes'])
+            [self.send_all(client, update) for update in rewind_list]
+        '''except KeyError as e:
+            print('Received malformed JSON from app, missing field: ', e,file=sys.stderr)
+            self.app_queue_out.put('internal_error')'''
 
     def add_repo(self, repo, client):
         # This requires valid repo name.

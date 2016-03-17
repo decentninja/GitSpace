@@ -281,6 +281,7 @@ def _state_clone(state):
     clone['type'] = state['type']
     clone['repo'] = state['repo']
     clone['api version'] = state['api version']
+    clone['timestamp'] = state['timestamp']
     clone["state"] = []
     _recursive_state_clone(state['state'], clone['state'])
     return clone

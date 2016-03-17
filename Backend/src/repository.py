@@ -38,11 +38,12 @@ class Repository:
 	#	self.latest_sha = updates[-1]['sha']
 		git_parsing.update_user_states(self.user_states,updates)
 
-	def empty_update(self):
+	def empty_update(self, timestamp):
 		update = {}
+		update['timestamp'] = timestamp
 		update['type'] = 'update'
-		update['repo'] = 'GitSpace' # TODO placeholder
-        update['real_time'] = False
+		update['repo'] = self.name
+		update['real_time'] = False
 		update['apiv'] = 1
 		update['message'] = ''
 		update['direction'] = 'forward'
@@ -53,10 +54,12 @@ class Repository:
 
 	def get_updates_before(self, next_time, i=0):
 		update_list = []
+		update_time = datetime.datetime.fromtimestamp(self.updates[i]['timestamp'])
 		while (update_time < next_time and i < len(self.updates)):
-		    update_time = datetime.datetime.fromtimestamp(self.updates[i]['timestamp'])
-		    update_list.append(self.updates[i])
-		    i =+ 1
+			update_list.append(self.updates[i])
+			i += 1
+			if i < len(self.updates):
+				update_time = datetime.datetime.fromtimestamp(self.updates[i]['timestamp'])
 		return update_list, i
 
 	def get_rewind_list(self, minutes):
@@ -64,18 +67,19 @@ class Repository:
 		o_state = git_parsing._state_clone(self.original_state)
 		time_now = datetime.datetime.now()
 		next_time = time_now - datetime.timedelta(minutes=minutes)
-		update_list, i = get_updates_before(next_time)
+		update_list, i = self.get_updates_before(next_time)
 		git_parsing.update_state(o_state, update_list)
 		rewind_list.append(git_parsing._state_clone(o_state))
 		while (next_time < time_now):
 			next_time = next_time + datetime.timedelta(hours=5)
-			update_list, i = get_updates_before(next_time, i)
+			update_list, i = self.get_updates_before(next_time, i)
 			if len(update_list) < 1:
-				rewind_list.append(rewind_list(self.empty_update()))
+				rewind_list.append(self.empty_update(next_time.timestamp()))
 			else:
 				git_parsing.update_state(o_state, update_list)
 				rewind_list.append(git_parsing.state_to_update(o_state))
-        rewind_list[-1]['real_time'] = True
+		rewind_list[-1]['real_time'] = True
+		print('Rewind list done')
 		return rewind_list
 
 if __name__ == '__main__':
