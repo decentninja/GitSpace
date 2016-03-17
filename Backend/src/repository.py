@@ -41,10 +41,11 @@ class Repository:
 		update = {}
 		update['type'] = 'update'
 		update['repo'] = 'GitSpace' # TODO placeholder
+        update['real_time'] = False
 		update['apiv'] = 1
 		update['message'] = ''
 		update['direction'] = 'forward'
-		update['forced'] = False # It WILL be with lower case, if written with json.dumps
+		update['forced'] = False
 		update['changes'] = []
 		update["check_threshold"] = False
 		return update
@@ -73,6 +74,7 @@ class Repository:
 			else:
 				git_parsing.update_state(o_state, update_list)
 				rewind_list.append(git_parsing.state_to_update(o_state))
+        rewind_list[-1]['real_time'] = True
 		return rewind_list
 
 if __name__ == '__main__':

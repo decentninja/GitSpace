@@ -73,7 +73,7 @@ class Main():
     def init_hook(self):
         self.hook_queue = Queue()
         self.hook_server = Process(target= app.serve, args=(self.hook_queue))
-        
+
     def send(self, conn, json_obj):
       json_string = '\x02' + json.dumps(json_obj) + '\x03'
       try:
@@ -151,6 +151,10 @@ class Main():
                 self.app_queue_out.put('internal')
             elif message['command'] == 'internal_state':
                 self.app_queue_out.put(self.make_app_state(client))
+            elif message['command'] == 'rewind':
+                rewind_list = self.states[client][message['repo']]\
+                        .get_rewind_list[message['minutes']]
+                [self.send_all(client, update) for update in rewind_list]
         except KeyError as e:
             print('Received malformed JSON from app, missing field: ', e,file=sys.stderr)
             self.app_queue_out.put('internal_error')
