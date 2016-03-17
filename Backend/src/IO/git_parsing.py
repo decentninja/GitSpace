@@ -370,7 +370,7 @@ def _update_children(user_states,change):
                                 break
                         # If no match, create new
                         if not match:
-                            match = dict([('extension',ext),('part',0)])
+                            match = dict([('extension',ext['extension']),('part',0)])
                             state_sub['filetypes'].append(match)
 
                         # Add new size to ratio
