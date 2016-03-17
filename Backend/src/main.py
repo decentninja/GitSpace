@@ -101,14 +101,15 @@ class Main():
     def send_webhook_updates(self):
         while 1:
             try:
-                repo, update = self.hook_queue.get_nowait()
+                repo, updates = self.hook_queue.get_nowait()
             except queue.Empty:
                 return
             for c_id, c in self.states.items():
                 if repo in c:
-                    c[repo].apply_updates([update])
+                    c[repo].apply_updates(updates)
                     if c_id in self.clients:
-                        self.send_all(c_id, update)
+                        for update in updates:
+                            self.send_all(c_id, update)
 
     def read_app_commands(self):
         while 1:

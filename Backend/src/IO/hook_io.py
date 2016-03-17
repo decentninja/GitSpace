@@ -36,7 +36,7 @@ class HookRequestHandler(BaseHTTPRequestHandler):
         print("Hook recieved")
         length = int(self.headers['Content-Length'])
         text = self.rfile.read(length).decode('utf-8')
-        post_data = json.loads(text)[0]
+        post_data = json.loads(text)
         update = git_parsing.hook_to_updates(post_data)
         repo = get_name_from_hook(post_data)
         self_set_headers()
@@ -48,7 +48,6 @@ def new_hook_client(queue):
 
     httpd = socketserver.TCPServer(("", PORT), Handler)
     hook_queue = queue
-    #hook_dicts[name.split('/')[-1]] = queue
     print("Hook server up at:", PORT)
     httpd.serve_forever()
 
