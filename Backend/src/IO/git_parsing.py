@@ -365,7 +365,7 @@ def print_tree_structure(alist, keys = None):
 # PARSE HOOK DATA
 ######################
 def hook_to_updates(hook):
-    print("Parsig Hook")
+    print("Parsing Hook")
     commits = hook['commits'][::-1] #Reverse list
     return parse_raw_updates([_hook_commit_to_raw_update(c) for c in commits])
 

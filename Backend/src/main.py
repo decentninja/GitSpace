@@ -35,14 +35,17 @@ class Main():
         self.testing = testing
         self.clients = {}
         self.states = {}
+
+    def init(self):
+        signal.signal(signal.SIGTERM, self.sighandler)
         self.init_states()
-        print("Revolution complete")
+        print("Git states parsed.", file=sys.stderr)
         self.init_frontend()
-        print("Final frontier reached")
+        print("Final frontend reached.", file=sys.stderr)
         self.init_app()
-        print("Mainframe activated")
+        print("Websocket server running.", file=sys.stderr)
         self.init_hook()
-        print("Hooked on Github")
+        print("Hooked on Github", file = sys.stderr)
 
     def init_state(self, client, repo):
         if client not in self.states:
@@ -66,13 +69,13 @@ class Main():
         self.app_queue = Queue()
         self.app_queue_out = Queue()
         self.app_server = Process(target= app.serve, args=(self.app_queue, self.app_queue_out))
-        print("Process started")
+        print("Starting Websocket server process.", file=sys.stderr)
         self.app_server.start()
-        print("Ooo hi")
 
     def init_hook(self):
         self.hook_queue = Queue()
         self.hook_server = Process(target= hook.new_hook_client, args=(self.hook_queue, ))
+        print("Starting Hook http server process.", file=sys.stderr)
         self.hook_server.start()
 
     def send(self, conn, json_obj):
@@ -94,6 +97,7 @@ class Main():
         for s in readable:
             new_client, address = s.accept()
             client_id = new_client.recv(1024).decode("utf-8")
+            client_id.strip('\n')
             if client_id == '':
                 client_id = 'gitspace'
             self.init_client(new_client, client_id)
@@ -106,10 +110,11 @@ class Main():
                 return
             for c_id, c in self.states.items():
                 if repo in c:
+                    print("Applying hook update in backend",file=sys.stderr)
                     c[repo].apply_updates(updates)
-                    if c_id in self.clients:
-                        for update in updates:
-                            self.send_all(c_id, update)
+                    print('Sending hook update to frontend',file=sys.stderr)
+                    for update in updates:
+                        self.send_all(c_id, update)
 
     def read_app_commands(self):
         while 1:
@@ -122,7 +127,7 @@ class Main():
                 message = message['message']
             except (KeyError, ValueError):
                 print('Received malformed JSON from app.', file=sys.stderr)
-                self.app_queue_out.put('internal')
+                self.app_queue_out.put('internal_error')
                 return
             self.execute_app_command(message, client)
 
@@ -135,7 +140,7 @@ class Main():
                 if message['command'] == 'repo focus':
                     if message['repo'] not in self.states[client]:
                         print("Repo does not exist: %s"%message['repo'], file=sys.stderr)
-                        self.app_queue_out.put('internal')
+                        self.app_queue_out.put('internal_error')
                         return
                     json['repo'] = message['repo']
                 elif message['command'] == 'labels':
@@ -143,7 +148,7 @@ class Main():
                 elif message['command'] == 'activity threshold':
                     json['threshold'] = message['threshold']
                 self.send_all(client, json)
-                self.app_queue_out.put('internal')
+                self.app_queue_out.put('internal_error')
             elif message['command'] == 'repo delete':
                 self.delete_repo(message['repo'], client)
             elif message['command'] == 'repo add':
@@ -152,17 +157,24 @@ class Main():
                 self.send_all(client, self.states[client][message['repo']].\
                         get_user_update(message['username']))
                 self.app_queue_out.put('internal')
+            elif message['command'] == 'user activity reset':
+                self.send_all(client, self.states[client][message['repo']].\
+                        get_user_update(None))
+                self.app_queue_out.put('internal')
             elif message['command'] == 'internal_state':
                 self.app_queue_out.put(self.make_app_state(client))
         except KeyError as e:
             print('Received malformed JSON from app, missing field: ', e,file=sys.stderr)
-            self.app_queue_out.put('internal')
+            self.app_queue_out.put('internal_error')
 
     def add_repo(self, repo, client):
         # This requires valid repo name.
         self.init_state(client, repo)
         self.send_all(client, self.states[client][repo].get_latest_state())
         self.app_queue_out.put(self.make_app_state(client))
+
+    def sighandler(self, sig, frame):
+        self.close()
 
     def delete_repo(self, repo, client):
         if repo not in self.states[client]:
@@ -198,7 +210,7 @@ class Main():
         self.app_server.join()
         self.hook_server.terminate()
         self.hook_server.join()
-        print('Server shut down.')
+        print('Server shut down.', file=sys.stderr)
 
     def main(self):
         try:
@@ -213,5 +225,6 @@ class Main():
 if __name__ == '__main__':
     print('Starting server...', file=sys.stderr)
     main = Main()
+    main.init()
     print('Server is up and running!', file=sys.stderr)
     main.main()
