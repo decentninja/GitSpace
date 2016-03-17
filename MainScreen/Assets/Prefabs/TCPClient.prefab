@@ -39,7 +39,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4650c12454565e4aa9cf95e885fc11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ipaddress: 127.0.0.1
+  ipaddress: 130.229.174.199
   port: 5522
   repos: {fileID: 0}
 --- !u!1001 &100100000
@@ -48,7 +48,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: repos
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 156248}

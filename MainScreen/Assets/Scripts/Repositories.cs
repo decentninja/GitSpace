@@ -10,6 +10,7 @@ public class Repositories : MonoBehaviour {
 
     public GameObject repoPrefab;
     public SeeEverythingCamera secamera;
+    public GameObject legend;
     int threshold = 10080;
 
     void Start() {
@@ -52,21 +53,69 @@ public class Repositories : MonoBehaviour {
                 }
                 break;
             case "delete":
-		dierepo(repoName);
+		        dierepo(repoName);
                 break;
             case "state":
-		dierepo(repoName);
+		        dierepo(repoName);
                 Repository newRepo = Instantiate(repoPrefab).GetComponent<Repository>();
                 newRepo.transform.parent = transform;
                 repoDictionary.Add(repoName, newRepo);
-		newRepo.CreateConstellation(data);
+		        newRepo.CreateConstellation(data);
                 break;
             case "update":
-		repoDictionary[repoName].cueUpdate(data);
+		        repoDictionary[repoName].cueUpdate(data);
                 break;
             default:
                 return;
         }
+    }
+
+    void Update()
+    {
+        ArrayList newMailList = new ArrayList();
+        foreach (Folder folder in Object.FindObjectsOfType<Folder>())
+        {
+            if (!newMailList.Contains(folder.mail))
+            {
+                newMailList.Add(folder.mail);
+            }
+        }
+        ArrayList newExtList = new ArrayList();
+        foreach (Repository rp in repoDictionary.Values)
+        {
+            newExtList = mergeLists(newExtList, rp.getExtensionList());
+        }
+
+        legend.GetComponent<Legend>().updateLegend(filterList(newMailList), filterList(newExtList));
+    }
+
+    //Merges two lists and return the latter with new values if any
+    private ArrayList mergeLists(ArrayList list1, ArrayList list2)
+    {
+        foreach(string test in list1)
+        {
+            if(!list2.Contains(test))
+            {
+                list2.Add(test);
+            }
+        }
+        return list2;
+    }
+
+    private ArrayList filterList(ArrayList list)
+    {
+        ArrayList cleanList = new ArrayList();
+        foreach(string text in list)
+        {
+            if(text.Equals("none") || text.Equals(""))
+            {
+                
+            } else
+            {
+                cleanList.Add(text);
+            }
+        }
+        return cleanList;
     }
 
     private void resetCamera() {
@@ -98,6 +147,7 @@ public class Repositories : MonoBehaviour {
     void displayLabels(bool yes) {
 	foreach(Folder folder in Object.FindObjectsOfType<Folder>()) {
 	    folder.showtext(yes);
+        legend.GetComponent<Legend>().showText(yes);
 	}
     }
     public int getThreshold()

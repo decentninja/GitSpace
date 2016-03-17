@@ -18,6 +18,7 @@ public class Repository : MonoBehaviour {
     public bool isUserUpdate;
     public bool isRealtime = true;
     public TimeManager tm;
+    private ArrayList extensionList = new ArrayList();
 
     // timespan given from the controlpanel to show glow, in seconds
     public int timeInterval;
@@ -247,6 +248,11 @@ public class Repository : MonoBehaviour {
         if (index != -1)
         {
             star.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = StringToColor(fileExtension[index]);
+            // add extension file type to legendlist
+            if (!extensionList.Contains(fileExtension[index]))
+            {
+                extensionList.Add(fileExtension[index]);
+            }
         }
         else
         {
@@ -308,7 +314,7 @@ public class Repository : MonoBehaviour {
 	}
     }
 
-    private Color StringToColor(string s) {
+    public Color StringToColor(string s) {
 	Color c = starcolor.Evaluate((1 + (float) (s + s + s + s + s).GetHashCode() / int.MaxValue) / 2);
 	return new Color(c.r * 255, c.g * 255, c.b * 255);
     }
@@ -336,6 +342,11 @@ public class Repository : MonoBehaviour {
         DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         TimeSpan diff = date.ToUniversalTime() - origin;
         return (int)Math.Floor(diff.TotalSeconds) - 3600; // Adjusting for utc time zone
+    }
+
+    public ArrayList getExtensionList()
+    {
+        return extensionList;
     }
     
     private void updateSizes(Dictionary<string, GameObject> currentChildren)
