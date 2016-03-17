@@ -118,6 +118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   time: {fileID: 11445676}
+  isRealtime: 1
 --- !u!222 &22225742
 CanvasRenderer:
   m_ObjectHideFlags: 1

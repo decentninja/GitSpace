@@ -8,7 +8,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 479998}
-  - 114: {fileID: 11417300}
+  - 114: {fileID: 11446674}
   m_Layer: 0
   m_Name: Repositories
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11417300
+--- !u!114 &11446674
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -36,11 +36,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 137152}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a60fc67502d61442b9d1c464dcaa99a7, type: 3}
+  m_Script: {fileID: 11500000, guid: 588e95383769f87479dece9fa6649f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   repoPrefab: {fileID: 170336, guid: a9a5e5e2fd1914a389ced56099a2c139, type: 2}
-  hud: {fileID: 0}
+  secamera: {fileID: 0}
+  legend: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
