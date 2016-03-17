@@ -326,7 +326,7 @@ public class Repository : MonoBehaviour {
         else
         {
             double passedtime = ConvertToUnixTimestamp(tm.getCurrentDate()) - lastmoddate;
-            double rounded = 1 - (passedtime / timeInterval) + minPower;
+            double rounded = ((1 - (passedtime / timeInterval))*0.7) + minPower;
             return (float)(rounded);
         }
     }
