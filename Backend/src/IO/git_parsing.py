@@ -198,6 +198,7 @@ def _parse_raw_update(raw_update, API_version, repo = "decentninja/GitSpace"):
     update['timestamp'] = time
     update['message'] = meta_info['commit']['message']
     update['direction'] = 'forward'
+    update['override_filetypes'] = False
     update['forced'] = False # It WILL be with lower case, if written with json.dumps
     update['changes'] = changes
     update["check_threshold"] = False
@@ -436,6 +437,7 @@ def state_to_update(state):
     update['repo'] = state['repo']
     update['apiv'] = 1
     update['direction'] = "forward"
+    update['override_filetypes'] = False
     update['forced'] = False
     update["changes"] = []
     update["timestamp"] = state["timestamp"]

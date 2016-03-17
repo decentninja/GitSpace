@@ -154,12 +154,14 @@ class Main():
             elif message['command'] == 'repo add':
                 self.add_repo(message['repo'], client)
             elif message['command'] == 'user activity':
-                self.send_all(client, self.states[client][message['repo']].\
-                        get_user_update(message['username']))
+                update = self.states[client][message['repo']].get_user_update(message['username'])
+                update['override_filetypes'] = True
+                self.send_all(client,update)
                 self.app_queue_out.put('internal')
             elif message['command'] == 'user activity reset':
-                self.send_all(client, self.states[client][message['repo']].\
-                        get_user_update(None))
+                update = self.states[client][message['repo']].get_user_update(None)
+                update['override_filetypes'] = True
+                self.send_all(client, update)
                 self.app_queue_out.put('internal')
             elif message['command'] == 'internal_state':
                 self.app_queue_out.put(self.make_app_state(client))
