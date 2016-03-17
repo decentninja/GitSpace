@@ -237,7 +237,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
 --- !u!1001 &309004206
 Prefab:
   m_ObjectHideFlags: 0
@@ -299,7 +299,6 @@ GameObject:
   - 223: {fileID: 395543919}
   - 114: {fileID: 395543918}
   - 114: {fileID: 395543917}
-  - 114: {fileID: 395543916}
   - 114: {fileID: 395543915}
   m_Layer: 5
   m_Name: Legend
@@ -324,18 +323,6 @@ MonoBehaviour:
   userPanel: {fileID: 18504691}
   extensionPanel: {fileID: 934873410}
   repo: {fileID: 11453962, guid: a9a5e5e2fd1914a389ced56099a2c139, type: 2}
---- !u!114 &395543916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11497766, guid: 07ad17954514c454ba61c94c5effe46d,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 395543914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &395543917
 MonoBehaviour:
   m_ObjectHideFlags: 0

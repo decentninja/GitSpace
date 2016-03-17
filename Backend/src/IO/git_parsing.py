@@ -322,7 +322,7 @@ def _apply_update(user_states,update):
 
 def _update_children(user_states,change):
     for sub in change['subfolder']:
-        is_old_folder = any(s['name'] == sub['name'] for s in user_states[None]['subfolder'])
+        is_old_folder = any(s['name'] == sub['name'] for s in next(iter(user_states.values()))['subfolder'])
 
         # Add new folder to every tree
         # Only use the timestamp for None or correct user

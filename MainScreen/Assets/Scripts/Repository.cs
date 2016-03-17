@@ -100,7 +100,7 @@ public class Repository : MonoBehaviour {
                 Folder star = currentChildren[foldername].GetComponent<Folder>();
 
                 int thresholdDate = ConvertToUnixTimestamp(tm.getCurrentDate()) - (60 * FindObjectOfType<Repositories>().getThreshold());
-                if ((int)data["last modified date"] > thresholdDate) {
+                if ((int)data["last modified date"] > thresholdDate && (int)data["last modified date"] != 0) {
                     if (!isUserUpdate) star.lastModifiedDate = (int)data["last modified date"];
                     star.Changed((string) data["last modified by"]);
                     //set sizes of stars based on update date
