@@ -4,7 +4,7 @@ using System;
 
 public class TimeManager : MonoBehaviour {
     private bool isRealtime = true;
-    private DateTime currentDate;
+    public DateTime currentDate;
 	
 	void Update () {
         if (isRealtime) {
